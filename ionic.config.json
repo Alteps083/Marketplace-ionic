@@ -1,0 +1,7 @@
+{
+  "name": "Marketplace",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
