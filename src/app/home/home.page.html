@@ -1,18 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-button>
-      <ion-back-button>
-      </ion-back-button>  
-    </ion-button>
     <ion-title>
       Blank
     </ion-title>
-    <ion-buttons slot="end">
-      <ion-button (cilck)="goPrev()">
-        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
-      </ion-button>
-      <ion-button slot="icon-only" name="arrow-forward"></ion-button>
-    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
     <ion-searchbar></ion-searchbar>
@@ -20,13 +10,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
   <swiper-container
-  #swiper
-  (afternit)="swiperReady"
-  (slidechange)="swiperSlideChanged($event)"
-  [loop]="true"
-  [pagination]="true">
+    #swiper
+    (afternit)="swiperReady()"
+    (slidechange)="swiperSlideChanged($event)"
+    [loop]="true"
+    [pagination]="true">
 
     <swiper-slide *ngFor="let image of images">
       <div class="swiper-zoom-container">
@@ -34,5 +23,4 @@
       </div>
     </swiper-slide>
   </swiper-container>
-
 </ion-content>
