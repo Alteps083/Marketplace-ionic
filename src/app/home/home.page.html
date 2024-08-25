@@ -1,15 +1,19 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
+<ion-header [fullscreen]="true">
+  <ion-toolbar color="--ion-color-primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="titulo">
+      MarketHub
     </ion-title>
   </ion-toolbar>
-  <ion-toolbar>
-    <ion-searchbar></ion-searchbar>
+  <ion-toolbar style="--background: var(--ion-color-primary);">
+    <ion-searchbar class="busqueda"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <! -- Parte del carrusel -->
   <swiper-container
     #swiper
     (afternit)="swiperReady()"
@@ -23,4 +27,28 @@
       </div>
     </swiper-slide>
   </swiper-container>
+
+  <ion-content class="principal-productos">
+    <h3>Productos recientes</h3>
+  </ion-content>
+
+ <ion-tabs>
+  <ion-tab-bar slot="bottom" class="custom-tab-bar">
+    <ion-tab-button tab="cart" class="tab-button">
+      <ion-icon name="cart"></ion-icon>
+      <ion-label>Carrito</ion-label>
+    </ion-tab-button>
+    
+    <ion-tab-button tab="profile" class="tab-button">
+      <ion-icon name="person"></ion-icon>
+      <ion-label>Perfil</ion-label>
+    </ion-tab-button>
+    
+    <ion-tab-button tab="chat" class="tab-button">
+      <ion-icon name="chatbubbles"></ion-icon>
+      <ion-label>Chat</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
+
 </ion-content>

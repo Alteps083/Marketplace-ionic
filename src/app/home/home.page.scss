@@ -1,6 +1,5 @@
 #container {
   text-align: center;
-
   position: absolute;
   left: 0;
   right: 0;
@@ -25,6 +24,8 @@
 #container a {
   text-decoration: none;
 }
+
+
 
 swiper-container {
   width: 100%;
@@ -64,4 +65,44 @@ swiper-slide {
 
 .swiper-pagination-bullet {
   background-color: rgba(255, 255, 255, 0.7); 
+}
+
+ion-header{
+  background-color: rgb(209, 29, 29);
+}
+
+.titulo{
+  display: flex;  
+  margin-left: 0;       
+  font-size: xx-large;  
+  color: white;         
+}
+
+.busqueda{
+  padding-top: 15px;
+  --background: #ffffff; 
+  --color: #000000; 
+  --placeholder-color: #999999; 
+}
+
+ion-tab-bar{
+  background-color: --ion-color-primary;
+}
+
+ion-content {
+  --background: linear-gradient(to right, rgb(70, 67, 67), rgb(100, 43, 43)); 
+  height: 100%; 
+}
+
+.custom-tab-bar {
+  --background: red; 
+}
+
+.tab-button{
+  --color:white;
+}
+
+.principal-productos{
+  display: flex;
+  text-align: center;
 }
