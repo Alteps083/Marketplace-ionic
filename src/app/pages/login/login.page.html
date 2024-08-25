@@ -18,10 +18,11 @@
       <ion-icon name="lock-closed-outline"></ion-icon>
     </ion-item>
     <div class="olvidocontra" class="input">
-      <a [routerLink]="['/cambiarcontra']">Olvido la contraseña?</a>
+      <a (click)="camcont()">Olvido la contraseña?</a>
     </div>
+    <ion-button color="primary" (click)="iniciarses()">Ir a Home</ion-button>
     <div class="iniciarsesion">
-      <p ><a [routerLink]="['/registro']">No tienes Cuenta!?</a></p>
+      <p ><a (click)="regses()">No tienes Cuenta!?</a></p>
     </div>
   </div>
 </form>

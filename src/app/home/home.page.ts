@@ -8,6 +8,15 @@ import Swiper from 'swiper';
 })
 export class HomePage {
 
+  handleRefresh(event: CustomEvent) {
+    setTimeout(() => {
+      const refresher = event.target as HTMLIonRefresherElement;
+      if (refresher) {
+        refresher.complete(); // Completa el refresco
+      }
+    }, 2000); // Simula una carga de 2 segundos
+  }
+
   @ViewChild('swiper')
   swiperRef: ElementRef | undefined;
   swiper?: Swiper;

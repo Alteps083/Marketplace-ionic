@@ -13,7 +13,27 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <! -- Parte del carrusel -->
+<!-- Reload -->
+<ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+  <ion-refresher-content
+    pullingIcon="chevron-down-circle-outline"
+
+  >
+  <div class="honeycomb">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  
+  </ion-refresher-content>
+</ion-refresher>
+
+
+<!-- Parte del carrusel -->
   <swiper-container
     #swiper
     (afternit)="swiperReady()"
