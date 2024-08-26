@@ -2,8 +2,14 @@
     font-size: 300;
 }
 
+ion-content{
+    --background: linear-gradient(135deg, #FF204E, #A0153E, #5D0E41, #00224D);
+    background-size: 400% 400%;
+    animation: gradientAnimation 10s ease infinite;
+}
+
 ion-item{
-    --background:#f1f1f1;
+    --background:#a09d9d;
     border-radius: 10px;
     margin-bottom: 16px;
 }
@@ -13,8 +19,8 @@ ion-item{
     margin-bottom: 80px;
     text-align: center;
     .subTitle{
-        color: gray;
-        font-size: 0.9rem;
+        color: rgb(255, 255, 255);
+        font-size: 1.2rem;
     }
     .title{
         font-size: 2rem;
@@ -33,19 +39,29 @@ ion-item{
     width: 80%;
     right: 0;
     p{
-        font-size: 0.9rem;
+        font-size: 1.2rem;
     }
     a{
         text-decoration: none;
+        color: white;
     }
 }
 
 .olvidocontra{
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     a{
+        color: rgb(255, 255, 255);
         font-weight: 400;
-        font-size: 0.8rem;
+        font-size: 1.2rem;
         text-decoration: none;
     }
+}
+
+.button-iniciar{
+    display: flex;
+    margin-top: 32px;
+    margin-left: 84px;
+    margin-right: 84px;
+    justify-content: center;
 }

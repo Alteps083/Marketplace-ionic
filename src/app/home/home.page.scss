@@ -86,12 +86,13 @@ ion-header{
 }
 
 ion-tab-bar{
-  background-color: --ion-color-primary;
+  --background-color: #5D0E41;
 }
 
 ion-content {
-  --background: linear-gradient(to right, rgb(70, 67, 67), rgb(100, 43, 43)); 
-  height: 100%; 
+  --background: linear-gradient(135deg, #FF204E, #A0153E, #5D0E41, #00224D);
+    background-size: 400% 400%;
+    animation: gradientAnimation 10s ease infinite;
 }
 
 .custom-tab-bar {
@@ -104,5 +105,5 @@ ion-content {
 
 .principal-productos{
   display: flex;
-  text-align: center;
+  justify-content: center;
 }

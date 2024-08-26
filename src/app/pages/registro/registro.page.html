@@ -1,11 +1,3 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
   <div class="header">
     <ion-title class="title">Bienvenido a MarketHub</ion-title>
@@ -23,10 +15,11 @@
         <ion-icon name="person-outline"></ion-icon>
       </ion-item>
       <ion-item>
-        <ion-input placeholder="password" class="input"></ion-input>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input"></ion-input>
+        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
         <ion-icon name="lock-closed-outline"></ion-icon>
       </ion-item>
-
+      <ion-button class="button-iniciar" color="tertiary" (click)="accountcreate()">Registrarse</ion-button>
       <div class="iniciarsesion">
         <p><a [routerLink]="['/login']">Ya estas registrado!!?</a></p>
       </div>

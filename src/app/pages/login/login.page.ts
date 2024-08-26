@@ -7,11 +7,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  
+  password: string = '';
+  showPassword: boolean = false;
 
   constructor(private router:Router) { }
 
   ngOnInit() {
   }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
   iniciarses(){
     //crear logica de programación
     this.router.navigate(['/home']);
