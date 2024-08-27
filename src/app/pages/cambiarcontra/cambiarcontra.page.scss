@@ -2,10 +2,18 @@
     font-size: 300;
 }
 
+ion-content{
+    --background: linear-gradient(135deg, #FF204E, #A0153E, #5D0E41, #00224D);
+    background-size: 400% 400%;
+    animation: gradientAnimation 10s ease infinite;
+}
+
 ion-item{
-    --background:#f1f1f1;
+    --background:#ada9a9;
     border-radius: 10px;
     margin-bottom: 16px;
+    margin-right: 20px;
+    margin-left: 20px;
 }
 
 .header{
@@ -13,10 +21,20 @@ ion-item{
     margin-bottom: 80px;
     text-align: center;
     .subTitle{
-        color: gray;
+        color: rgb(255, 255, 255);
         font-size: 0.9rem;
     }
     .title{
         font-size: 2rem;
     }
 }
+
+.button-iniciar{
+    display: flex;
+    margin-top: 32px;
+    margin-left: 84px;
+    margin-right: 84px;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
