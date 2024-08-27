@@ -1,0 +1,8 @@
+ion-content {
+    --background: linear-gradient(235deg,#A0153E, #5D0E41, #00224D);
+      background-size: 400% 400%;
+      animation: gradientAnimation 10s ease infinite;
+  }
+  ion-item {
+    --padding-start: 0;
+  }

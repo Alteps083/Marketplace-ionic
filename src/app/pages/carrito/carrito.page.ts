@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.page.html',
-  styleUrls: ['./chat.page.scss'],
+  selector: 'app-carrito',
+  templateUrl: './carrito.page.html',
+  styleUrls: ['./carrito.page.scss'],
 })
-export class ChatPage implements OnInit {
+export class CarritoPage implements OnInit {
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -20,6 +20,5 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
   }
-  
 
 }

@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import Swiper from 'swiper';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,7 @@ export class HomePage {
   ];
 
 
-  constructor() {}
+  constructor(private router:Router) {}
 
   swiperReady() {
     this.swiper = this.swiperRef?.nativeElement.swiper;
@@ -46,6 +47,22 @@ export class HomePage {
 
   swiperSlideChanged(e: any) {
     console.log('changed: ', e);
+  }
+
+  // hipervinculos
+  chat(){
+    //crear logica de programación
+    this.router.navigate(['/chat']);
+  }
+
+  perfil(){
+    //crear logica de programación
+    this.router.navigate(['/perfil']);
+  }
+  
+  carrito(){
+    //crear logica de programación
+    this.router.navigate(['/carrito']);
   }
 
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.page.html',
-  styleUrls: ['./chat.page.scss'],
+  selector: 'app-perfil',
+  templateUrl: './perfil.page.html',
+  styleUrls: ['./perfil.page.scss'],
 })
-export class ChatPage implements OnInit {
+export class PerfilPage implements OnInit {
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -20,6 +20,5 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
   }
-  
 
 }

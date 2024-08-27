@@ -1,0 +1,29 @@
+ion-content {
+    --background: linear-gradient(235deg,#A0153E, #5D0E41, #00224D);
+      background-size: 400% 400%;
+      animation: gradientAnimation 10s ease infinite;
+  }
+
+  .container {
+
+    overflow: hidden; 
+    white-space: nowrap;
+   
+    .scroll {
+      overflow: auto;
+    }
+    ion-chip{
+      --background:0000ff;
+    }
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  
+  ion-fab-button {
+    .fab { display: inline-block !important}
+  }
+  ion-item {
+    --padding-start: 0;
+  }
