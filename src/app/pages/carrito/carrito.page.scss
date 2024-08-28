@@ -1,5 +1,5 @@
 ion-content {
-    --background: linear-gradient(235deg,#A0153E, #5D0E41, #00224D);
+    --background: var(--ion-color-primary);
       background-size: 400% 400%;
       animation: gradientAnimation 10s ease infinite;
   }

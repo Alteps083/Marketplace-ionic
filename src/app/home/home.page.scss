@@ -1,3 +1,16 @@
+.home-page{
+  background-image: url('../../assets/img/background-1.jpeg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(1px);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
 #container {
   text-align: center;
   position: absolute;
@@ -39,6 +52,24 @@ ion-content, swiper-container, swiper-slide {
   height: 250px;
 }
 
+ion-card{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  gap: 16px; 
+}
+
+ion-card {
+  width: 90%; 
+  box-sizing: border-box; 
+}
+
 swiper-slide {
   display: flex;
   flex-direction: column;
@@ -66,7 +97,7 @@ swiper-slide {
 }
 
 ion-header{
-  background-color: #5D0E41;
+  background-color: var(--ion-color-primary);
 }
 
 .toolbar-content {
@@ -105,20 +136,18 @@ ion-header{
 }
 
 ion-tab-bar{
-  --background-color: #007BFF;
+  --background-color: var(--ion-color-primary);
 }
 
 ion-content {
-  --background: linear-gradient(135deg,#A0153E, #5D0E41, #00224D);
-    background-size: 400% 400%;
-    animation: gradientAnimation 10s ease infinite;
+  --background: var(--ion-color-secondary);
 }
 ion-toolbar {
   --background-color: #5D0E41;
 }
 
 .custom-tab-bar {
-  --background: #5D0E41; 
+  --background: var(--ion-color-primary); 
 }
 
 .tab-button{
@@ -126,7 +155,7 @@ ion-toolbar {
 }
 
 .principal-productos{
-  color: black;
+  color: rgb(255, 255, 255);
   text-shadow: 5px 5px 7px rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;

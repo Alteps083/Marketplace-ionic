@@ -1,31 +1,32 @@
 <ion-content [fullscreen]="true">
-  <ion-buttons slot="start">
-    <ion-back-button></ion-back-button>
-  </ion-buttons>
-<div class="header">
-  <ion-title class="title">Bienvenido a MarketHub</ion-title>
-  <p class="subTitle">Inicia sesion!!</p>
-</div>
-
-<form>
-  <div class="ion-padding">
-    <ion-item>
-      <ion-input placeholder="username" class="input"></ion-input>
-      <ion-icon name="person-outline"></ion-icon>
-    </ion-item>
-    <ion-item>
-      <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input"></ion-input>
-      <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-      <ion-icon name="lock-closed-outline"></ion-icon>
-    </ion-item>
-    <div class="olvidocontra">
-      <a (click)="camcont()">Olvido la contraseña?</a>
-    </div>
-    <ion-button class="button-iniciar" color="tertiary" (click)="iniciarses()">Iniciar Sesion</ion-button>
-    <div class="iniciarsesion">
-      <p><a (click)="regses()">No tienes Cuenta!?</a></p>
-    </div>
+  <div class="home-img">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  <div class="header">
+    <ion-title class="title">Bienvenido a MarketHub</ion-title>
+    <p class="subTitle">Inicia sesion!!</p>
   </div>
-</form>
+  <form>
+    <div class="ion-padding">
+      <ion-item>
+        <ion-input placeholder="username" class="input"></ion-input>
+        <ion-icon name="person-outline"></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input"></ion-input>
+        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
+        <ion-icon name="lock-closed-outline"></ion-icon>
+      </ion-item>
+      <div class="olvidocontra">
+        <a (click)="camcont()">Olvido la contraseña?</a>
+      </div>
+      <ion-button class="button-iniciar" color="tertiary" (click)="iniciarses()">Iniciar Sesion</ion-button>
+      <div class="iniciarsesion">
+        <p><a (click)="regses()">No tienes Cuenta!?</a></p>
+      </div>
+    </div>
+  </form>
+  </div>
 </ion-content>
 
