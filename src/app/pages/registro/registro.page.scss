@@ -2,11 +2,18 @@
     font-size: 300;
 }
 
-ion-content{
-    --background: linear-gradient(135deg, #FF204E, #A0153E, #5D0E41, #00224D);
-    background-size: 400% 400%;
-    animation: gradientAnimation 10s ease infinite;
-}
+.home-page{
+    background-image: url('../../../assets/img/background-1.jpeg');
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  
 
 ion-item{
     --background:#ada9a9;

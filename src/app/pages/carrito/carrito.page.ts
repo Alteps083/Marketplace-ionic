@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-carrito',
@@ -16,9 +17,28 @@ export class CarritoPage implements OnInit {
     }, 2000); // Simula una carga de 2 segundos
   }
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
+ // hipervinculos
+ chat(){
+  //crear logica de programación
+  this.router.navigate(['/chat']);
+}
 
+perfil(){
+  //crear logica de programación
+  this.router.navigate(['/perfil']);
+}
+
+carrito(){
+  //crear logica de programación
+  this.router.navigate(['/carrito']);
+}
+
+home(){
+  //crear logica de programación
+  this.router.navigate(['/home']);
+}
 }

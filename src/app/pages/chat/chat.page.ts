@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -11,15 +12,30 @@ export class ChatPage implements OnInit {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
       if (refresher) {
-        refresher.complete(); // Completa el refresco
+        refresher.complete(); 
       }
-    }, 2000); // Simula una carga de 2 segundos
+    }, 2000); 
   }
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
   
+ // hipervinculos
+ chat(){
+  //crear logica de programación
+  this.router.navigate(['/chat']);
+}
+
+perfil(){
+  //crear logica de programación
+  this.router.navigate(['/perfil']);
+}
+
+carrito(){
+  //crear logica de programación
+  this.router.navigate(['/carrito']);
+}
 
 }

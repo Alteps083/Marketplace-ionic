@@ -5,7 +5,7 @@
   filter: blur(1px);
   height: 100%;
   width: 100%;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: -1;
@@ -48,26 +48,8 @@ swiper-container {
   align-items: center;
 }
 
-ion-content, swiper-container, swiper-slide {
+swiper-container, swiper-slide {
   height: 250px;
-}
-
-ion-card{
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.card-container {
-  display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  gap: 16px; 
-}
-
-ion-card {
-  width: 90%; 
-  box-sizing: border-box; 
 }
 
 swiper-slide {
@@ -75,6 +57,20 @@ swiper-slide {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.card-container {
+  display: flex;                
+  flex-wrap: wrap;            
+  justify-content: space-between; 
+  padding: 16px;              
+}
+
+ion-card {
+  flex: 1 1 calc(45% - 16px); 
+  margin: 4px;                
+  height: auto;               
+  max-width: calc(45% - 16px); 
 }
 
 .swiper-zoom-container img {
@@ -141,7 +137,12 @@ ion-tab-bar{
 
 ion-content {
   --background: var(--ion-color-secondary);
+  height: auto;
+  position: relative; 
+  padding-bottom: 70px; /* Espacio para las tabs */
+  overflow-y: auto; /* Permitir desplazamiento vertical */
 }
+
 ion-toolbar {
   --background-color: #5D0E41;
 }

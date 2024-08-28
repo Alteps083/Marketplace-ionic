@@ -9,28 +9,26 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content scrollY="true">
   <div class="home-page"></div>
-<!-- Reload -->
-<ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-  <ion-refresher-content
-    pullingIcon="chevron-down-circle-outline"
-
-  >
-  <div class="honeycomb">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
   
-  </ion-refresher-content>
-</ion-refresher>
-
-
+    >
+    <div class="honeycomb">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    
+    </ion-refresher-content>
+  </ion-refresher>
+<!-- Reload -->
 <!-- Parte del carrusel -->
   <swiper-container
     #swiper
@@ -52,39 +50,26 @@
   
   <div class="card-container">
     <ion-card>
-      <img alt="Silhouette of mountains" src="imagen">
+      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-1.jpg">
       <ion-card-header>
-        <ion-card-title>Card Title</ion-card-title>
-        <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+        <ion-card-title>Nvidia RTX 3060</ion-card-title>
+        <ion-card-subtitle>Tarjeta Grafica</ion-card-subtitle>
       </ion-card-header>
     </ion-card>  
   
     <ion-card>
-      <img alt="Silhouette of mountains" src="imagen">
+      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-2.webp">
       <ion-card-header>
-        <ion-card-title>Card Title</ion-card-title>
-        <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+        <ion-card-title>Intel Core i9</ion-card-title>
+        <ion-card-subtitle>Procesador</ion-card-subtitle>
       </ion-card-header>
     </ion-card>
   
-    <ion-card>
-      <img alt="Silhouette of mountains" src="imagen">
-      <ion-card-header>
-        <ion-card-title>Card Title</ion-card-title>
-        <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-  
-    <ion-card>
-      <img alt="Silhouette of mountains" src="imagen">
-      <ion-card-header>
-        <ion-card-title>Card Title</ion-card-title>
-        <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
   </div>
+</ion-content>
 
- <ion-tabs>
+
+<ion-tabs>
   <ion-tab-bar slot="bottom" class="custom-tab-bar" (click)="carrito()">
     <ion-tab-button tab="cart" class="tab-button">
       <ion-icon name="cart"></ion-icon>
@@ -111,7 +96,7 @@
       <ion-label>Carrito</ion-label>
     </ion-tab-button>
 
+    
+
   </ion-tab-bar>
 </ion-tabs>
-
-</ion-content>
