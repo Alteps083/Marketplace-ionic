@@ -1,9 +1,9 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar color="--ion-color-primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title class="titulo">Perfil</ion-title>
+    <ion-title>modperfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -28,29 +28,36 @@
   </ion-refresher-content>
 </ion-refresher>
 
-<p>Tu Cuenta</p>
-
+<div>
+  <ion-avatar class="avatar">
+    <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+    <ion-button>Cambiar</ion-button>
+  </ion-avatar>
+</div>
+  
 <form>
   <div class="ion-padding">
     <ion-item class="input">
-      <ion-input placeholder="name"></ion-input>
+      <ion-input placeholder="Nombre"></ion-input>
       <ion-icon name="person-outline"></ion-icon>
     </ion-item>
     <ion-item>
-      <ion-input placeholder="email" class="input"></ion-input>
+      <ion-input placeholder="Email" class="input"></ion-input>
       <ion-icon name="person-outline"></ion-icon>
     </ion-item>
-    <ion-button  (click)="modperfil()" >Modificar Perfil</ion-button>
-    <ion-button  (click)="modcontra()" >Cambiar Contraseña</ion-button>
+    <ion-item>
+      <ion-input placeholder="Numero" class="input"></ion-input>
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-input placeholder="Direccion" class="input"></ion-input>
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-item>
+    <ion-button  (click)="home()">Guardar</ion-button> <!-- agregar alerta como en el mod contra -->
+
     <div class="iniciarsesion">
     </div>
   </div>
 </form>
 
-
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">perfil</ion-title>
-    </ion-toolbar>
-  </ion-header>
 </ion-content>

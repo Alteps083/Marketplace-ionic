@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-perfil',
-  templateUrl: './perfil.page.html',
-  styleUrls: ['./perfil.page.scss'],
+  selector: 'app-modcontra',
+  templateUrl: './modcontra.page.html',
+  styleUrls: ['./modcontra.page.scss'],
 })
-export class PerfilPage implements OnInit {
+export class ModcontraPage implements OnInit {
+
+  password: string = '';
+  showPassword: boolean = false;
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -21,12 +24,14 @@ export class PerfilPage implements OnInit {
 
   ngOnInit() {
   }
-  modperfil(){
-    //crear logica de programación
-    this.router.navigate(['/modperfil']);
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
-  modcontra(){
+
+home(){
     //crear logica de programación
-    this.router.navigate(['/modcontra']);
+    this.router.navigate(['/tabs/home']);
   }
+
 }

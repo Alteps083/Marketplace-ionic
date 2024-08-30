@@ -38,7 +38,8 @@ const routes: Routes = [
   {
     path: 'cambiarcontra',
     loadChildren: () => import('./pages/cambiarcontra/cambiarcontra.module').then( m => m.CambiarcontraPageModule)
-  },  {
+  },
+  {
     path: 'perfil',
     loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
   },
@@ -46,6 +47,27 @@ const routes: Routes = [
     path: 'carrito',
     loadChildren: () => import('./pages/carrito/carrito.module').then( m => m.CarritoPageModule)
   },
+  {
+    path: 'modperfil',
+    loadChildren: () => import('./pages/modperfil/modperfil.module').then( m => m.ModperfilPageModule)
+  },
+  {
+    path: 'modcontra',
+    loadChildren: () => import('./pages/modcontra/modcontra.module').then( m => m.ModcontraPageModule)
+  },
+  {
+    path: 'homeadmin',
+    loadChildren: () => import('./pages/homeadmin/homeadmin.module').then( m => m.HomeadminPageModule)
+  },
+  {
+    path: 'tabs',
+    loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule)
+  },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
+  },
+
 
 
 

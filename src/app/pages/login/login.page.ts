@@ -22,7 +22,7 @@ export class LoginPage implements OnInit {
 
   iniciarses(){
     //crear logica de programación
-    this.router.navigate(['/home']);
+    this.router.navigate(['/tabs/home']);
   }
   camcont(){
     //crear logica de programación
@@ -31,6 +31,10 @@ export class LoginPage implements OnInit {
   regses(){
     //crear logica de programación
     this.router.navigate(['/registro']);
+  }
+  homeadmin(){
+    //crear logica de programación
+    this.router.navigate(['/tabs/homeadmin']);
   }
 
 }

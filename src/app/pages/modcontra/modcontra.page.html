@@ -1,0 +1,58 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="--ion-color-primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>modcontra</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scrollY="true">
+  <div class="home-page"></div>
+  <!-- Reload -->
+<ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+  <ion-refresher-content
+    pullingIcon="chevron-down-circle-outline"
+
+  >
+  <div class="honeycomb">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  
+  </ion-refresher-content>
+</ion-refresher>
+
+
+<div>
+  <div>
+  <ion-item>
+    <p>Ingrese su contraseña</p>
+    <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" name="passwordInput" class="input"></ion-input>
+    <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
+    <ion-icon name="lock-closed-outline"></ion-icon>
+  </ion-item>
+  </div>
+  <div></div>
+  <ion-item>
+    <p>Ingrese nueva Contraseña</p>
+    <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" name="passwordInput" class="input"></ion-input>
+    <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
+    <ion-icon name="lock-closed-outline"></ion-icon>
+  </ion-item>
+
+  <ion-item>
+    <p>Ingrese nuevamente la nueva contraseña</p>
+    <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input"></ion-input>
+    <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
+    <ion-icon name="lock-closed-outline"></ion-icon>
+  </ion-item>
+  <ion-button  (click)="home()">Guardar</ion-button> <!-- debe lanzar una alerta de contraseña actualizada -->
+</div>
+
+</ion-content>

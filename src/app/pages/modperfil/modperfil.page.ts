@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-carrito',
-  templateUrl: './carrito.page.html',
-  styleUrls: ['./carrito.page.scss'],
+  selector: 'app-modperfil',
+  templateUrl: './modperfil.page.html',
+  styleUrls: ['./modperfil.page.scss'],
 })
-export class CarritoPage implements OnInit {
+export class ModperfilPage implements OnInit {
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -17,8 +17,13 @@ export class CarritoPage implements OnInit {
     }, 2000); // Simula una carga de 2 segundos
   }
 
-  constructor(private router: Router) { }
+  constructor(private router:Router) { }
 
   ngOnInit() {
   }
+home(){
+    //crear logica de programación
+    this.router.navigate(['/tabs/home']);
+  }
+
 }

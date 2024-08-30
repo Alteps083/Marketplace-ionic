@@ -22,20 +22,6 @@ export class ChatPage implements OnInit {
   ngOnInit() {
   }
   
- // hipervinculos
- chat(){
-  //crear logica de programación
-  this.router.navigate(['/chat']);
-}
 
-perfil(){
-  //crear logica de programación
-  this.router.navigate(['/perfil']);
-}
-
-carrito(){
-  //crear logica de programación
-  this.router.navigate(['/carrito']);
-}
 
 }

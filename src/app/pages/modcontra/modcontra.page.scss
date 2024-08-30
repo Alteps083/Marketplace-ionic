@@ -1,0 +1,50 @@
+
+ion-header {
+    background-color: var(--ion-color-primary); /* Color del header */
+  }
+  
+  .home-page{
+    background-image: url('../../../assets/img/background-1.jpeg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(1px);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  
+  
+    .container {
+  
+      overflow: hidden; 
+      white-space: nowrap;
+     
+      .scroll {
+        overflow: auto;
+      }
+      ion-chip{
+        --background:0000ff;
+      }
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    
+    
+    ion-fab-button {
+      .fab { display: inline-block !important}
+    }
+    ion-item {
+      --padding-start: 0;
+    }
+  
+    .custom-tab-bar {
+      --background: var(--ion-color-primary); 
+    }
+    
+    .tab-button{
+      --color:white;
+    }
