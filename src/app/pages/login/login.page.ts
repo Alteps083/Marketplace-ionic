@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -7,11 +8,47 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+
+  user = {
+    usuario: ''
+  };
+
+  procesar(){
+    console.log(this.user);
+  }
   
   password: string = '';
   showPassword: boolean = false;
 
-  constructor(private router:Router) { }
+  constructor(private router:Router, private toastController: ToastController) { }
+
+  login() {
+    const NavigationExtras: NavigationExtras = {
+      state: {
+        user: this.user
+      }
+    };
+    this.router.navigate(['/home'], NavigationExtras);
+  }
+
+  async presentToast(position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message: `Bienvenido, ${this.user.usuario}`,
+      duration: 1500,
+      position: position,
+    });
+
+    await toast.present();
+  }
+  async presentToastad(position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message: `Bienvenido Admin, ${this.user.usuario}`,
+      duration: 1500,
+      position: position,
+    });
+
+    await toast.present();
+  }
 
   ngOnInit() {
   }

@@ -7,22 +7,26 @@
     <ion-title class="title">Bienvenido a MarketHub</ion-title>
     <p class="subTitle">Inicia sesion!!</p>
   </div>
-  <form>
+  <form (ngSubmit)="procesar()" #formContact="ngForm">
     <div class="ion-padding">
       <ion-item>
-        <ion-input placeholder="username" class="input"></ion-input>
+        <ion-input placeholder="username" class="input form-control" [(ngModel)]="user.usuario" name="username" required #username="ngModel" ></ion-input>
         <ion-icon name="person-outline"></ion-icon>
       </ion-item>
+      <div class="alert alert-danger mt-2" transparent [hidden]="username.valid || username.pristine">Por favor ingrese un usuario</div>
+      <hr>
+
       <ion-item>
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input"></ion-input>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input form-control" required #passwordInput="ngModel"></ion-input>
         <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
         <ion-icon name="lock-closed-outline"></ion-icon>
       </ion-item>
+      <div class="alert alert-danger mt-2" [hidden]="passwordInput.valid || passwordInput.pristine">Por favor ingrese su contraseña</div>
       <div class="olvidocontra">
         <a (click)="camcont()">Olvido la contraseña?</a>
       </div>
-      <ion-button class="button-iniciar" color="tertiary" (click)="iniciarses()">Iniciar Sesion</ion-button>
-      <ion-button class="button-iniciar" color="tertiary" (click)="homeadmin()">Iniciar Sesion como administrador</ion-button>
+      <ion-button class="button-iniciar" color="tertiary" (click)="iniciarses()" [disabled]="formContact.invalid" expand="block" (click)="presentToast('top')">Iniciar Sesion</ion-button>
+      <ion-button class="button-iniciar" color="tertiary" (click)="homeadmin()" [disabled]="formContact.invalid" expand="block" (click)="presentToastad('top')">Iniciar Sesion como administrador</ion-button>
       <div class="iniciarsesion">
         <p><a (click)="regses()">No tienes Cuenta!?</a></p>
       </div>

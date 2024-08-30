@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit  } from '@angular/core';
 import Swiper from 'swiper';
 import { Router } from '@angular/router';
 
@@ -7,7 +7,9 @@ import { Router } from '@angular/router';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
+
+  usuario: string = "";
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -64,5 +66,14 @@ export class HomePage {
     //crear logica de programación
     this.router.navigate(['/carrito']);
   }
-
+  ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const user = navigation.extras.state['user'];
+      if (user) {
+        this.usuario = user.usuario;
+        console.log('Usuario recibido:', this.usuario);
+    }
+  }
+}
 }
