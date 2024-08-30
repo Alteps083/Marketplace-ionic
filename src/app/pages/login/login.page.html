@@ -10,7 +10,7 @@
   <form (ngSubmit)="procesar()" #formContact="ngForm">
     <div class="ion-padding">
       <ion-item>
-        <ion-input placeholder="username" class="input form-control" [(ngModel)]="user.usuario" name="username" required #username="ngModel" ></ion-input>
+        <ion-input placeholder="username" class="input form-control" pro [(ngModel)]="user.usuario" name="username" required #username="ngModel" ></ion-input>
         <ion-icon name="person-outline"></ion-icon>
       </ion-item>
       <div class="alert alert-danger mt-2" transparent [hidden]="username.valid || username.pristine">Por favor ingrese un usuario</div>
@@ -25,7 +25,8 @@
       <div class="olvidocontra">
         <a (click)="camcont()">Olvido la contraseña?</a>
       </div>
-      <ion-button class="button-iniciar" color="tertiary" (click)="iniciarses()" [disabled]="formContact.invalid" expand="block" (click)="presentToast('top')">Iniciar Sesion</ion-button>
+      <ion-button type="Submit" class="procesar">prueba</ion-button>
+      <ion-button class="button-iniciar" color="tertiary" (click)="login()" [disabled]="formContact.invalid" expand="block" (click)="presentToast('top')">Iniciar Sesion</ion-button>
       <ion-button class="button-iniciar" color="tertiary" (click)="homeadmin()" [disabled]="formContact.invalid" expand="block" (click)="presentToastad('top')">Iniciar Sesion como administrador</ion-button>
       <div class="iniciarsesion">
         <p><a (click)="regses()">No tienes Cuenta!?</a></p>

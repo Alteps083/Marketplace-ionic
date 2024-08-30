@@ -22,13 +22,15 @@ export class LoginPage implements OnInit {
 
   constructor(private router:Router, private toastController: ToastController) { }
 
+
+
   login() {
     const NavigationExtras: NavigationExtras = {
       state: {
         user: this.user
       }
     };
-    this.router.navigate(['/home'], NavigationExtras);
+    this.router.navigate(['/tabs/home'], NavigationExtras);
   }
 
   async presentToast(position: 'top' | 'middle' | 'bottom') {
@@ -55,11 +57,6 @@ export class LoginPage implements OnInit {
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
-  }
-
-  iniciarses(){
-    //crear logica de programación
-    this.router.navigate(['/tabs/home']);
   }
   camcont(){
     //crear logica de programación
