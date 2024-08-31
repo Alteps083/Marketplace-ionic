@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router} from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./perfil.page.scss'],
 })
 export class PerfilPage implements OnInit {
+
+  usuario: string = "";
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -19,8 +21,6 @@ export class PerfilPage implements OnInit {
 
   constructor(private router:Router) { }
 
-  ngOnInit() {
-  }
   modperfil(){
     //crear logica de programación
     this.router.navigate(['/modperfil']);
@@ -29,4 +29,16 @@ export class PerfilPage implements OnInit {
     //crear logica de programación
     this.router.navigate(['/modcontra']);
   }
+  ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const user = navigation.extras.state['user'];
+      if (user) {
+        this.usuario = user;
+        console.log('Usuario recibido:', this.usuario);
+    }
+  }
+}
+
+
 }

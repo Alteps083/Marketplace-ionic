@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, OnInit  } from '@angular/core';
 import Swiper from 'swiper';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -47,6 +47,15 @@ export class HomePage implements OnInit {
     this.swiper?.slidePrev();
   }
 
+  perfil() {
+    const NavigationExtras: NavigationExtras = {
+      state: {
+        user: this.usuario
+      }
+    };
+    this.router.navigate(['/tabs/perfil'], NavigationExtras);
+  }
+
   swiperSlideChanged(e: any) {
     console.log('changed: ', e);
   }
@@ -57,11 +66,6 @@ export class HomePage implements OnInit {
     this.router.navigate(['/chat']);
   }
 
-  perfil(){
-    //crear logica de programación
-    this.router.navigate(['/perfil']);
-  }
-  
   carrito(){
     //crear logica de programación
     this.router.navigate(['/carrito']);
