@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-modcontra',
@@ -20,9 +21,19 @@ export class ModcontraPage implements OnInit {
     }, 2000); // Simula una carga de 2 segundos
   }
 
-  constructor(private router:Router) { }
+  constructor(private router:Router, private toastController: ToastController) { }
 
   ngOnInit() {
+  }
+
+  async presentToast(position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message: 'Cambios realizados',
+      duration: 1500,
+      position: position,
+    });
+
+    await toast.present();
   }
 
   togglePasswordVisibility() {

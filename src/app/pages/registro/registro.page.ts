@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-registro',
@@ -8,12 +9,34 @@ import { Router } from '@angular/router';
 })
 export class RegistroPage implements OnInit {
 
+  reg = {
+    name: '',
+    email: '',
+    num: '',
+    dir: ''
+  };
+
+  procesar(){
+    console.log(this.reg);
+  }
+
+
   password: string = '';
   showPassword: boolean = false;
 
-  constructor(private router:Router) { }
+  constructor(private router:Router, private toastController: ToastController) { }
 
   ngOnInit() {
+  }
+
+  async presentToast(position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message: 'Gracias por registrarte',
+      duration: 1500,
+      position: position,
+    });
+
+    await toast.present();
   }
 
   togglePasswordVisibility() {

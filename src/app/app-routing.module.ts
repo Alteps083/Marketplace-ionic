@@ -3,10 +3,6 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
-  },
-  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
@@ -32,20 +28,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/detalle/detalle.module').then( m => m.DetallePageModule)
   },
   {
-    path: 'chat',
-    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
-  },
-  {
     path: 'cambiarcontra',
     loadChildren: () => import('./pages/cambiarcontra/cambiarcontra.module').then( m => m.CambiarcontraPageModule)
-  },
-  {
-    path: 'perfil',
-    loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
-  },
-  {
-    path: 'carrito',
-    loadChildren: () => import('./pages/carrito/carrito.module').then( m => m.CarritoPageModule)
   },
   {
     path: 'modperfil',
@@ -54,10 +38,6 @@ const routes: Routes = [
   {
     path: 'modcontra',
     loadChildren: () => import('./pages/modcontra/modcontra.module').then( m => m.ModcontraPageModule)
-  },
-  {
-    path: 'homeadmin',
-    loadChildren: () => import('./pages/homeadmin/homeadmin.module').then( m => m.HomeadminPageModule)
   },
   {
     path: 'tabs',

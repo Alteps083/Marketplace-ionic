@@ -33,6 +33,15 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/tabs/home'], NavigationExtras);
   }
 
+  loginad() {
+    const NavigationExtras: NavigationExtras = {
+      state: {
+        user: this.user
+      }
+    };
+    this.router.navigate(['/tabs/homeadmin'], NavigationExtras);
+  }
+
   async presentToast(position: 'top' | 'middle' | 'bottom') {
     const toast = await this.toastController.create({
       message: `Bienvenido, ${this.user.usuario}`,
@@ -65,10 +74,6 @@ export class LoginPage implements OnInit {
   regses(){
     //crear logica de programación
     this.router.navigate(['/registro']);
-  }
-  homeadmin(){
-    //crear logica de programación
-    this.router.navigate(['/tabs/homeadmin']);
   }
 
 }

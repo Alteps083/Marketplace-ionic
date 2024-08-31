@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 })
 export class HomeadminPage implements OnInit {
 
+  usuario: string = "";
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -67,6 +69,14 @@ export class HomeadminPage implements OnInit {
   }
 
   ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const user = navigation.extras.state['user'];
+      if (user) {
+        this.usuario = user.usuario;
+        console.log('Usuario recibido:', this.usuario);
+    }
   }
+}
 
 }

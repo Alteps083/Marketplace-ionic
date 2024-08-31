@@ -1,6 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="--ion-color-primary">
     <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>modperfil</ion-title>
@@ -38,7 +39,7 @@
 <form>
   <div class="ion-padding">
     <ion-item class="input">
-      <ion-input placeholder="Nombre"></ion-input>
+      <ion-input placeholder="Nombre" [(ngModel)]="perf.nombre" name="username" required #username="ngModel"></ion-input>
       <ion-icon name="person-outline"></ion-icon>
     </ion-item>
     <ion-item>
@@ -53,7 +54,7 @@
       <ion-input placeholder="Direccion" class="input"></ion-input>
       <ion-icon name="person-outline"></ion-icon>
     </ion-item>
-    <ion-button  (click)="home()">Guardar</ion-button> <!-- agregar alerta como en el mod contra -->
+    <ion-button  (click)="home()" (click)="presentToast('bottom')">Guardar</ion-button> <!-- agregar alerta como en el mod contra -->
 
     <div class="iniciarsesion">
     </div>

@@ -7,21 +7,25 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item [routerDirection]="'root'" [routerLink]="'/home'">
+        <ion-item [routerDirection]="'root'" [routerLink]="'/tabs/home'">
           <ion-icon name="home"></ion-icon>
           <ion-label>Inicio</ion-label>
         </ion-item>
-        <ion-item>
-          <ion-icon name="cube-outline"></ion-icon>
-          <ion-label>Ver mis productos</ion-label>
+        <ion-item [routerDirection]="'root'" [routerLink]="'/tabs/perfil'">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          <ion-label>Perfil</ion-label>
         </ion-item>
-        <ion-item>
-          <ion-icon name="bag-add-outline"></ion-icon>
-          <ion-label>Ver mis productos</ion-label>
+        <ion-item [routerDirection]="'root'" [routerLink]="'/tabs/carrito'">
+          <ion-icon name="cart-outline"></ion-icon>
+          <ion-label>Carrito</ion-label>
         </ion-item>
-        <ion-item>
-          <ion-icon name="bag-add-outline"></ion-icon>
-          <ion-label>Ver mis productos</ion-label>
+        <ion-item [routerDirection]="'root'" [routerLink]="'/tabs/chat'">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <ion-label>Chats</ion-label>
+        </ion-item>
+        <ion-item [routerDirection]="'root'" [routerLink]="'/login'">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <ion-label>Cerrar sesion</ion-label>
         </ion-item>
       </ion-list>
     </ion-content>
