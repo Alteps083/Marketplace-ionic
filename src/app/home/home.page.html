@@ -41,20 +41,20 @@
   <h1>Bienvenido, {{ usuario }}</h1>
 
 <!-- Parte del carrusel -->
-  <swiper-container
-    #swiper
-    (afternit)="swiperReady()"
-    (slidechange)="swiperSlideChanged($event)"
-    [loop]="true"
-    [pagination]="true">
+<swiper-container
+#swiper
+(swiper)="swiperReady()"
+[pagination]="{ clickable: true }"
+[navigation]="true"
+[loop]="true"
+[autoplay]="{ delay: 3000, disableOnInteraction: false }">
 
-    <swiper-slide *ngFor="let image of images">
-      <div class="swiper-zoom-container">
-        <img [src]="image" />
-      </div>
-    </swiper-slide>
-  </swiper-container>
-
+<swiper-slide *ngFor="let image of images">
+  <div class="swiper-zoom-container">
+    <img [src]="image" />
+  </div>
+</swiper-slide>
+</swiper-container>
   <div class="principal-productos">
     <h3>Productos recientes</h3>
   </div>
@@ -76,27 +76,12 @@
       </ion-card-header>
     </ion-card>
     <ion-card>
-      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-2.webp">
+      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-3.jpg">
       <ion-card-header>
-        <ion-card-title>Intel Core i9</ion-card-title>
-        <ion-card-subtitle>Procesador</ion-card-subtitle>
+        <ion-card-title>SSD M.2 Interno Crucial PCIe NVMe 1TB P2</ion-card-title>
+        <ion-card-subtitle>SSD</ion-card-subtitle>
       </ion-card-header>
     </ion-card>
-    <ion-card>
-      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-2.webp">
-      <ion-card-header>
-        <ion-card-title>Intel Core i9</ion-card-title>
-        <ion-card-subtitle>Procesador</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-    <ion-card>
-      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-2.webp">
-      <ion-card-header>
-        <ion-card-title>Intel Core i9</ion-card-title>
-        <ion-card-subtitle>Procesador</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-  
   </div>
 
 

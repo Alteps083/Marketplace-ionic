@@ -4,20 +4,23 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
   <div class="header">
+    <div class="logo-container">
+      <ion-img src="/../../assets/img/LogoMarketHub.png" class="logo"></ion-img>
+    </div>
     <ion-title class="title">Bienvenido a MarketHub</ion-title>
     <p class="subTitle">Inicia sesion!!</p>
   </div>
   <form (ngSubmit)="procesar()" #formContact="ngForm">
     <div class="ion-padding">
       <ion-item>
-        <ion-input placeholder="username" class="input form-control" pro [(ngModel)]="user.usuario" name="username" required #username="ngModel" ></ion-input>
+        <ion-input placeholder="Usuario" class="input form-control" pro [(ngModel)]="user.usuario" name="username" required #username="ngModel" ></ion-input>
         <ion-icon name="person-outline"></ion-icon>
       </ion-item>
       <div class="alert alert-danger mt-2" transparent [hidden]="username.valid || username.pristine">Por favor ingrese un usuario</div>
       <hr>
 
       <ion-item>
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input form-control" required #passwordInput="ngModel"></ion-input>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="password" name="passwordInput" class="input form-control" required #passwordInput="ngModel"></ion-input>
         <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
         <ion-icon name="lock-closed-outline"></ion-icon>
       </ion-item>
