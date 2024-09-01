@@ -70,6 +70,11 @@ export class HomePage implements OnInit {
     //crear logica de programación
     this.router.navigate(['/carrito']);
   }
+
+  detalle(){
+    this.router.navigate(['/detalle']);
+  }
+
   ngOnInit() {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {

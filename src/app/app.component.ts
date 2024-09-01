@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { every } from 'rxjs';
 import { register } from 'swiper/element/bundle';
 register();
 
@@ -8,5 +10,18 @@ register();
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  VerMenu = true;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) =>{
+      if(event instanceof NavigationEnd) {
+        this.updateMenuVisibility(event.url)
+      }
+    });
+  }
+
+  updateMenuVisibility(url: string){
+    const hiddenRoutes = ['/login', '/register', '/cambiarcontra'];
+    this.VerMenu = !hiddenRoutes.includes(url);
+  }
 }

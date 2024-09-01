@@ -1,16 +1,35 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header >
+  <ion-toolbar color="--ion-color-primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
-      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>detalle</ion-title>
+    <ion-title class="titulo">
+      MarketHub
+    </ion-title>
+    <ion-buttons slot="end"> 
+      <ion-avatar>
+        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+      </ion-avatar>
+      <ion-button fill="clear" (click)="perfil()">
+        Ir a perfil
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">detalle</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="home-page"></div>
+  <div class="detalles-producto">
+    <ion-card>
+      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-1.jpg" />
+      <ion-card-header>
+        <ion-card-title>Nvidia RTX 3060</ion-card-title>
+        <ion-card-subtitle>Tarjeta Grafica</ion-card-subtitle>
+      </ion-card-header>
+    
+      <ion-card-content>
+        Here's a small text description for the card content. Nothing more, nothing less.
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
