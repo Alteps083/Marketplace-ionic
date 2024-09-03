@@ -68,6 +68,18 @@ export class HomeadminPage implements OnInit {
     this.router.navigate(['/carrito']);
   }
 
+  detalle(){
+    this.router.navigate(['/detalle']);
+  }
+
+  modificar(){
+    this.router.navigate(['/modificar']);
+  }
+
+  agregar(){
+    this.router.navigate(['/agregar']);
+  }
+
   ngOnInit() {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {

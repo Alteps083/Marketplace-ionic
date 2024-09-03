@@ -49,7 +49,10 @@
   </swiper-container>
 
   <div class="principal-productos">
-    <h3>Productos recientes</h3>
+    <h3>Agregar productos</h3>
+  </div>
+  <div class="principal-productos">
+  <ion-button (click)="agregar()">Agregar</ion-button>
   </div>
   
   <div class="card-container">
@@ -58,6 +61,8 @@
       <ion-card-header>
         <ion-card-title>Nvidia RTX 3060</ion-card-title>
         <ion-card-subtitle>Tarjeta Grafica</ion-card-subtitle>
+        <ion-button (click)="detalle()">Más Detalles</ion-button>
+        <ion-button (click)="modificar()">Modificar</ion-button>
       </ion-card-header>
     </ion-card>  
   
@@ -66,9 +71,19 @@
       <ion-card-header>
         <ion-card-title>Intel Core i9</ion-card-title>
         <ion-card-subtitle>Procesador</ion-card-subtitle>
+        <ion-button (click)="detalle()">Más Detalles</ion-button>
+        <ion-button (click)="modificar()">Modificar</ion-button>
       </ion-card-header>
     </ion-card>
-  
+    <ion-card>
+      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-3.jpg">
+      <ion-card-header>
+        <ion-card-title>SSD M.2 Interno Crucial PCIe NVMe 1TB P2</ion-card-title>
+        <ion-card-subtitle>SSD</ion-card-subtitle>
+        <ion-button (click)="detalle()">Más Detalles</ion-button>
+        <ion-button (click)="modificar()">Modificar</ion-button>
+      </ion-card-header>
+    </ion-card>
   </div>
 
 </ion-content>

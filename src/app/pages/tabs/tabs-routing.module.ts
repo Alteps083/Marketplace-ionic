@@ -28,6 +28,10 @@ const routes: Routes = [
         loadChildren: () => import('../homeadmin/homeadmin.module').then(m => m.HomeadminPageModule) // Verifica que esta ruta sea correcta
       },
       {
+        path: 'agregar',
+        loadChildren: () => import('../agregar/agregar.module').then(m => m.AgregarPageModule) // Verifica que esta ruta sea correcta
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'

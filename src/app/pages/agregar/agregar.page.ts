@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-agregar',
@@ -7,7 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AgregarPage implements OnInit {
 
-  constructor() { }
+  handleRefresh(event: CustomEvent) {
+    setTimeout(() => {
+      const refresher = event.target as HTMLIonRefresherElement;
+      if (refresher) {
+        refresher.complete(); 
+      }
+    }, 2000); 
+  }
+
+  constructor(private router: Router) { }
+
+  homead(){
+    this.router.navigate(['/tabs/homeadmin']);
+  }
 
   ngOnInit() {
   }
