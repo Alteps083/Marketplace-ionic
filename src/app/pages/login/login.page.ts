@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +10,7 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-
+  miFormulario: FormGroup;
   user = {
     usuario: ''
   };
@@ -16,13 +18,20 @@ export class LoginPage implements OnInit {
   procesar(){
     console.log(this.user);
   }
-  
+
   password: string = '';
   showPassword: boolean = false;
 
-  constructor(private router:Router, private toastController: ToastController) { }
+  constructor(private router:Router, private toastController: ToastController, private formBuilder: FormBuilder) { 
+    this.miFormulario = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
 
-
+  ngOnInit() {
+   
+  }
 
   login() {
     const NavigationExtras: NavigationExtras = {
@@ -61,14 +70,18 @@ export class LoginPage implements OnInit {
     await toast.present();
   }
 
-  ngOnInit() {
+  onSubmit(){
+    if (this.miFormulario.valid){
+      console.log('Form data: ', this.miFormulario.value);
+    } else {
+      console.log('Form is invalid');
+    }
   }
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
   camcont(){
-    //crear logica de programación
     this.router.navigate(['/cambiarcontra']);
   }
   regses(){

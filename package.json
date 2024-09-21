@@ -28,8 +28,9 @@
     "@capacitor/status-bar": "6.0.1",
     "@ionic/angular": "^8.0.0",
     "ionicons": "^7.0.0",
+    "ng2-validation": "^4.2.0",
     "rxjs": "~7.8.0",
-    "swiper": "^11.1.11",
+    "swiper": "^11.1.12",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
   },

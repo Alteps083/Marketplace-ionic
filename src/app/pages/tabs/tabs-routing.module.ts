@@ -12,12 +12,12 @@ const routes: Routes = [
         loadChildren: () => import('../../home/home.module').then(m => m.HomePageModule) // Verifica que esta ruta sea correcta
       },
       {
-        path: 'perfil',
-        loadChildren: () => import('../perfil/perfil.module').then(m => m.PerfilPageModule)
+        path: 'notificaciones',
+        loadChildren: () => import('../notificaciones/notificaciones.module').then(m => m.NotificacionesPageModule) // Verifica que esta ruta sea correcta
       },
       {
-        path: 'carrito',
-        loadChildren: () => import('../carrito/carrito.module').then(m => m.CarritoPageModule)
+        path: 'perfil',
+        loadChildren: () => import('../perfil/perfil.module').then(m => m.PerfilPageModule)
       },
       {
         path: 'chat',

@@ -16,8 +16,16 @@ const routes: Routes = [
     loadChildren: () => import('./pages/registro/registro.module').then( m => m.RegistroPageModule)
   },
   {
+    path: 'modperfil',
+    loadChildren: () => import('./pages/modperfil/modperfil.module').then( m => m.ModperfilPageModule)
+  },
+  {
     path: 'modificar',
     loadChildren: () => import('./pages/modificar/modificar.module').then( m => m.ModificarPageModule)
+  },
+  {
+    path: 'mis-productos',
+    loadChildren: () => import('./pages/mis-productos/mis-productos.module').then( m => m.MisProductosPageModule)
   },
   {
     path: 'agregar',
@@ -47,6 +55,20 @@ const routes: Routes = [
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
+  {
+    path: 'buscar',
+    loadChildren: () => import('./pages/buscar/buscar.module').then( m => m.BuscarPageModule)
+  },
+  {
+    path: 'notificaciones',
+    loadChildren: () => import('./pages/notificaciones/notificaciones.module').then( m => m.NotificacionesPageModule)
+  },
+  {
+    path: 'mis-productos',
+    loadChildren: () => import('./pages/mis-productos/mis-productos.module').then( m => m.MisProductosPageModule)
+  },
+
+
 
 
 

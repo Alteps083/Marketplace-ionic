@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit  } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, OnDestroy  } from '@angular/core';
 import Swiper from 'swiper';
 import { Router, NavigationExtras } from '@angular/router';
 
@@ -7,17 +7,45 @@ import { Router, NavigationExtras } from '@angular/router';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
-
+export class HomePage implements OnInit{
+  currentIndex = 0;
   usuario: string = "";
+
+
+  ngOnInit() {
+    this.autoSlide();
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const user = navigation.extras.state['user'];
+      if (user) {
+        this.usuario = user.usuario;
+        console.log('Usuario recibido:', this.usuario);
+      }
+    }
+  }
+
+  nextSlide() {
+    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+  }
+
+  prevSlide() {
+    this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+  }
+
+  autoSlide() {
+    setInterval(() => {
+      this.nextSlide();
+    }, 6000); 
+  }
+
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
       if (refresher) {
-        refresher.complete(); // Completa el refresco
+        refresher.complete(); 
       }
-    }, 2000); // Simula una carga de 2 segundos
+    }, 2000); 
   }
 
   @ViewChild('swiper')
@@ -74,15 +102,4 @@ export class HomePage implements OnInit {
   detalle(){
     this.router.navigate(['/detalle']);
   }
-
-  ngOnInit() {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      const user = navigation.extras.state['user'];
-      if (user) {
-        this.usuario = user.usuario;
-        console.log('Usuario recibido:', this.usuario);
-    }
-  }
-}
 }

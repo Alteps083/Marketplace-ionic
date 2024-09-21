@@ -2,36 +2,57 @@
 ion-header {
     background-color: var(--ion-color-primary); /* Color del header */
   }
+
+  form{
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+ion-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh; 
+}
   
-  .home-page{
-    background-image: url('../../../assets/img/background-1.jpeg');
-    background-size: cover;
-    background-position: center;
-    filter: blur(1px);
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
+.home-page{
+  background-image: url('../../../assets/img/background-1.jpeg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(1px);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.titulo{
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
   
-  
-    .container {
-  
-      overflow: hidden; 
+  overflow: hidden; 
       white-space: nowrap;
      
-      .scroll {
-        overflow: auto;
-      }
-      ion-chip{
-        --background:0000ff;
-      }
-      &::-webkit-scrollbar {
-        display: none;
-      }
+  .scroll {
+     overflow: auto;
+  }
+  ion-chip{
+    --background:0000ff;
+  }
+  &::-webkit-scrollbar {
+      display: none;
     }
+  }
     
     
     ion-fab-button {
@@ -48,3 +69,17 @@ ion-header {
     .tab-button{
       --color:white;
     }
+
+.cambiar-password{
+  display: block;
+  justify-content: center;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.cambiar-password ion-item{ 
+  --background: var(--ion-color-tertiary);
+  border-radius: 10px;
+  margin-top: 24px;
+  margin: 12px;
+}

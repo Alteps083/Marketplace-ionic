@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar color="--ion-color-primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="titulo">
+      Mis Publicaciones
+    </ion-title>
+    <ion-buttons slot="end"> 
+      <ion-avatar>
+        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+      </ion-avatar>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="home-page"></div>
+  <div class="publicaciones">
+    <ion-button class="btn-crear">Crear publicacion</ion-button>
+    <h2>Todas tus publicaciones</h2>
+    <div class="publicacion">
+      <div class="publicacion-detalles">
+        <img src="https://via.placeholder.com/100" alt="Imagen de publicacion">
+        <div class="info">
+          <h3>Titulo publicacion</h3>
+          <div class="precio-estado">
+            <h4>Precio: $100</h4>
+            <h4>Estado: Nuevo</h4>
+          </div>
+        </div>
+      </div>
+      <div class="btns">
+        <ion-button>Marcar como vendido</ion-button>
+        <ion-button>Volver a publicar este articulo</ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

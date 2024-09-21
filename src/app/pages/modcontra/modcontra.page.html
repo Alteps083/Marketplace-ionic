@@ -29,33 +29,47 @@
   </ion-refresher-content>
 </ion-refresher>
 
+<h1 class="titulo">
+  Cambiar Contraseña
+</h1>
 
-<div>
-  <div>
-  <ion-item>
-    <p>Ingrese su contraseña</p>
-    <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" name="passwordchan" class="input"></ion-input>
-    <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-    <ion-icon name="lock-closed-outline"></ion-icon>
-  </ion-item>
+<div class="cambiar-password">
+  <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
+    <!-- Campo para la contraseña actual -->
+    <ion-item>
+      <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      <ion-input placeholder="Contraseña actual" formControlName="oldPassword" [type]="showPassword ? 'text' : 'password'"></ion-input>
+      <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="showPassword = !showPassword"></ion-icon>
+    </ion-item>
+    <div *ngIf="miFormulario.get('oldPassword')?.invalid && miFormulario.get('oldPassword')?.touched">
+      <ion-text color="danger">Debe ingresar la contraseña actual</ion-text>
+    </div>
 
-  </div>
-  <div></div>
-  <ion-item>
-    <p>Ingrese su nueva Contraseña</p>
-    <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" name="passwordInput" class="input"></ion-input>
-    <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-    <ion-icon name="lock-closed-outline"></ion-icon>
-  </ion-item>
+    <!-- Campo para la nueva contraseña -->
+    <ion-item>
+      <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      <ion-input placeholder="Nueva contraseña" formControlName="newPassword" [type]="showPassword ? 'text' : 'password'"></ion-input>
+      <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="showPassword = !showPassword"></ion-icon>
+    </ion-item>
+    <div *ngIf="miFormulario.get('newPassword')?.invalid && miFormulario.get('newPassword')?.touched">
+      <ion-text color="danger" *ngIf="miFormulario.get('newPassword')?.errors?.['required']">Debe ingresar una nueva contraseña</ion-text>
+      <ion-text color="danger" *ngIf="miFormulario.get('newPassword')?.errors?.['minlength']">La nueva contraseña debe tener al menos 6 caracteres</ion-text>
+    </div>
 
-  <ion-item>
-    <p>Ingrese nuevamente contraseña</p>
-    <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="password" [(ngModel)]="password" name="passwordInput" class="input" required #passwordInput="ngModel"></ion-input>
-    <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-    <ion-icon name="lock-closed-outline"></ion-icon>
-  </ion-item>
-  <div class="alert alert-danger mt-2" [hidden]="passwordInput.valid ||passwordInput.pristine">Por favor la nueva contraseña</div>
-  <ion-button  (click)="home()" (click)="presentToast('bottom')">Guardar</ion-button> <!-- debe lanzar una alerta de contraseña actualizada -->
+    <!-- Campo para confirmar la nueva contraseña -->
+    <ion-item>
+      <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      <ion-input placeholder="Confirmar nueva contraseña" formControlName="confirmPassword" [type]="showPassword ? 'text' : 'password'"></ion-input>
+      <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="showPassword = !showPassword"></ion-icon>
+    </ion-item>
+    <div *ngIf="miFormulario.get('confirmPassword')?.invalid && miFormulario.get('confirmPassword')?.touched">
+      <ion-text color="danger" *ngIf="miFormulario.get('confirmPassword')?.errors?.['required']">Debe confirmar la nueva contraseña</ion-text>
+      <ion-text color="danger" *ngIf="miFormulario.errors?.['notMatching']">Las contraseñas no coinciden</ion-text>
+    </div>
+
+    <!-- Botón para enviar el formulario -->
+    <ion-button expand="full" type="submit" [disabled]="miFormulario.invalid">Cambiar Contraseña</ion-button>
+  </form>
 </div>
 
 </ion-content>

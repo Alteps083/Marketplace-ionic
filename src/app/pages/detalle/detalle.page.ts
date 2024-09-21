@@ -16,4 +16,8 @@ export class DetallePage implements OnInit {
   perfil() {
     this.router.navigate(['/tabs/perfil']);
   }
+
+  vendedor(){
+    this.router.navigate(['/tabs/chat'])
+  }
 }

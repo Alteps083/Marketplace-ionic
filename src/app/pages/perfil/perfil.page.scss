@@ -3,6 +3,13 @@ ion-header {
   background-color: var(--ion-color-primary); /* Color del header */
 }
 
+.titulo{
+  display: flex;
+  text-align: center;
+  align-items: center;
+  font-size: x-large;
+}
+
 .home-page{
   background-image: url('../../../assets/img/background-1.jpeg');
   background-size: cover;
@@ -54,4 +61,20 @@ ion-header {
     margin-right: auto;
     height: 15%;
     width: 25%;
+  }
+
+  .perfil ion-item{ 
+    --background: var(--ion-color-tertiary);
+    border-radius: 10px;
+    margin-top: 12px;
+  }
+
+  .perfil{
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+
+  .perfil h3{
+    text-align: center;
+    justify-content: center;
   }

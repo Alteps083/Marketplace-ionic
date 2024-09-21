@@ -1,0 +1,52 @@
+.titulo{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    font-size: x-large;
+  }
+
+  ion-header{
+    background-color: var(--ion-color-primary);
+  }
+
+  .home-page{
+    background-image: url('/../../assets/img/background-1.jpeg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(1px);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  .publicaciones{
+    display: flex;
+    margin: 16px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .publicaciones .btn-crear{
+    width: 100%;
+  }
+
+  .publicacion{
+    padding: 16px;
+    border: 1px solid var(--ion-color-primary);
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+
+  .publicacion-detalles{
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .info{
+    margin-left: 16px;
+  }

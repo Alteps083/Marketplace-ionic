@@ -1,47 +1,53 @@
 <ion-content [fullscreen]="true">
   <div class="home-page"></div>
   <div class="header">
-    <ion-title class="title">Bienvenido a MarketHub</ion-title>
+    <h1 style="font-size: xxx-large;">MarketHub</h1>
     <p class="subTitle">Crea tu cuenta!!</p>
   </div>
-  
-  <form (ngSubmit)="procesar()" #formContact="ngForm">
-    <div class="ion-padding">
-      <ion-item class="input">
-        <ion-input placeholder="Nombre" class="input form-control" pro [(ngModel)]="reg.name" name="name" required #name="ngModel"></ion-input>
-        <ion-icon name="person-outline"></ion-icon>
-      </ion-item>
-      <div class="alert alert-danger mt-2" transparent [hidden]="name.valid || name.pristine">Por favor ingrese un Nombre</div>
-      <hr>
+  <div class="registrarse">
+    <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
       <ion-item>
-        <ion-input placeholder="Email" class="input form-control" pro [(ngModel)]="reg.email" name="email" #register="ngModel"></ion-input>
-        <ion-icon name="person-outline"></ion-icon>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-input placeholder="Nombre de Usuario" formControlName="name" type="text" required></ion-input>
       </ion-item>
-      <ion-item>
-        <ion-input placeholder="Número" class="input form-control" pro [(ngModel)]="reg.num" name="numero" #register="ngModel"></ion-input>
-        <ion-icon name="person-outline"></ion-icon>
-      </ion-item>
-      <ion-item>
-        <ion-input placeholder="Dirección" class="input form-control" pro [(ngModel)]="reg.dir" name="direccion" #register="ngModel"></ion-input>
-        <ion-icon name="person-outline"></ion-icon>
-      </ion-item>
-      <ion-item>
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" class="input"></ion-input>
-        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-        <ion-icon name="lock-closed-outline"></ion-icon>
-      </ion-item>
-      <ion-item>
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Confirme su contraseña" [(ngModel)]="password" name="passwordInput" class="input" #repasswordInput="ngModel"></ion-input>
-        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-        <ion-icon name="lock-closed-outline"></ion-icon>
-      </ion-item>
-      <div class="alert alert-danger mt-2" transparent [hidden]="repasswordInput.valid || repasswordInput.pristine">Por favor re-ingrese la contraseña</div>
-      <hr>
-      <ion-button class="button-iniciar" color="tertiary" (click)="accountcreate()" [disabled]="formContact.invalid" (click)="presentToast('top')">Registrarse</ion-button>
-      <div class="iniciarsesion">
-        <p><a [routerLink]="['/login']">Ya estas registrado!!?</a></p>
+      <div *ngIf="miFormulario.get('name')?.invalid && miFormulario.get('name')?.touched">
+        <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['required']">Debe ingresar usuario</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['minlength']">El Usuario debe tener 3 caracteres o más</ion-text>
       </div>
-    </div>
-  </form>
+      <ion-item>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-input placeholder="Email" formControlName="email" type="email" required></ion-input>
+      </ion-item>
+      <div *ngIf="miFormulario.get('email')?.invalid && miFormulario.get('email')?.touched">
+        <ion-text color="danger" *ngIf="miFormulario.get('email')?.errors?.['required']">Debe Ingresar el Correo</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('email')?.errors?.['email']">Correo inválido</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('email')?.errors?.['invalidEmail']">El correo debe contener un formato válido </ion-text>
+      </div>
+      <ion-item>
+        <ion-icon name="call-outline" slot="start"></ion-icon>
+        <ion-input placeholder="Numero" formControlName="phone" type="tel" required></ion-input>
+      </ion-item>
+      <div *ngIf="miFormulario.get('phone')?.invalid && miFormulario.get('phone')?.touched">
+        <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['required']">Debe Ingresar el Número</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['invalidPhone']">El número debe contener solo dígitos</ion-text>
+      </div>
+      <ion-item>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-input placeholder="Contraseña" [type]= "showPassword ? 'text' : 'password'" formControlName="password" required></ion-input>
+        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
+      </ion-item>
+      <div *ngIf="miFormulario.get('password')?.invalid && miFormulario.get('password')?.touched">
+        <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['required']">Debe Ingresar la Contraseña</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['minlength']">La contraseña debe contener 6 caracteres o más</ion-text>
+      </div>
+      <ion-button class="button-registrar" expand="full" type="submit" [disabled]="miFormulario.invalid" (click)="accountcreate()">Registrarse</ion-button>
+    </form>
+  </div>
+  <div class="youhave-account">
+    <p><a (click)="accountcreate()">Ya tienes Cuenta!?</a></p>
+  </div>
+  <footer class="terms">
+    <h3>Al continuar, aceptas nuestros <a href="">Terminos de uso y Politica de privacidad</a></h3>
+  </footer>
   </ion-content>
   

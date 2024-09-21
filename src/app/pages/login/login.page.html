@@ -7,34 +7,37 @@
     <div class="logo-container">
       <ion-img src="/../../assets/img/LogoMarketHub.png" class="logo"></ion-img>
     </div>
-    <ion-title class="title">Bienvenido a MarketHub</ion-title>
-    <p class="subTitle">Inicia sesion!!</p>
+    <h1 style="font-size: xxx-large;">MarketHub</h1>
+    <p class="subTitle">Iniciar sesion</p>
   </div>
-  <form (ngSubmit)="procesar()" #formContact="ngForm">
-    <div class="ion-padding">
-      <ion-item>
-        <ion-input placeholder="Usuario" class="input form-control" pro [(ngModel)]="user.usuario" name="username" required #username="ngModel" ></ion-input>
-        <ion-icon name="person-outline"></ion-icon>
-      </ion-item>
-      <div class="alert alert-danger mt-2" transparent [hidden]="username.valid || username.pristine">Por favor ingrese un usuario</div>
-      <hr>
-
-      <ion-item>
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="password" name="passwordInput" class="input form-control" required #passwordInput="ngModel"></ion-input>
-        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-        <ion-icon name="lock-closed-outline"></ion-icon>
-      </ion-item>
-      <div class="alert alert-danger mt-2" [hidden]="passwordInput.valid || passwordInput.pristine">Por favor ingrese su contraseña</div>
-      <div class="olvidocontra">
-        <a (click)="camcont()">Olvido la contraseña?</a>
-      </div>
-      <ion-button class="button-iniciar" color="tertiary" (click)="login()" [disabled]="formContact.invalid" expand="block" (click)="presentToast('top')">Iniciar Sesion</ion-button>
-      <ion-button class="button-iniciar" color="tertiary" (click)="loginad()" [disabled]="formContact.invalid" expand="block" (click)="presentToastad('top')">Iniciar Sesion como administrador</ion-button>
-      <div class="iniciarsesion">
-        <p><a (click)="regses()">No tienes Cuenta!?</a></p>
-      </div>
+<div class="iniciarsesion">  
+  <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-icon name="person-outline" slot="start"></ion-icon>
+      <ion-input placeholder="Usuario" formControlName="name" type="text"></ion-input>
+    </ion-item>
+    <div *ngIf="miFormulario.get('name')?.invalid && miFormulario.get('name')?.touched">
+      <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['required']">Debe Ingresar el Nombre</ion-text>
+      <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['minlength']">El Nombre debe tener 3 caracteres o más</ion-text>
     </div>
+    <ion-item>
+      <ion-input placeholder="Contraseña" [type]="showPassword  ? 'text' : 'password'" formControlName="password" required></ion-input>
+      <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
+    </ion-item>
+    <div *ngIf="miFormulario.get('password')?.invalid && miFormulario.get('password')?.touched">
+      <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['required']">Debe Ingresar la contrasenia</ion-text>
+      <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['minlength']">La contraseña debe contener 8 caracteres o más</ion-text>
+    </div>
+    <ion-button class="button-iniciar" expand="full" type="submit" [disabled]="miFormulario.invalid" (click)="login()">Iniciar sesión</ion-button>
   </form>
+  <div class="donothave-account">
+    <p><a (click)="regses()">No tienes Cuenta!?</a></p>
   </div>
+</div>
+<footer class="terms">
+  <h3>Al continuar, aceptas nuestros <a href="">Terminos de uso y Politica de privacidad</a></h3>
+</footer>
+</div>
 </ion-content>
 

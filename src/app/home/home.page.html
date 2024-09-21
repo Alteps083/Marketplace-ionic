@@ -7,13 +7,13 @@
     <ion-title class="titulo">
       MarketHub
     </ion-title>
+    <ion-button class="btn-search" slot="end">
+      <ion-icon name="search-outline"></ion-icon>
+    </ion-button>
     <ion-buttons slot="end"> 
       <ion-avatar>
         <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
       </ion-avatar>
-      <ion-button fill="clear" (click)="perfil()">
-        Ir a perfil
-      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -38,56 +38,45 @@
     
     </ion-refresher-content>
   </ion-refresher>
-  <h1>Bienvenido, {{ usuario }}</h1>
 
 <!-- Parte del carrusel -->
-<swiper-container
-#swiper
-(swiper)="swiperReady()"
-[pagination]="{ clickable: true }"
-[navigation]="true"
-[loop]="true"
-[autoplay]="{ delay: 3000, disableOnInteraction: false }">
-
-<swiper-slide *ngFor="let image of images">
-  <div class="swiper-zoom-container">
-    <img [src]="image" />
+<div class="carousel-container">
+  <div class="carousel-slide" *ngFor="let image of images; let i = index" [class.active]="i === currentIndex">
+    <img [src]="image" class="slide-image" />
   </div>
-</swiper-slide>
-</swiper-container>
+
+  <!-- Botones para la transición manual -->
+  <ion-button class="carousel-control prev" (click)="prevSlide()">&#10094;</ion-button>
+  <ion-button class="carousel-control next" (click)="nextSlide()">&#10095;</ion-button>
+</div>
+
   <div class="principal-productos">
     <h3>Productos recientes</h3>
   </div>
   
   <div class="card-container">
-    <ion-card>
+    <ion-card (click)="detalle()" class="card">
       <img alt="Silhouette of mountains" src="/../../assets/img/imagen-1.jpg">
       <ion-card-header>
         <ion-card-title>Nvidia RTX 3060</ion-card-title>
         <ion-card-subtitle>Tarjeta Grafica</ion-card-subtitle>
-        <ion-button (click)="detalle()">Más Detalles</ion-button>
+      </ion-card-header>
+    </ion-card>
+    <ion-card>
+      <img (click)="detalle()" alt="Silhouette of mountains" src="/../../assets/img/imagen-1.jpg">
+      <ion-card-header>
+        <ion-card-title>Nvidia RTX 3060</ion-card-title>
+        <ion-card-subtitle>Tarjeta Grafica</ion-card-subtitle>
       </ion-card-header>
     </ion-card>  
-  
     <ion-card>
-      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-2.webp">
+      <img (click)="detalle()" alt="Silhouette of mountains" src="/../../assets/img/imagen-1.jpg">
       <ion-card-header>
-        <ion-card-title>Intel Core i9</ion-card-title>
-        <ion-card-subtitle>Procesador</ion-card-subtitle>
-        <ion-button (click)="detalle()">Más Detalles</ion-button>
+        <ion-card-title>Nvidia RTX 3060</ion-card-title>
+        <ion-card-subtitle>Tarjeta Grafica</ion-card-subtitle>
       </ion-card-header>
-    </ion-card>
-    <ion-card>
-      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-3.jpg">
-      <ion-card-header>
-        <ion-card-title>SSD M.2 Interno Crucial PCIe NVMe 1TB P2</ion-card-title>
-        <ion-card-subtitle>SSD</ion-card-subtitle>
-        <ion-button (click)="detalle()">Más Detalles</ion-button>
-      </ion-card-header>
-    </ion-card>
+    </ion-card>  
   </div>
-
-
-
+  
 </ion-content>
 

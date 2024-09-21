@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-modcontra',
@@ -21,7 +22,28 @@ export class ModcontraPage implements OnInit {
     }, 2000); // Simula una carga de 2 segundos
   }
 
-  constructor(private router:Router, private toastController: ToastController) { }
+  miFormulario: FormGroup
+
+  constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder) { 
+    this.miFormulario = this.fb.group({
+      oldPassword: ['', Validators.required],
+      newPassword:['',[Validators.required], Validators.minLength(8)],
+      confirmPassword: ['', Validators.required]
+    }, {validator: this.passwordsMatch})
+   }
+
+   passwordsMatch(group: FormGroup){
+    const newPassword = group.get('newPassword')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+
+    return newPassword === confirmPassword ? null: { notMatching: true}
+   }
+
+   onSubmit(){
+    if(this.miFormulario.valid){
+      console.log('Contraseña actualizada', this.miFormulario.value);
+    }
+   }
 
   ngOnInit() {
   }

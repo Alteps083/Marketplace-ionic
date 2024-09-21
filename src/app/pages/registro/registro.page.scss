@@ -1,5 +1,26 @@
-.input{
-    font-size: 300;
+form{
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+ion-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh; 
+}
+
+ion-input {
+    align-items: center;
+    padding-bottom: 100px;
+}
+
+ion-item{
+    display: flex;
+    align-items: center;
 }
 
 .home-page{
@@ -12,13 +33,17 @@
     top: 0;
     left: 0;
     z-index: -1;
-  }
-  
+}
+
+
+ion-text{
+    flex-direction: column;
+    display: flex;
+}
 
 ion-item{
     --background: #192233;
     border-radius: 10px;
-    margin-bottom: 16px;
 }
 
 .header{
@@ -34,41 +59,40 @@ ion-item{
     }
 }
 
-.iniciarsesion{
-    display: flex;
-    margin: auto;
-    flex-direction: row;
-    align-content: center;
-    position: absolute;
-    justify-content: center;
-    left: 0;
-    bottom: 0;
-    width: 90%;
-    right: 0;
-    p{
-        font-size: 1.2rem;
-    }
-    a{
-        color: white;
-        text-decoration: none;
-        transition: color 0.3s ease; 
-    }
-    
-    a:hover {
-        color: #00224D; 
-    }
-    
-    a:active {
-        color: #A0153E; 
-    }
 
-}
-
-.button-iniciar{
+.button-registrar{
     display: flex;
     margin-top: 32px;
-    margin-left: 84px;
-    margin-right: 84px;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: 1.0rem;
+}
+
+.registrarse{
+    display: flex;
+    justify-content: center;
+}
+
+.registrarse ion-item{ 
+    --background: var(--ion-color-tertiary);
+    border-radius: 10px;
+    margin-top: 24px;
+}
+
+.youhave-account{
+    display: flex;
+    justify-content: center;
+}
+
+.terms h3{
+    font-size: medium;
+}
+
+.terms{
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 90%;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 50px;
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { EmailValidator, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 
 @Component({
@@ -8,6 +10,8 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./registro.page.scss'],
 })
 export class RegistroPage implements OnInit {
+
+  miFormulario: FormGroup;
 
   reg = {
     name: '',
@@ -20,13 +24,24 @@ export class RegistroPage implements OnInit {
     console.log(this.reg);
   }
 
-
   password: string = '';
   showPassword: boolean = false;
 
-  constructor(private router:Router, private toastController: ToastController) { }
+  constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder) { 
+    this.miFormulario = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email, this.CorreoReal]],
+      phone: ['',[Validators.required, this.NumeroReal]],
+      address: ['',[Validators.required]],
+      password: ['',[Validators.required], Validators.minLength(6)],
+    })
+   }
 
   ngOnInit() {
+  }
+
+  onSubmit(){
+    console.log('Formulario enviado', this.miFormulario.value);
   }
 
   async presentToast(position: 'top' | 'middle' | 'bottom') {
@@ -37,6 +52,22 @@ export class RegistroPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  CorreoReal(control: AbstractControl){
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (control.value && !emailPattern.test(control.value)){
+      return {invalidEmail: true};
+    }
+    return null;
+  }
+
+  NumeroReal(control: AbstractControl){
+    const phonePattern = /^[0-9]+$/;
+    if(control.value && !phonePattern.test(control.value)){
+      return {invalidPhone: true};
+    }
+    return null;
   }
 
   togglePasswordVisibility() {

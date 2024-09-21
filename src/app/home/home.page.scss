@@ -28,9 +28,7 @@
 #container p {
   font-size: 16px;
   line-height: 22px;
-
   color: #8c8c8c;
-
   margin: 0;
 }
 
@@ -38,58 +36,89 @@
   text-decoration: none;
 }
 
-swiper-container {
+.carousel-container {
   width: 100%;
-  height: 50%;
-  --swiper-pagination-bullet-inactive-color: var(--ion-color-step-200,)
-  --swiper-pagination-color: var(--ion-color-primary, #5D0E41);
+  height: 45%;
+  padding: 10px;
+  position: relative;
+  overflow: hidden; 
+  border-radius: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-swiper-container, swiper-slide {
-  height: 250px;
+.carousel-slide {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  position: absolute;
+  top: 0;
+  left: 100%; 
+  transition: all 0.5s ease-in-out; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-swiper-slide {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.carousel-slide.active {
+  left: 0; 
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.carousel-control {
+  box-shadow: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 18px;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.carousel-control.prev {
+  left: 10px;
+}
+
+.carousel-control.next {
+  right: 10px;
 }
 
 .card-container {
   display: flex;                
   flex-wrap: wrap;            
   justify-content: space-between; 
-  padding: 16px;              
+  padding: 2px;              
+}
+
+.card {
+  transition: transform 0.2s ease, opacity 0.2s ease; /* Asegúrate de que la transición esté definida correctamente */
+  cursor: pointer; /* Cambia el cursor a un puntero */
+}
+
+.card:active {
+  transform: scale(0.95); /* Reduce el tamaño al hacer clic */
+  opacity: 0.8; /* Cambia la opacidad al hacer clic */
 }
 
 ion-card {
   flex: 1 1 calc(45% - 16px); 
-  margin: 4px;                
+  margin-bottom: 32px;                
   height: auto;               
-  max-width: calc(45% - 16px); 
+  max-width: calc(45% - 16px);
 }
 
-.swiper-zoom-container img {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-.swiper-pagination {
-  position: absolute;
-  bottom: 10px; 
-  left: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 10; 
-}
-
-.swiper-pagination-bullet {
-  background-color: rgba(255, 255, 255, 0.7); 
+.card-container ion-title{
+  font-size: 16px;
 }
 
 ion-header{
@@ -100,7 +129,6 @@ ion-avatar{
   width: 40px;
   height: 40px;
 }
-
 
 .toolbar-content {
   display: flex;
@@ -121,12 +149,11 @@ ion-avatar{
   text-align: center;
 }
 
-
-.titulo {
-  font-size: 25px;
-  flex-grow: 1;
+.titulo{
+  display: flex;
   text-align: center;
-  margin-left: -50px; 
+  align-items: center;
+  font-size: x-large;
 }
 
 .busqueda{
@@ -167,4 +194,9 @@ ion-toolbar {
   text-shadow: 5px 5px 7px rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
+}
+
+.btn-search{
+  --box-shadow: none;
+  --opacity: 1;
 }
