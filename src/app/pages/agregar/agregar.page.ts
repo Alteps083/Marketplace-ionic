@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./agregar.page.scss'],
 })
 export class AgregarPage implements OnInit {
-  imageSrc: string | ArrayBuffer | null = null;
+  imagePreviews: string[] = [];
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -19,17 +19,21 @@ export class AgregarPage implements OnInit {
     }, 2000); 
   }
 
+  triggerFileInput() {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fileInput.click();
+  }
+
   constructor(private router: Router) { }
 
-  onFileSelected(event: any){
-    const file = event.target.files[0];
-
-    if (file) {
+  onImagesSelected(event: any){
+    const files = event.target.files;
+    for(let i = 0; i < files.length; i++){
       const reader = new FileReader();
-      reader.onload = () => {
-        this.imageSrc = reader.result;
+      reader.onload = (e: any) => {
+        this.imagePreviews.push(e.target.result);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(files[i]);
     }
   }
 

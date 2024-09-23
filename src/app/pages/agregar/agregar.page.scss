@@ -1,6 +1,6 @@
 
 ion-header {
-    background-color: var(--ion-color-primary); /* Color del header */
+    background-color: var(--ion-color-primary); 
   }
   
   .home-page{
@@ -14,6 +14,13 @@ ion-header {
     top: 0;
     left: 0;
     z-index: -1;
+  }
+
+  .titulo{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    font-size: x-large;
   }
   
   
@@ -47,6 +54,80 @@ ion-header {
     
     .tab-button{
       --color:white;
+    }
+  
+    .container-add{
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    form {
+      width: 100%;
+      background-color: #313131;
+      max-width: 500px; 
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; 
+      height: 100%; 
+    }
+    
+    ion-item {
+      --background: #313131;
+      margin-bottom: 16px; 
+    }
+
+    .image-upload-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .image-upload-wrapper {
+      position: relative;
+    }
+    
+    .image-preview {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-upload-placeholder {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f1f1f1;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .image-upload-placeholder:hover {
+      background-color: #ddd;
+    }
+    
+    .image-upload-placeholder ion-icon {
+      font-size: 24px;
+      color: #555;
+    }
+    
+    .image-upload-placeholder span {
+      font-size: 12px;
+      margin-top: 5px;
+      color: #555;
+    }
+    
+    input[type="file"] {
+      display: none; 
     }
   
   

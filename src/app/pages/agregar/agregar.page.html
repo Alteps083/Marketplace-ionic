@@ -30,47 +30,52 @@
   </ion-refresher-content>
 </ion-refresher>
 
-<form (ngSubmit)="onSubmit(form)" #form="ngForm">
-  <ion-item>
-    <ion-label position="floating">Título del Producto</ion-label>
-    <ion-input type="text" name="titulo" ngModel required></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Precio</ion-label>
-    <ion-input type="number" name="precio" ngModel required></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Categoría</ion-label>
-    <ion-select name="categoria" ngModel required>
-      <ion-select-option value="Procesador">Procesador</ion-select-option>
-      <ion-select-option value="Tarjeta-Grafica">Tarjeta Grafica</ion-select-option>
-      <ion-select-option value="Placa-base">Placa base</ion-select-option>
-      <ion-select-option value="Memoria-Ram">Memoria Ram</ion-select-option>
-      <ion-select-option value="Almacenamiento">Almacenamiento</ion-select-option>
-      <ion-select-option value="Fuentes de poder">PSU</ion-select-option>
-      <ion-select-option value="Refrigeracion">Refrigeracion (Ventilador-Enfriamiento Liquido)</ion-select-option>
-    </ion-select>
-  </ion-item>
-  <ion-item>
-    <ion-label>Estado</ion-label>
-    <ion-select name="estado" ngModel required>
-      <ion-select-option value="nuevo">Nuevo</ion-select-option>
-      <ion-select-option value="usado">Usado</ion-select-option>
-      <ion-select-option value="Casi-nuevo">Casi-nuevo</ion-select-option>
-    </ion-select>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Descripción</ion-label>
-    <ion-textarea name="descripcion" ngModel required></ion-textarea>
-  </ion-item>
-  <ion-item>
-    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-  </ion-item>
-  <div *ngIf="imageSrc" style="text-align: center; margin-top: 16px;">
-    <img [src]="imageSrc" alt="Vista previa de la imagen" style="max-width: 100%; height: auto;" />
-  </div>
-  <ion-button expand="full" type="submit" [disabled]="form.invalid">Agregar Producto</ion-button>
-
-</form>
+<div class="container-add">
+  <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <ion-item>
+      <ion-label position="floating">Título del Producto</ion-label>
+      <ion-input type="text" name="titulo" ngModel required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Precio</ion-label>
+      <ion-input type="number" name="precio" ngModel required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Categoría</ion-label>
+      <ion-select name="categoria" ngModel required>
+        <ion-select-option value="Procesador">Procesador</ion-select-option>
+        <ion-select-option value="Tarjeta-Grafica">Tarjeta Grafica</ion-select-option>
+        <ion-select-option value="Placa-base">Placa base</ion-select-option>
+        <ion-select-option value="Memoria-Ram">Memoria Ram</ion-select-option>
+        <ion-select-option value="Almacenamiento">Almacenamiento</ion-select-option>
+        <ion-select-option value="Fuentes de poder">PSU</ion-select-option>
+        <ion-select-option value="Refrigeracion">Refrigeracion (Ventilador-Enfriamiento Liquido)</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Estado</ion-label>
+      <ion-select name="estado" ngModel required>
+        <ion-select-option value="nuevo">Nuevo</ion-select-option>
+        <ion-select-option value="usado">Usado</ion-select-option>
+        <ion-select-option value="Casi-nuevo">Casi-nuevo</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea name="descripcion" ngModel required></ion-textarea>
+    </ion-item>
+    <div class="image-upload-container">
+      <div class="image-upload-wrapper" *ngFor="let image of imagePreviews">
+        <img [src]="image" class="image-preview" />
+      </div>
+      <div class="image-upload-placeholder" (click)="triggerFileInput()">
+        <ion-icon name="camera"></ion-icon>
+        <span>Agregar fotos</span>
+      </div>
+      <input type="file" #fileInput multiple (change)="onImagesSelected($event)" accept="image/*" hidden />
+    </div>
+    <ion-button expand="full" type="submit" [disabled]="form.invalid">Agregar Producto</ion-button>
+  </form>
+</div>
 
 </ion-content>
