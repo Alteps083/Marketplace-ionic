@@ -56,17 +56,17 @@ const routes: Routes = [
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
   {
-    path: 'buscar',
-    loadChildren: () => import('./pages/buscar/buscar.module').then( m => m.BuscarPageModule)
-  },
-  {
     path: 'notificaciones',
     loadChildren: () => import('./pages/notificaciones/notificaciones.module').then( m => m.NotificacionesPageModule)
   },
   {
     path: 'mis-productos',
     loadChildren: () => import('./pages/mis-productos/mis-productos.module').then( m => m.MisProductosPageModule)
+  },  {
+    path: 'servicio-cliente',
+    loadChildren: () => import('./pages/servicio-cliente/servicio-cliente.module').then( m => m.ServicioClientePageModule)
   },
+
 
 
 

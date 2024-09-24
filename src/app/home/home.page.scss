@@ -101,13 +101,13 @@
 }
 
 .card {
-  transition: transform 0.2s ease, opacity 0.2s ease; /* Asegúrate de que la transición esté definida correctamente */
-  cursor: pointer; /* Cambia el cursor a un puntero */
+  transition: transform 0.2s ease, opacity 0.2s ease; 
+  cursor: pointer; 
 }
 
 .card:active {
-  transform: scale(0.95); /* Reduce el tamaño al hacer clic */
-  opacity: 0.8; /* Cambia la opacidad al hacer clic */
+  transform: scale(0.95); 
+  opacity: 0.8; 
 }
 
 ion-card {

@@ -17,6 +17,13 @@ ion-content {
   justify-content: space-between;
   height: 100vh; 
 }
+
+.title-page{
+  display: flex;
+  text-align: center;
+  align-items: center;
+  font-size: x-medium;
+}
   
 .home-page{
   background-image: url('../../../assets/img/background-1.jpeg');

@@ -24,68 +24,69 @@ ion-header {
   }
   
   
-    .container {
+  .container {
   
-      overflow: hidden; 
-      white-space: nowrap;
+    overflow: hidden; 
+    white-space: nowrap;
      
-      .scroll {
-        overflow: auto;
-      }
-      ion-chip{
-        --background:0000ff;
-      }
-      &::-webkit-scrollbar {
-        display: none;
-      }
+  .scroll {
+      overflow: auto;
     }
+    ion-chip{
+      --background:0000ff;
+    }
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
     
     
-    ion-fab-button {
-      .fab { display: inline-block !important}
-    }
-    ion-item {
-      --padding-start: 0;
-    }
-  
-    .custom-tab-bar {
-      --background: var(--ion-color-primary); 
-    }
-    
-    .tab-button{
-      --color:white;
-    }
-  
-    .container-add{
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  ion-fab-button {
+    .fab { display: inline-block !important}
+  }
 
-    form {
-      width: 100%;
-      background-color: #313131;
-      max-width: 500px; 
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
+  ion-item {
+    --padding-start: 0;
+  }
+  
+  .custom-tab-bar {
+    --background: var(--ion-color-primary); 
+  }
+    
+  .tab-button{
+    --color:white;
+  }
+  
+  .container-add{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  form {
+    width: 100%;
+    background-color: #313131;
+    max-width: 500px; 
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
       flex-direction: column;
-      justify-content: space-between; 
-      height: 100%; 
-    }
+    justify-content: space-between; 
+    height: 100%; 
+  }
     
-    ion-item {
-      --background: #313131;
-      margin-bottom: 16px; 
-    }
+  ion-item {
+    --background: #313131;
+    margin-bottom: 16px; 
+  }
 
-    .image-upload-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+  .image-upload-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
     
     .image-upload-wrapper {
       position: relative;

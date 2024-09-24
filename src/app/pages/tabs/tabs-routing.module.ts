@@ -25,11 +25,15 @@ const routes: Routes = [
       },
       {
         path: 'homeadmin',
-        loadChildren: () => import('../homeadmin/homeadmin.module').then(m => m.HomeadminPageModule) // Verifica que esta ruta sea correcta
+        loadChildren: () => import('../homeadmin/homeadmin.module').then(m => m.HomeadminPageModule) 
       },
       {
         path: 'agregar',
-        loadChildren: () => import('../agregar/agregar.module').then(m => m.AgregarPageModule) // Verifica que esta ruta sea correcta
+        loadChildren: () => import('../agregar/agregar.module').then(m => m.AgregarPageModule) 
+      },
+      {
+        path: 'servicio-cliente',
+        loadChildren: () => import('../servicio-cliente/servicio-cliente.module').then(m => m.ServicioClientePageModule) 
       },
       {
         path: '',
