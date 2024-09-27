@@ -38,6 +38,12 @@ export class HomePage implements OnInit{
     }, 6000); 
   }
 
+  slideOpts = {
+    initialSlide: 0,
+    slidesPerView: 2, // Cambia el número de slides visibles
+    spaceBetween: 10 // Espacio entre slides
+  };
+
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router} from '@angular/router';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
   selector: 'app-perfil',
@@ -19,7 +20,8 @@ export class PerfilPage implements OnInit {
     }, 2000); // Simula una carga de 2 segundos
   }
 
-  constructor(private router:Router) { }
+  idLog: string = 'ProfilePage'
+  constructor(private router:Router, private actionSheetControler: ActionSheetController) { }
 
   modperfil(){
     //crear logica de programación
@@ -39,6 +41,28 @@ export class PerfilPage implements OnInit {
     }
   }
 }
+async takePicture(){
+const actionSheet = await this.actionSheetControler.create({
+  buttons: [
+    {
+      text: 'Camara',
+      icon: 'camera',
+      handler: () => {
+
+      }
+    },
+    {
+      text: 'Album',
+      icon: 'images',
+      handler: () => {
+
+      }
+    }
+  ]
+})
+await actionSheet.present()
+}
+
 
 
 }

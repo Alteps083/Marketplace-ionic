@@ -78,3 +78,15 @@ ion-header {
     text-align: center;
     justify-content: center;
   }
+
+  .container-img {
+    margin-top:2 rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2 rem;
+    img {
+      width: 50%;
+      border-radius: 150px;
+    }
+  }
