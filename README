@@ -10,3 +10,6 @@ MarketHub v2.0.4
 - Se soluciono error en formulario de registro que dejaba entrar si no se cumplia los campos
 - Se agrego visualizacion de imagen al hacer click dentro de detalles!!
 - Se agrego signo peso al agregar y ver precio de productos
+
+MarketHub v2.0.5
+- Aun no se termino el Native Storage (al iniciar sesion requerida ocupar dispositivo y no navegador WEB) faltaria mantener los datos
