@@ -1,12 +1,36 @@
 ion-header {
     background-color: var(--ion-color-primary); /* Color del header */
   }
+
+  ion-avatar{
+    width: 40px;
+    height: 40px;
+  }
   
   .titulo{
     display: flex;
     text-align: center;
     align-items: center;
     font-size: x-large;
+  }
+
+  .toolbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .toolbar-buttons {
+    display: flex;
+  }
+  
+  .toolbar-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
   }
 
   .home-page{

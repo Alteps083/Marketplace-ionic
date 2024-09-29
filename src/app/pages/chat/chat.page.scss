@@ -29,8 +29,8 @@ ion-header {
 }
 
 .all-chats{
-  position: relative;
   display: flex;
+  border-radius: 10px;
   align-items: center;
   margin: auto;
   justify-content: center;
@@ -38,6 +38,7 @@ ion-header {
 
 .chats-recurrentes{
   display: flex;
+  margin: auto;
   align-items: center;
   text-align: center;
 }
@@ -79,7 +80,7 @@ ion-card{
 }
 
 .chat-recurrentes-container{
-  margin-top: auto;
+  margin: 16px 16px;
 }
 
 .chat-icon {
@@ -88,6 +89,7 @@ ion-card{
   position: relative;
   padding: 10px;
   display: flex;
+  border-radius: 10px;
   flex-direction: column;
   justify-content: center;
   align-items: center;

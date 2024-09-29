@@ -14,7 +14,7 @@
   <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
     <ion-item>
       <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-input placeholder="Usuario" formControlName="name" type="text"></ion-input>
+      <ion-input placeholder="Usuario" formControlName="name" type="text" [(ngModel)]="usuario"></ion-input>
     </ion-item>
     <div *ngIf="miFormulario.get('name')?.invalid && miFormulario.get('name')?.touched">
       <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['required']">Debe Ingresar el Nombre</ion-text>
