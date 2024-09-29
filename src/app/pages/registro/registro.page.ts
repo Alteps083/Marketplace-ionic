@@ -32,16 +32,22 @@ export class RegistroPage implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email, this.CorreoReal]],
       phone: ['',[Validators.required, this.NumeroReal]],
-      address: ['',[Validators.required]],
-      password: ['',[Validators.required], Validators.minLength(6)],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     })
    }
 
   ngOnInit() {
   }
 
-  onSubmit(){
-    console.log('Formulario enviado', this.miFormulario.value);
+  onSubmit() {
+    console.log('Estado del formulario:', this.miFormulario);
+    if (this.miFormulario.invalid) {
+      console.log('Formulario inválido:', this.miFormulario.errors);
+      return;
+    }
+  
+    console.log('Formulario válido y enviado:', this.miFormulario.value);
+    this.presentToast('bottom');
   }
 
   async presentToast(position: 'top' | 'middle' | 'bottom') {

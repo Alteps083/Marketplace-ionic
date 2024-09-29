@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Imagen del Producto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="imagen-modal">
+    <img [src]="imageSrc" alt="Imagen del producto" />
+  </div>
+</ion-content>
