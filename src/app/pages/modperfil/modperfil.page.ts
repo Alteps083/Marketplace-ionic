@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { EmailValidator, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
+import { ServicebdService } from 'src/app/services/servicebd.service';
+import { Usuario } from 'src/app/services/usuario';
 
 @Component({
   selector: 'app-modperfil',
@@ -13,9 +15,7 @@ export class ModperfilPage implements OnInit {
 
   miFormulario: FormGroup;
 
-  perf = {
-    nombre: ''
-  };
+  usuario: Usuario | null = null;
 
   password: string = '';
   showPassword: boolean = false;
@@ -29,7 +29,7 @@ export class ModperfilPage implements OnInit {
     }, 2000); // Simula una carga de 2 segundos
   }
 
-  constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder) {
+  constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder, private bd: ServicebdService) {
     this.miFormulario = this.fb.group({
       name: ['', [Validators.minLength(3)]],
       email: ['', [Validators.email, this.CorreoReal]],
@@ -38,9 +38,25 @@ export class ModperfilPage implements OnInit {
    }
 
   ngOnInit() {
+    this.usuario = this.bd.getUsuarioActual();
+    if (this.usuario){
+      this.miFormulario.patchValue({
+        name: this.usuario.nombre,
+        email: this.usuario.email,
+        phone: this.usuario.telefono
+      })
+    }
   }
 
-  onSubmit(){
+  async onSubmit(){
+    if(this.miFormulario.valid){
+      const actualizarUsuario: Usuario = {
+        ...this.usuario,
+        ...this.miFormulario.value,
+      }
+      await this.bd.actualizarUsuario(actualizarUsuario);
+      this.router.navigate(['/perfil'])
+    }
     console.log('Formulario enviado', this.miFormulario.value);
   }
 

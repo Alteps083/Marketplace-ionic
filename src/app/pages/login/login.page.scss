@@ -10,7 +10,8 @@ ion-content {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100vh; 
+    height: 100vh;
+    overflow-y: auto; 
 }
 
 ion-input {
@@ -73,20 +74,6 @@ ion-item{
     --background: var(--ion-color-tertiary);
     border-radius: 10px;
     margin-top: 32px;
-}
-
-.terms h3{
-    font-size: medium;
-}
-
-.terms{
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    width: 90%;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 50px;
 }
 
 .olvidocontra{

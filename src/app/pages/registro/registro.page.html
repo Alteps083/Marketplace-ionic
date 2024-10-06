@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" scroll-padding-bottom="200px">
   <div class="home-page"></div>
   <div class="header">
     <h1 style="font-size: xxx-large;">MarketHub</h1>
@@ -8,11 +8,11 @@
     <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
       <ion-item>
         <ion-icon name="person-outline" slot="start"></ion-icon>
-        <ion-input placeholder="Nombre de Usuario" formControlName="name" type="text" required></ion-input>
+        <ion-input placeholder="Nombre de Usuario" formControlName="nombre" type="text" required></ion-input>
       </ion-item>
-      <div *ngIf="miFormulario.get('name')?.invalid && miFormulario.get('name')?.touched">
-        <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['required']">Debe ingresar usuario</ion-text>
-        <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['minlength']">El Usuario debe tener 3 caracteres o más</ion-text>
+      <div *ngIf="miFormulario.get('nombre')?.invalid && miFormulario.get('nombre')?.touched">
+        <ion-text color="danger" *ngIf="miFormulario.get('nombre')?.errors?.['required']">Debe ingresar usuario</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('nombre')?.errors?.['minlength']">El Usuario debe tener 3 caracteres o más</ion-text>
       </div>
       <ion-item>
         <ion-icon name="mail-outline" slot="start"></ion-icon>
@@ -25,7 +25,7 @@
       </div>
       <ion-item>
         <ion-icon name="call-outline" slot="start"></ion-icon>
-        <ion-input placeholder="Numero" formControlName="phone" type="tel" required></ion-input>
+        <ion-input placeholder="Número" formControlName="phone" type="tel" required></ion-input>
       </ion-item>
       <div *ngIf="miFormulario.get('phone')?.invalid && miFormulario.get('phone')?.touched">
         <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['required']">Debe Ingresar el Número</ion-text>
@@ -33,21 +33,18 @@
       </div>
       <ion-item>
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-        <ion-input placeholder="Contraseña" [type]= "showPassword ? 'text' : 'password'" formControlName="password" required></ion-input>
+        <ion-input placeholder="Contraseña" [type]="showPassword ? 'text' : 'password'" formControlName="password" required></ion-input>
         <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
       </ion-item>
       <div *ngIf="miFormulario.get('password')?.invalid && miFormulario.get('password')?.touched">
         <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['required']">Debe Ingresar la Contraseña</ion-text>
         <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['minlength']">La contraseña debe contener 6 caracteres o más</ion-text>
       </div>
-      <ion-button class="button-registrar" expand="full" type="submit" [disabled]="miFormulario.invalid" (click)="accountcreate()">Registrarse</ion-button>
+      <ion-button class="button-registrar" expand="full" type="submit" [disabled]="miFormulario.invalid">Registrarse</ion-button>
     </form>
   </div>
   <div class="youhave-account">
     <p><a (click)="accountcreate()">Ya tienes Cuenta!?</a></p>
   </div>
-  <footer class="terms">
-    <h3>Al continuar, aceptas nuestros <a href="">Terminos de uso y Politica de privacidad</a></h3>
-  </footer>
-  </ion-content>
+</ion-content>
   

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router} from '@angular/router';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { ActionSheetController } from '@ionic/angular';
+import { ServicebdService } from 'src/app/services/servicebd.service';
+import { Usuario } from 'src/app/services/usuario';
 
 @Component({
   selector: 'app-perfil',
@@ -10,7 +12,9 @@ import { ActionSheetController } from '@ionic/angular';
 })
 export class PerfilPage implements OnInit {
 
-  usuario: string = "";
+  listarUsuarios: Usuario[] = [];
+
+  usuario: Usuario | null = null;
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -22,24 +26,12 @@ export class PerfilPage implements OnInit {
   }
 
   idLog: string = 'ProfilePage'
-  constructor(private router:Router, private actionSheetControler: ActionSheetController, private storage: NativeStorage) { }
+  constructor(private router:Router, private actionSheetControler: ActionSheetController, private storage: NativeStorage, private bd: ServicebdService) { }
 
   ngOnInit() {
-    this.cargarUsuario();
+    this.usuario = this.bd.getUsuarioActual();
   }
   
-  async cargarUsuario() {
-    try {
-      const data = await this.storage.getItem('user');
-      if (data) {
-        this.usuario = data.name; 
-      } else {
-        console.log('No se encontró un usuario guardado.');
-      }
-    } catch (error) {
-      console.error('Error al recuperar los datos del usuario', error);
-    }
-  }
 
   modperfil(){
     this.router.navigate(['/modperfil']);

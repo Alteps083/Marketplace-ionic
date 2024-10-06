@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" scroll-padding-bottom="200px">
   <div class="home-img">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
@@ -14,11 +14,11 @@
   <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
     <ion-item>
       <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-input placeholder="Usuario" formControlName="name" type="text" [(ngModel)]="usuario"></ion-input>
+      <ion-input placeholder="Usuario" formControlName="nombre" type="text" [(ngModel)]="usuario"></ion-input>
     </ion-item>
-    <div *ngIf="miFormulario.get('name')?.invalid && miFormulario.get('name')?.touched">
-      <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['required']">Debe Ingresar el Nombre</ion-text>
-      <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['minlength']">El Nombre debe tener 3 caracteres o más</ion-text>
+    <div *ngIf="miFormulario.get('nombre')?.invalid && miFormulario.get('nombre')?.touched">
+      <ion-text color="danger" *ngIf="miFormulario.get('nombre')?.errors?.['required']">Debe Ingresar el Nombre</ion-text>
+      <ion-text color="danger" *ngIf="miFormulario.get('nombre')?.errors?.['minlength']">El Nombre debe tener 3 caracteres o más</ion-text>
     </div>
     <ion-item>
       <ion-input placeholder="Contraseña" [type]="showPassword  ? 'text' : 'password'" formControlName="password" required></ion-input>
@@ -29,15 +29,12 @@
       <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['required']">Debe Ingresar la contrasenia</ion-text>
       <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['minlength']">La contraseña debe contener 8 caracteres o más</ion-text>
     </div>
-    <ion-button class="button-iniciar" expand="full" type="submit" [disabled]="miFormulario.invalid" (click)="login()">Iniciar sesión</ion-button>
+    <ion-button class="button-iniciar" expand="full" type="submit" [disabled]="miFormulario.invalid">Iniciar sesión</ion-button>
   </form>
   <div class="donothave-account">
     <p><a (click)="regses()">No tienes Cuenta!?</a></p>
   </div>
 </div>
-<footer class="terms">
-  <h3>Al continuar, aceptas nuestros <a href="">Terminos de uso y Politica de privacidad</a></h3>
-</footer>
 </div>
 </ion-content>
 

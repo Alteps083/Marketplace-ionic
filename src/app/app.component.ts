@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { every } from 'rxjs';
 import { register } from 'swiper/element/bundle';
+import { ServicebdService } from './services/servicebd.service';
 register();
 
 @Component({
@@ -12,12 +13,13 @@ register();
 export class AppComponent {
   VerMenu = true;
 
-  constructor(private router: Router) {
+  constructor(private router: Router , private bd: ServicebdService) {
     this.router.events.subscribe((event) =>{
       if(event instanceof NavigationEnd) {
         this.updateMenuVisibility(event.url)
       }
     });
+    this.bd.crearConexion();
   }
 
   updateMenuVisibility(url: string){

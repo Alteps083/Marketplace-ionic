@@ -35,18 +35,26 @@
   <img src="assets/img/user-1.PNG" alt="">
 </div>
 
-  <div class="perfil">
+  <div *ngIf="usuario" class="perfil">
     <ion-item class="input">
       <ion-icon name="person-outline"></ion-icon>
-      <h3>{{ usuario || 'Usuario' }}</h3>
+      <h3>{{usuario.nombre}}
+      </h3>
     </ion-item>
     <ion-item>
       <ion-icon name="mail-outline"></ion-icon>
-      <h3>Correo de ejemplo</h3>
+      <h3>{{usuario.email}}</h3>
+    </ion-item>
+    <ion-item>
+      <ion-icon name="call"></ion-icon>
+      <h3>{{usuario.telefono}}</h3>
     </ion-item>
     <ion-button  (click)="modperfil()" >Modificar Perfil</ion-button>
     <ion-button  (click)="modcontra()" >Cambiar Contraseña</ion-button>
     <div class="iniciarsesion">
     </div>
+  </div>
+  <div *ngIf="!usuario">
+    <h3>No hay informacion del usuario!</h3>
   </div>
 </ion-content>

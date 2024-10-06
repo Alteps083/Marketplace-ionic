@@ -9,3 +9,8 @@ MARKETHUB V2.0.3
 MarketHub v2.0.4
 - Se soluciono error en formulario de registro que dejaba entrar si no se cumplia los campos
 - Se agrego visualizacion de imagen al hacer click dentro de detalles!!
+
+MarketHub v2.1
+- Se agrego la bd
+  * Se guardara el perfil en la bd
+  * se podra modificar pero aun no se guarda 
