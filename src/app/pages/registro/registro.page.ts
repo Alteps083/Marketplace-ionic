@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { EmailValidator, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { EmailValidator, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
@@ -21,7 +21,7 @@ export class RegistroPage implements OnInit {
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email, this.CorreoReal]],
       phone: ['',[Validators.required, this.NumeroReal]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(6), this.ContraseñaRestrincciones]],
     })
    }
 
@@ -43,9 +43,12 @@ export class RegistroPage implements OnInit {
 
     this.serviceBd.dbReady().subscribe(isReady => {
       if(isReady){
-        this.serviceBd.registrarUsuario(nombre,email,contrasenia,telefono).then(() => {
-          this.presentToast('bottom', 'Usuario Registrado Correctamente!');
+        this.serviceBd.registrarUsuario(nombre,email,contrasenia,telefono).then((registroExistoso) => {
+        if(registroExistoso){
           this.router.navigate(['/login']);
+        }else{
+          console.log('El correo ya existe :v');
+        }
         }).catch(e => {
           console.log('Error al registrar usuario: ', JSON.stringify(e));
           this.presentToast('bottom', 'Error al registrar usuario.');
@@ -71,6 +74,22 @@ export class RegistroPage implements OnInit {
     if (control.value && !emailPattern.test(control.value)){
       return {invalidEmail: true};
     }
+    return null;
+  }
+
+  ContraseñaRestrincciones(control: AbstractControl){
+    const contra: string = control.value || '';
+
+    const hasUpperCase = /[A-Z]/.test(contra);
+    const hasLowerCase = /[a-z]/.test(contra);
+    const hasNumber = /\d/.test(contra);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(contra);
+
+    const valid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
+    if(!valid){
+      return { RangoContrasenia: true }
+    }
+
     return null;
   }
 

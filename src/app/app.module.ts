@@ -11,9 +11,10 @@ import { ImageModalComponent } from './components/image-modal/image-modal.compon
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { ServicebdService } from './services/servicebd.service';
+import { PantallaCargaComponent } from './components/pantalla-carga/pantalla-carga.component';
 
 @NgModule({
-  declarations: [AppComponent, ImageModalComponent],
+  declarations: [AppComponent, ImageModalComponent, PantallaCargaComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,ReactiveFormsModule,FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },AnimationController, NativeStorage, SQLite,ServicebdService],
   bootstrap: [AppComponent],

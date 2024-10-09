@@ -1,7 +1,11 @@
 import { Component, ElementRef, ViewChild, OnInit, OnDestroy  } from '@angular/core';
 import Swiper from 'swiper';
 import { Router, NavigationExtras } from '@angular/router';
-
+import { ServicebdService } from '../services/servicebd.service';
+import { Producto } from '../services/producto';
+import { AlertController, Platform } from '@ionic/angular';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { Usuario } from '../services/usuario';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -9,19 +13,27 @@ import { Router, NavigationExtras } from '@angular/router';
 })
 export class HomePage implements OnInit{
   currentIndex = 0;
-  usuario: string = "";
+  
+  usuario: Usuario | null = null;
 
+  productos: Producto[] = [];
 
   ngOnInit() {
+    this.cargarUsuario(); 
+    this.BotonCerrarSesion();
     this.autoSlide();
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      const user = navigation.extras.state['user'];
-      if (user) {
-        this.usuario = user.usuario;
-        console.log('Usuario recibido:', this.usuario);
+    this.bd.dbReady().subscribe(ready => {
+      if (ready){
+        this.cargarProductos();
       }
-    }
+    })
+  }
+
+
+
+  detalleProducto(productoId: Producto){
+    console.log('Detalle del producto', productoId);
+    this.router.navigate(['/detalle', { id: productoId.id }]);
   }
 
   nextSlide() {
@@ -40,8 +52,8 @@ export class HomePage implements OnInit{
 
   slideOpts = {
     initialSlide: 0,
-    slidesPerView: 2, // Cambia el número de slides visibles
-    spaceBetween: 10 // Espacio entre slides
+    slidesPerView: 2, 
+    spaceBetween: 10 
   };
 
 
@@ -67,10 +79,66 @@ export class HomePage implements OnInit{
   ];
 
 
-  constructor(private router:Router) {}
+  constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {}
+
+  cargarUsuario(){
+    this.storage.getItem('usuario').then((data: Usuario) => {
+      if(data) {
+        this.usuario = data;
+      }
+    }).catch(error => {
+      console.log('Error al recuperar usuario: ', JSON.stringify(error));
+    });
+  }
+
+  cargarProductos() {
+    this.bd.fetchProductos().subscribe(productos => {
+      this.productos = productos; 
+      console.log('Productos cargados: ', this.productos); 
+    }, error => {
+      console.error('Error al cargar productos', error);
+    });
+  }
+  
 
   swiperReady() {
     this.swiper = this.swiperRef?.nativeElement.swiper;
+  }
+
+  BotonCerrarSesion(){
+    this.platform.backButton.subscribeWithPriority(10, async () => {
+      const alert = await this.alertController.create({
+        header: 'Cerrar Sesión',
+        message: '¿Estás seguro de que deseas cerrar la sesión?',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('La sesión no se cerró');
+            }
+          },
+          {
+            text: 'Cerrar Sesión',
+            handler: () => {
+              this.cerrarSesion();
+            }
+          }
+        ]
+      })
+      await alert.present(); 
+    })
+  }
+
+  async cerrarSesion(){
+    try{
+      await this.storage.remove('usuario');
+      console.log('Datos de usuario eliminados correctamente');
+      this.router.navigate(['/login']);
+    }catch (e){
+      console.log('Error al cerrar sesion', JSON.stringify(e));
+    }
   }
 
   goNext() {
@@ -82,12 +150,6 @@ export class HomePage implements OnInit{
   }
 
   perfil() {
-    const NavigationExtras: NavigationExtras = {
-      state: {
-        user: this.usuario
-      }
-    };
-    this.router.navigate(['/tabs/perfil'], NavigationExtras);
   }
 
   swiperSlideChanged(e: any) {

@@ -29,7 +29,23 @@ export class PerfilPage implements OnInit {
   constructor(private router:Router, private actionSheetControler: ActionSheetController, private storage: NativeStorage, private bd: ServicebdService) { }
 
   ngOnInit() {
-    this.usuario = this.bd.getUsuarioActual();
+    this.cargarUsuario();
+  }
+
+  cargarUsuario(){
+    this.storage.getItem('usuario').then((data: Usuario) => {
+      if(data) {
+        this.usuario = data;
+      }
+    }).catch(error => {
+      console.log('Error al recuperar usuario: ', JSON.stringify(error));
+    });
+  }
+
+  cerrarSesion(){
+    this.storage.remove('usuario').then(() => {
+      this.router.navigate(['/login']);
+    })
   }
   
 

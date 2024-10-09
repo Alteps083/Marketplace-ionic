@@ -34,6 +34,18 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+   this.storage.getItem('usuario').then((usuario) => {
+    if (usuario) {
+      if(usuario.es_admin){
+        this.router.navigate(['/homeadmin']);
+      } else {
+        this.router.navigate(['tabs/home']);
+      }
+    }
+   }).catch(() => {
+    console.log('No hay sesion activa');
+   });
+
    this.servicebd.fetchUsuarios().subscribe(usuarios => {
     this.listaUsuarios = usuarios;
    }
@@ -53,7 +65,10 @@ export class LoginPage implements OnInit {
     
     if (loginExitoso) {
       const usuarioActual = this.servicebd.getUsuarioActual();
-      
+      console.log('Usuario después del login:', usuarioActual);
+      if(usuarioActual){
+        await this.storage.setItem('usuario', usuarioActual);
+      }
       if (usuarioActual && usuarioActual.es_admin) {
         this.presentAlert('Éxito', 'Bienvenido Administrador');
         this.router.navigate(['/homeadmin']); 
@@ -64,6 +79,11 @@ export class LoginPage implements OnInit {
     } else {
       this.presentAlert('Error', 'Credenciales incorrectas');
     }
+  }
+
+  async cerrarSesion(){
+    await this.storage.remove('usuario');
+    this.router.navigate(['/login']);
   }
   
   async presentAlert(titulo: string, mensaje: string) {

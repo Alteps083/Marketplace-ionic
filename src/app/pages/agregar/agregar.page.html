@@ -72,11 +72,14 @@
       <div class="image-upload-wrapper" *ngFor="let image of imagePreviews">
         <img [src]="image" class="image-preview" />
       </div>
-      <div class="image-upload-placeholder" (click)="triggerFileInput()">
+      <div class="image-upload-placeholder" (click)="takePicture()">
         <ion-icon name="camera"></ion-icon>
-        <span>Agregar fotos</span>
+        <span>Tomar foto</span>
       </div>
-      <input type="file" #fileInput multiple (change)="onImagesSelected($event)" accept="image/*" hidden />
+      <div class="image-upload-placeholder" (click)="selectFromGallery()">
+        <ion-icon name="image"></ion-icon>
+        <span>Seleccionar de la galería</span>
+      </div>
     </div>
     <ion-button expand="full" type="submit" [disabled]="form.invalid">Agregar Producto</ion-button>
   </form>

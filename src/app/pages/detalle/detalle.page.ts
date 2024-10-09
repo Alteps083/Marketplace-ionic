@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { ImageModalComponent } from '../../components/image-modal/image-modal.component'; // Ajusta la ruta según tu estructura de carpetas
+import { Producto } from 'src/app/services/producto';
+import { ActivatedRoute } from '@angular/router';
+import { ServicebdService } from 'src/app/services/servicebd.service';
 
 @Component({
   selector: 'app-detalle',
@@ -10,7 +13,9 @@ import { ImageModalComponent } from '../../components/image-modal/image-modal.co
 })
 export class DetallePage implements OnInit {
 
-  constructor(private router:Router, private modelController: ModalController) { }
+  producto : Producto | null = null;
+
+  constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService) { }
 
   async presentImageModal(imageSrc: string) {
     const modal = await this.modelController.create({
@@ -23,6 +28,26 @@ export class DetallePage implements OnInit {
   }
 
   ngOnInit() {
+    const id = parseInt(this.activeRouter.snapshot.paramMap.get('id') || '0', 10); 
+    this.cargarProducto(id);
+  }
+
+  async cargarProducto(id: number) {
+    const productoCargado = await this.bd.fetchProductoPorId(id);
+    if (productoCargado) {
+      this.producto = productoCargado;
+    } else {
+      this.producto = {
+        id: 0,
+        id_vendedor: 1,
+        nombre_producto: 'Producto no encontrado',
+        descripcion: 'No se encontró ningún detalle para este producto.',
+        categoria: 'Sin categoría',
+        estado: 'Sin estado',
+        precio: 0,
+        imagenes: []
+      }; 
+    }
   }
   
   perfil() {

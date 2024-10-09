@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -10,13 +9,12 @@ import { ModalController } from '@ionic/angular';
 export class ImageModalComponent  implements OnInit {
   @Input() imageSrc: string = "";
 
-  constructor(private modalController: ModalController,private router: Router) { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {}
 
   dismiss() {
     this.modalController.dismiss(); 
-    this.router.navigate(['detalle']); 
   }
 
 }

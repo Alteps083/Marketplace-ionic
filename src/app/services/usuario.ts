@@ -5,5 +5,5 @@ export class Usuario {
     contrasenia! : string;
     telefono! : number;
     fecha_registro! : string;
-    es_admin! : string;
+    es_admin! : boolean;
 }

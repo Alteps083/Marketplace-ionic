@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Component({
   selector: 'app-modperfil',
@@ -14,9 +15,7 @@ import { Usuario } from 'src/app/services/usuario';
 export class ModperfilPage implements OnInit {
 
   miFormulario: FormGroup;
-
   usuario: Usuario | null = null;
-
   password: string = '';
   showPassword: boolean = false;
 
@@ -24,12 +23,12 @@ export class ModperfilPage implements OnInit {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
       if (refresher) {
-        refresher.complete(); // Completa el refresco
+        refresher.complete(); 
       }
-    }, 2000); // Simula una carga de 2 segundos
+    }, 2000); 
   }
 
-  constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder, private bd: ServicebdService) {
+  constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder, private bd: ServicebdService, private storage: NativeStorage) {
     this.miFormulario = this.fb.group({
       name: ['', [Validators.minLength(3)]],
       email: ['', [Validators.email, this.CorreoReal]],
@@ -38,14 +37,22 @@ export class ModperfilPage implements OnInit {
    }
 
   ngOnInit() {
-    this.usuario = this.bd.getUsuarioActual();
-    if (this.usuario){
-      this.miFormulario.patchValue({
-        name: this.usuario.nombre,
-        email: this.usuario.email,
-        phone: this.usuario.telefono
-      })
-    }
+    this.cargarUsuario();
+  }
+
+  cargarUsuario(){
+    this.storage.getItem('usuario').then((data: Usuario) => {
+      if(data) {
+        this.usuario = data;
+        this.miFormulario.patchValue({
+          name: this.usuario.nombre,
+          email: this.usuario.email,
+          phone: this.usuario.telefono
+        })
+      }
+    }).catch(error => {
+      console.log('Error al recuperar usuario: ', JSON.stringify(error));
+    });
   }
 
   async onSubmit(){
@@ -55,7 +62,9 @@ export class ModperfilPage implements OnInit {
         ...this.miFormulario.value,
       }
       await this.bd.actualizarUsuario(actualizarUsuario);
-      this.router.navigate(['/perfil'])
+      await this.storage.setItem('usuario', actualizarUsuario);
+      await this.presentToast('bottom');
+      this.router.navigate(['tabs/perfil'])
     }
     console.log('Formulario enviado', this.miFormulario.value);
   }

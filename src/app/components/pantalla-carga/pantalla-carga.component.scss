@@ -1,0 +1,45 @@
+.home-page{
+    background-image: url('../../../assets/img/background-1.jpeg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(1px);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  ion-content {
+    --background: transparent;
+  }
+  
+  .loading-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+  }
+  
+  .logo-container {
+    margin-bottom: 20px; 
+  }
+  
+  .logo {
+    width: 150px; 
+  }
+  
+  .progress-container {
+    width: 80%; 
+  }
+  
+  
+    .progress-bar {
+      --background: #f0f0f0; 
+      --buffer-background: #4caf50; 
+      height: 20px; 
+    }
+  
+  

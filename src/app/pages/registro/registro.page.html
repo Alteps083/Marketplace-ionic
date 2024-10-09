@@ -39,6 +39,9 @@
       <div *ngIf="miFormulario.get('password')?.invalid && miFormulario.get('password')?.touched">
         <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['required']">Debe Ingresar la Contraseña</ion-text>
         <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['minlength']">La contraseña debe contener 6 caracteres o más</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('password')?.errors?.['RangoContrasenia']">
+          La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.
+        </ion-text>
       </div>
       <ion-button class="button-registrar" expand="full" type="submit" [disabled]="miFormulario.invalid">Registrarse</ion-button>
     </form>
