@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ServicebdService } from 'src/app/services/servicebd.service';
 
 @Component({
   selector: 'app-notificaciones',
@@ -6,10 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./notificaciones.page.scss'],
 })
 export class NotificacionesPage implements OnInit {
+  profileImage: string | null = null;
 
-  constructor() { }
+  constructor(private bd: ServicebdService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const usuarioActual = this.bd.getUsuarioActual();
+    if (usuarioActual && usuarioActual.nombre) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    }
   }
 
 }

@@ -52,19 +52,24 @@ const routes: Routes = [
     loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule)
   },
   {
-    path: '**',
-    loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
-  },
-  {
     path: 'notificaciones',
     loadChildren: () => import('./pages/notificaciones/notificaciones.module').then( m => m.NotificacionesPageModule)
   },
   {
     path: 'mis-productos',
     loadChildren: () => import('./pages/mis-productos/mis-productos.module').then( m => m.MisProductosPageModule)
-  },  {
+  },
+  {
     path: 'servicio-cliente',
     loadChildren: () => import('./pages/servicio-cliente/servicio-cliente.module').then( m => m.ServicioClientePageModule)
+  },
+  {
+    path: 'administrador',
+    loadChildren: () => import('./pages/administrador/administrador.module').then( m => m.AdministradorPageModule)
+  },
+  {
+    path: '**',
+    loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
 
 

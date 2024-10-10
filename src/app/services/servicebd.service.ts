@@ -13,11 +13,13 @@ export class ServicebdService {
 
   public database!: SQLiteObject;
 
-  tablaUsuario: string = 'CREATE TABLE IF NOT EXISTS usuario(id INTEGER PRIMARY KEY autoincrement, nombre VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, contrasenia VARCHAR(25) NOT NULL, telefono INTEGER, fecha_registro TEXT NOT NULL, es_admin BOOLEAN NOT NULL)'
+  tablaUsuario: string = 'CREATE TABLE IF NOT EXISTS usuario(id INTEGER PRIMARY KEY autoincrement, nombre VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, contrasenia VARCHAR(25) NOT NULL, telefono INTEGER, fecha_registro TEXT NOT NULL, es_admin BOOLEAN NOT NULL, imagen TEXT)'
   listaUsuarios = new BehaviorSubject<Usuario[]>([]);
 
   tablaProductos: string = `CREATE TABLE IF NOT EXISTS productos(id INTEGER PRIMARY KEY AUTOINCREMENT,id_vendedor INTEGER, nombre_producto TEXT NOT NULL, descripcion TEXT, categoria TEXT, estado TEXT, 
     precio REAL NOT NULL, imagenes TEXT)`;
+
+    tablaReclamos: string = `CREATE TABLE IF NOT EXISTS reclamos(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL,tipoProblema TEXT NOT NULL, descripcion TEXT NOT NULL)`;
 
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
@@ -33,6 +35,10 @@ export class ServicebdService {
 
   getUsuarioActual(): Usuario | null {
     return this.usuarioActual;
+  }
+
+  isAdmin(): boolean {
+    return this.usuarioActual ? this.usuarioActual.es_admin : false;
   }
 
   fetchUsuarios(): Observable<Usuario[]> {
@@ -95,6 +101,8 @@ export class ServicebdService {
       try{
         await this.database.executeSql(this.tablaUsuario, []);
         await this.database.executeSql(this.tablaProductos, []);
+        await this.database.executeSql(this.tablaReclamos, []);
+        await this.actualizarTablaUsuario();
       }catch(e){
         this.presentAlert('Error al crear tablas', JSON.stringify(e))
       }
@@ -178,9 +186,9 @@ export class ServicebdService {
     }
 
     async actualizarUsuario(usuario: Usuario){
-      const sql = 'UPDATE usuario SET email = ?, telefono = ? WHERE nombre = ?';
+      const sql = 'UPDATE usuario SET email = ?, telefono = ?, imagen = ? WHERE nombre = ?';
       try{
-        await this.database.executeSql(sql, [usuario.email, usuario.telefono, usuario.nombre])
+        await this.database.executeSql(sql, [usuario.email, usuario.telefono, usuario.imagen, usuario.nombre])
         this.presentAlert('Exito', 'Datos actualizados correctamente');
         this.cargarUsuarios();
       }catch (e){
@@ -242,6 +250,89 @@ export class ServicebdService {
         this.presentAlert('Error al eliminar producto', JSON.stringify(e))
       }
     }
+
+        //modPerfil
+        async actualizarTablaUsuario() {
+          const sql = `PRAGMA table_info(usuario)`;
+          try {
+            const result = await this.database.executeSql(sql, []);
+            let columnExists = false;
+        
+    
+            for (let i = 0; i < result.rows.length; i++) {
+              if (result.rows.item(i).name === 'imagen') {
+                columnExists = true;
+                break;
+              }
+            }
+        
+    
+            if (!columnExists) {
+              const alterTableSql = `ALTER TABLE usuario ADD COLUMN imagen TEXT`;
+              await this.database.executeSql(alterTableSql, []);
+              this.presentAlert('Éxito', 'Columna "imagen" agregada correctamente');
+            }
+          } catch (e) {
+            this.presentAlert('Error al actualizar la tabla usuario', JSON.stringify(e));
+          }
+        }
+        
+    
+        async obtenerImagenUsuario(nombre: string): Promise<string> {
+          const sql = 'SELECT imagen FROM usuario WHERE nombre = ?';
+          try {
+            const result = await this.database.executeSql(sql, [nombre]);
+            if (result.rows.length > 0) {
+              const imagen = result.rows.item(0).imagen;
+              if (imagen && imagen.trim() !== '') {
+                return imagen;
+              } else {
+                return 'src/assets/img/nouser.png';
+              }
+            } else {
+              return 'src/assets/img/nouser.png';
+            }
+          } catch (e) {
+            this.presentAlert('Error al obtener imagen del usuario', JSON.stringify(e));
+            return 'src/assets/img/nouser.png';
+          }
+        }
+
+        async establecerAdmin(nombre: string) {
+          const sql = 'UPDATE usuario SET es_admin = ? WHERE nombre = ?';
+          try {
+            await this.database.executeSql(sql, ['1', nombre]);  // '1' para administrador
+            this.presentAlert('Éxito', `El usuario ${nombre} ha sido establecido como administrador.`);
+          } catch (e) {
+            this.presentAlert('Error al establecer el administrador', JSON.stringify(e));
+          }
+        }
+
+        //reclamos
+        async agregarReclamo(email: string, tipoProblema: string, descripcion: string) {
+          const sql = `INSERT INTO reclamos (email, tipoProblema, descripcion) VALUES (?, ?, ?)`;
+          try {
+            await this.database.executeSql(sql, [email, tipoProblema, descripcion]);
+            this.presentAlert('Éxito', 'Reclamo enviado correctamente.');
+          } catch (e) {
+            this.presentAlert('Error al enviar el reclamo', JSON.stringify(e));
+          }
+        }
+
+        async obtenerReclamos(): Promise<any[]> {
+          const sql = 'SELECT * FROM reclamos';
+          try {
+            const res = await this.database.executeSql(sql, []);
+            let reclamos: any[] = [];
+            for (let i = 0; i < res.rows.length; i++) {
+              reclamos.push(res.rows.item(i));
+            }
+            return reclamos;
+          } catch (e) {
+            this.presentAlert('Error al cargar los reclamos', JSON.stringify(e));
+            return [];
+          }
+        }
 
   }
 

@@ -9,7 +9,7 @@
     </ion-title>
     <ion-buttons slot="end"> 
       <ion-avatar>
-        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
@@ -22,12 +22,28 @@
     <img src="/../../assets/img/servicio-cliente.webp" alt="">
   </div>
 
-  <div class="conteiner-ayuda">
-    <ion-input placeholder="Tu nombre"></ion-input>
-    <ion-input placeholder="Email"></ion-input>   
-    <ion-input class="telefono" placeholder="Número de telefono"></ion-input>   
-    <ion-textarea class="descripcion" placeholder="Descripción del problema"></ion-textarea>
-  </div>
-  <ion-button expand="full" type="submit">Enviar Reclamo</ion-button>
+  <form (submit)="enviarReclamo()">
+    <ion-item>
+      <ion-label position="floating">Correo electrónico</ion-label>
+      <ion-input type="email" [(ngModel)]="reclamo.email" name="email" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Tipo de Problema</ion-label>
+      <ion-select [(ngModel)]="reclamo.tipoProblema" name="tipoProblema" placeholder="Selecciona una opción" required>
+        <ion-select-option value="aplicacion">Problemas con la aplicación</ion-select-option>
+        <ion-select-option value="producto">Problemas con un producto</ion-select-option>
+        <ion-select-option value="usuario">Problemas con otro usuario</ion-select-option>
+        <ion-select-option value="otro">Otro</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Descripción del Problema</ion-label>
+      <ion-textarea [(ngModel)]="reclamo.descripcion" name="descripcion" required></ion-textarea>
+    </ion-item>
+
+    <ion-button expand="full" type="submit">Enviar Reclamo</ion-button>
+  </form>
 
 </ion-content>

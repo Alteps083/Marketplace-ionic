@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import Swiper from 'swiper';
 import { Router } from '@angular/router';
+import { ServicebdService } from 'src/app/services/servicebd.service';
 
 
 @Component({
@@ -9,6 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./homeadmin.page.scss'],
 })
 export class HomeadminPage implements OnInit {
+
+  profileImage: string | null = null;
 
   usuario: string = "";
 
@@ -34,7 +37,7 @@ export class HomeadminPage implements OnInit {
   ];
 
 
-  constructor(private router:Router) {}
+  constructor(private router:Router, private bd: ServicebdService) {}
 
   swiperReady() {
     this.swiper = this.swiperRef?.nativeElement.swiper;
@@ -80,7 +83,7 @@ export class HomeadminPage implements OnInit {
     this.router.navigate(['/agregar']);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       const user = navigation.extras.state['user'];
@@ -88,6 +91,10 @@ export class HomeadminPage implements OnInit {
         this.usuario = user.usuario;
         console.log('Usuario recibido:', this.usuario);
     }
+  }
+  const usuarioActual = this.bd.getUsuarioActual();
+  if (usuarioActual && usuarioActual.nombre) {
+    this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
   }
 }
 

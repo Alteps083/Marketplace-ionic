@@ -37,7 +37,7 @@ export class LoginPage implements OnInit {
    this.storage.getItem('usuario').then((usuario) => {
     if (usuario) {
       if(usuario.es_admin){
-        this.router.navigate(['/homeadmin']);
+        this.router.navigate(['tabs/home']);
       } else {
         this.router.navigate(['tabs/home']);
       }
@@ -71,7 +71,7 @@ export class LoginPage implements OnInit {
       }
       if (usuarioActual && usuarioActual.es_admin) {
         this.presentAlert('Éxito', 'Bienvenido Administrador');
-        this.router.navigate(['/homeadmin']); 
+        this.router.navigate(['tabs/home']); 
       } else {
         this.presentAlert('Éxito', 'Bienvenido Usuario');
         this.router.navigate(['tabs/home']); 

@@ -1,0 +1,57 @@
+<ion-header [fullscreen]="true">
+  <ion-toolbar color="--ion-color-primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="titulo">Administrador</ion-title>
+    <ion-button class="btn-search" slot="end">
+      <ion-icon name="search-outline"></ion-icon>
+    </ion-button>
+    <ion-buttons slot="end"> 
+      <ion-avatar>
+        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
+      </ion-avatar>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Botones para seleccionar qué tabla mostrar -->
+  <ion-button (click)="mostrarTabla('usuarios')">Mostrar Tabla de Usuarios</ion-button>
+  <ion-button (click)="mostrarTabla('productos')">Mostrar Tabla de Productos</ion-button>
+
+  <!-- Tabla de Usuarios -->
+  <div *ngIf="tablaSeleccionada === 'usuarios'">
+    <h2>Usuarios</h2>
+    <ion-grid>
+      <ion-row>
+        <ion-col>ID</ion-col>
+        <ion-col>Nombre</ion-col>
+        <ion-col>Email</ion-col>
+      </ion-row>
+      <ion-row *ngFor="let usuario of usuarios">
+        <ion-col>{{ usuario.id }}</ion-col>
+        <ion-col>{{ usuario.nombre }}</ion-col>
+        <ion-col>{{ usuario.email }}</ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Tabla de Productos -->
+  <div *ngIf="tablaSeleccionada === 'productos'">
+    <h2>Productos</h2>
+    <ion-grid>
+      <ion-row>
+        <ion-col>ID</ion-col>
+        <ion-col>Nombre</ion-col>
+        <ion-col>Precio</ion-col>
+      </ion-row>
+      <ion-row *ngFor="let producto of productos">
+        <ion-col>{{ producto.id }}</ion-col>
+        <ion-col>{{ producto.nombre }}</ion-col>
+        <ion-col>{{ producto.precio }}</ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

@@ -16,6 +16,8 @@ export class PerfilPage implements OnInit {
 
   usuario: Usuario | null = null;
 
+  profileImage: string | null = null;
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -28,8 +30,14 @@ export class PerfilPage implements OnInit {
   idLog: string = 'ProfilePage'
   constructor(private router:Router, private actionSheetControler: ActionSheetController, private storage: NativeStorage, private bd: ServicebdService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.cargarUsuario();
+
+    this.usuario = this.bd.getUsuarioActual();
+    const usuarioActual = this.bd.getUsuarioActual();
+    if (usuarioActual && usuarioActual.nombre) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    }
   }
 
   cargarUsuario(){

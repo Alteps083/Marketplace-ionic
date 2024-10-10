@@ -25,3 +25,8 @@ MarketHub v2.2
 - el perfil se queda guardado aunque se reinicie la app
 - pantalla de carga
 - agregar productos y vistas hechas 100%
+
+Markethub v2.3
+- se agrego la base de datos de reclamos
+- se agrego la funcion imagen mostrandolas en el navbar (faltan arreglos)
+- se agrego pagina para admin que muestra las tablas creadas

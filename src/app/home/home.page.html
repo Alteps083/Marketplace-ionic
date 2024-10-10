@@ -10,7 +10,7 @@
     </ion-button>
     <ion-buttons slot="end"> 
       <ion-avatar>
-        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
@@ -22,6 +22,15 @@
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content pullingIcon="chevron-down-circle-outline"></ion-refresher-content>
   </ion-refresher>
+
+  <!-- Administrador -->
+<div *ngIf="isAdmin()">
+  <h3>admministrar</h3>
+  <ion-button color="primary" (click)="irAAdministrador()">Ir a Administrador</ion-button>
+</div>
+
+  <!-- boton temporal para crear un usuario admin -->
+  <ion-button (click)="admin()">crear admin</ion-button>
 
   <!-- Parte del carrusel -->
   <div class="carousel-container">

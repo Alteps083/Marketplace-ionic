@@ -31,10 +31,10 @@
 
 <div class="editar-perfil">
   <ion-avatar class="avatar">
-    <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-    <ion-button>Cambiar</ion-button>
+    <img alt="" *ngIf="imagenper" [src]="imagenper || 'assets/img/nouser.png'" />
+    <ion-button (click)="takePicture()">Cambiar</ion-button>
   </ion-avatar>
-
+  
   <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
     <ion-item>
       <ion-icon name="person-outline" slot="start"></ion-icon>

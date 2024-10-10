@@ -32,7 +32,7 @@
 <h1>Tu cuenta</h1>
 
 <div class="container-img">
-  <img src="assets/img/user-1.PNG" alt="">
+  <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
 </div>
 
   <div *ngIf="usuario" class="perfil">

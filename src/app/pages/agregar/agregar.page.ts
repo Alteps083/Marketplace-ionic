@@ -15,6 +15,8 @@ export class AgregarPage implements OnInit {
   imageBase64: string | undefined;
   usuarioActual: Usuario | null = null;
 
+  profileImage: string | null = null;
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -87,12 +89,18 @@ export class AgregarPage implements OnInit {
     this.router.navigate(['/tabs/homeadmin']);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.usuarioActual = this.bd.getUsuarioActual();
     if(!this.usuarioActual){
       console.log('No hay usuario actual');
       this.router.navigate(['/login']);
     }
+
+    const usuarioActual = this.bd.getUsuarioActual();
+    if (usuarioActual && usuarioActual.nombre) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    }
+
   }
 
 }

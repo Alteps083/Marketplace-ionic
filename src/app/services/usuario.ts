@@ -6,4 +6,5 @@ export class Usuario {
     telefono! : number;
     fecha_registro! : string;
     es_admin! : boolean;
+    imagen? : string;
 }

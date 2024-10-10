@@ -6,6 +6,7 @@ import { ToastController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 @Component({
   selector: 'app-modperfil',
@@ -13,6 +14,8 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
   styleUrls: ['./modperfil.page.scss'],
 })
 export class ModperfilPage implements OnInit {
+
+  imagenper: any;
 
   miFormulario: FormGroup;
   usuario: Usuario | null = null;
@@ -108,5 +111,26 @@ home(){
     //crear logica de programación
     this.router.navigate(['/tabs/perfil']);
   }
+
+  takePicture = async () => {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Uri
+    });
+  
+    // image.webPath will contain a path that can be set as an image src.
+    // You can access the original file using image.path, which can be
+    // passed to the Filesystem API to read the raw data of the image,
+    // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
+    this.imagenper = image.webPath;
+  
+    if (this.usuario && this.usuario.nombre) {
+      // Guardar la imagen en SQLite en la columna `imagen`
+      this.usuario.imagen = this.imagenper;
+      await this.bd.actualizarUsuario(this.usuario);
+      this.presentToast('top');
+    }
+};
 
 }

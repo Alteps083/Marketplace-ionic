@@ -1,0 +1,88 @@
+
+ion-header {
+    background-color: var(--ion-color-primary); /* Color del header */
+  }
+
+  .titulo{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    font-size: x-large;
+  }
+
+ion-content{
+  padding-top: 24px;
+}
+  .home-page{
+    background-image: url('../../../assets/img/background-1.jpeg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(1px);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  .editar-perfil{
+    padding-top: 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+  }
+
+  .editar-perfil form{
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .editar-perfil ion-item{ 
+    --background: var(--ion-color-tertiary);
+    border-radius: 10px;
+    margin-top: 24px;
+  }
+  
+  
+    .container {
+  
+      overflow: hidden; 
+      white-space: nowrap;
+      .scroll {
+        overflow: auto;
+      }
+      ion-chip{
+        --background:0000ff;
+      }
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    
+    
+    ion-fab-button {
+      .fab { display: inline-block !important}
+    }
+    ion-item {
+      --padding-start: 0;
+    }
+  
+    .custom-tab-bar {
+      --background: var(--ion-color-primary); 
+    }
+    
+    .tab-button{
+      --color:white;
+    }
+    .avatar {
+      margin-left: auto;
+      margin-right: auto;
+      height: 15%;
+      width: 25%;
+    }
+    .avatar ion-button {
+      margin-left: auto;
+      margin-right: auto;
+    }

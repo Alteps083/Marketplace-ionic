@@ -7,6 +7,11 @@
     <ion-title class="titulo">
       MarketHub
     </ion-title>
+    <ion-buttons slot="end"> 
+      <ion-avatar>
+        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
+      </ion-avatar>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

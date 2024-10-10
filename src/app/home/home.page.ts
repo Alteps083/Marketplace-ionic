@@ -12,13 +12,18 @@ import { Usuario } from '../services/usuario';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit{
+
+  usuarioActual: Usuario | null = null;
+
+  profileImage: string | null = null;
+
   currentIndex = 0;
   
   usuario: Usuario | null = null;
 
   productos: Producto[] = [];
 
-  ngOnInit() {
+  async ngOnInit() {
     this.cargarUsuario(); 
     this.BotonCerrarSesion();
     this.autoSlide();
@@ -27,6 +32,24 @@ export class HomePage implements OnInit{
         this.cargarProductos();
       }
     })
+
+    this.usuarioActual = this.bd.getUsuarioActual();
+    this.autoSlide();
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const user = navigation.extras.state['user'];
+      if (user) {
+        this.usuario = user.usuario;
+        console.log('Usuario recibido:', this.usuario);
+      }
+
+    }
+
+    const usuarioActual = this.bd.getUsuarioActual();
+    if (usuarioActual && usuarioActual.nombre) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    }
+
   }
 
 
@@ -170,4 +193,21 @@ export class HomePage implements OnInit{
   detalle(){
     this.router.navigate(['/detalle']);
   }
+
+  isAdmin(): boolean {
+    return this.usuarioActual ? this.usuarioActual.es_admin : false;
+  }
+  irAAdministrador() {
+    console.log("Navegando a la página de administración");
+    this.router.navigate(['/administrador']);  // Navega hacia la página administrador
+  }
+
+  //para crear admin ingresar nombre del usuario al que quiera convertir en admin (funcion temporal)
+  admin(){
+    this.bd.establecerAdmin('ale');
+
+  }
+
+
+
 }

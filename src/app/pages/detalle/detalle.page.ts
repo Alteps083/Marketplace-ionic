@@ -13,6 +13,8 @@ import { ServicebdService } from 'src/app/services/servicebd.service';
 })
 export class DetallePage implements OnInit {
 
+  profileImage: string | null = null;
+
   producto : Producto | null = null;
 
   constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService) { }
@@ -27,9 +29,14 @@ export class DetallePage implements OnInit {
     return await modal.present();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     const id = parseInt(this.activeRouter.snapshot.paramMap.get('id') || '0', 10); 
     this.cargarProducto(id);
+
+    const usuarioActual = this.bd.getUsuarioActual();
+    if (usuarioActual && usuarioActual.nombre) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    }
   }
 
   async cargarProducto(id: number) {
