@@ -10,58 +10,58 @@
 
 <ion-content scrollY="true">
   <div class="home-page"></div>
-  <!-- Reload -->
-<ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-  <ion-refresher-content
-    pullingIcon="chevron-down-circle-outline"
+  
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline">
+      <div class="honeycomb">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </ion-refresher-content>
+  </ion-refresher>
 
-  >
-  <div class="honeycomb">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  <div class="contenedor-general">
+    <div class="container-img">
+      <ion-avatar class="avatar">
+        <img alt="Profile Image" *ngIf="imagenper" [src]="imagenper || 'assets/img/nouser.png'" />
+        <ion-button (click)="takePicture()">Cambiar</ion-button>
+      </ion-avatar>
+    </div>
+
+    <div class="editar-perfil">
+      <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
+        <ion-item>
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-input placeholder="Nombre de Usuario" formControlName="name" type="text"></ion-input>
+        </ion-item>
+        <div *ngIf="miFormulario.get('name')?.invalid && miFormulario.get('name')?.touched">
+          <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['minlength']">El Usuario debe tener 3 caracteres o más</ion-text>
+        </div>
+        
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input placeholder="Email" formControlName="email" type="email"></ion-input>
+        </ion-item>
+        <div *ngIf="miFormulario.get('email')?.invalid && miFormulario.get('email')?.touched">
+          <ion-text color="danger" *ngIf="miFormulario.get('email')?.errors?.['email']">Correo inválido</ion-text>
+        </div>
+        
+        <ion-item>
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-input placeholder="Número" formControlName="phone" type="tel"></ion-input>
+        </ion-item>
+        <div *ngIf="miFormulario.get('phone')?.invalid && miFormulario.get('phone')?.touched">
+          <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['invalidPhone']">El número debe contener solo dígitos</ion-text>
+        </div>
+        <div class="botones">
+          <ion-button class="button-editar" expand="full" type="submit" [disabled]="!miFormulario.dirty || miFormulario.invalid">Guardar Cambios</ion-button>
+        </div>
+      </form>
+    </div>
   </div>
-  
-  </ion-refresher-content>
-</ion-refresher>
-
-<div class="editar-perfil">
-  <ion-avatar class="avatar">
-    <img alt="" *ngIf="imagenper" [src]="imagenper || 'assets/img/nouser.png'" />
-    <ion-button (click)="takePicture()">Cambiar</ion-button>
-  </ion-avatar>
-  
-  <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
-    <ion-item>
-      <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-input placeholder="Nombre de Usuario" formControlName="name" type="text"></ion-input>
-    </ion-item>
-    <div *ngIf="miFormulario.get('name')?.invalid && miFormulario.get('name')?.touched">
-      <ion-text color="danger" *ngIf="miFormulario.get('name')?.errors?.['minlength']">El Usuario debe tener 3 caracteres o más</ion-text>
-    </div>
-    
-    <ion-item>
-      <ion-icon name="mail-outline" slot="start"></ion-icon>
-      <ion-input placeholder="Email" formControlName="email" type="email"></ion-input>
-    </ion-item>
-    <div *ngIf="miFormulario.get('email')?.invalid && miFormulario.get('email')?.touched">
-      <ion-text color="danger" *ngIf="miFormulario.get('email')?.errors?.['email']">Correo inválido</ion-text>
-    </div>
-    
-    <ion-item>
-      <ion-icon name="call-outline" slot="start"></ion-icon>
-      <ion-input placeholder="Número" formControlName="phone" type="tel"></ion-input>
-    </ion-item>
-    <div *ngIf="miFormulario.get('phone')?.invalid && miFormulario.get('phone')?.touched">
-      <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['invalidPhone']">El número debe contener solo dígitos</ion-text>
-    </div>
-    
-    <ion-button (click)="perfil()" class="button-editar" expand="full" type="submit" [disabled]="!miFormulario.dirty || miFormulario.invalid">Guardar Cambios</ion-button>
-  </form>
-</div>
-
 </ion-content>

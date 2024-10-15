@@ -20,7 +20,7 @@ export class RegistroPage implements OnInit {
     this.miFormulario = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email, this.CorreoReal]],
-      phone: ['',[Validators.required, this.NumeroReal]],
+      phone: ['',[Validators.required, this.NumeroReal, Validators.maxLength(11)]],
       password: ['', [Validators.required, Validators.minLength(6), this.ContraseñaRestrincciones]],
     })
    }
@@ -70,9 +70,14 @@ export class RegistroPage implements OnInit {
   }
 
   CorreoReal(control: AbstractControl){
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (control.value && !emailPattern.test(control.value)){
       return {invalidEmail: true};
+    }
+
+    const domainParts = control.value.split('.');
+    if (domainParts.length > 2 && domainParts[domainParts.length - 2].length > 2) {
+      return { invalidEmail: true };  
     }
     return null;
   }

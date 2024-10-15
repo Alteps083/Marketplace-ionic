@@ -13,9 +13,10 @@ import { Usuario } from '../services/usuario';
 })
 export class HomePage implements OnInit{
 
-  usuarioActual: Usuario | null = null;
-
   profileImage: string | null = null;
+
+  productosRecientes: Producto[] = []; 
+  productosPorCategoria: { [key: string]: Producto[] } = {}; 
 
   currentIndex = 0;
   
@@ -33,7 +34,10 @@ export class HomePage implements OnInit{
       }
     })
 
-    this.usuarioActual = this.bd.getUsuarioActual();
+    this.usuario = this.bd.getUsuarioActual();
+    if (this.usuario) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+    }
     this.autoSlide();
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
@@ -44,7 +48,7 @@ export class HomePage implements OnInit{
       }
 
     }
-
+    this.actualizarRecientesYCategorias();
     const usuarioActual = this.bd.getUsuarioActual();
     if (usuarioActual && usuarioActual.nombre) {
       this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
@@ -104,10 +108,15 @@ export class HomePage implements OnInit{
 
   constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {}
 
-  cargarUsuario(){
-    this.storage.getItem('usuario').then((data: Usuario) => {
-      if(data) {
+  cargarUsuario() {
+    this.storage.getItem('usuario').then(async (data: Usuario) => {
+      if (data) {
         this.usuario = data;
+        try {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+        } catch (error) {
+          console.log('Error al cargar la imagen de perfil:', error);
+        }
       }
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
@@ -115,9 +124,29 @@ export class HomePage implements OnInit{
   }
 
   cargarProductos() {
+    this.actualizarRecientesYCategorias();
     this.bd.fetchProductos().subscribe(productos => {
       this.productos = productos; 
       console.log('Productos cargados: ', this.productos); 
+    }, error => {
+      console.error('Error al cargar productos', error);
+    });
+  }
+
+  actualizarRecientesYCategorias() {
+    this.bd.fetchProductos().subscribe(productos => {
+      this.productos = productos;
+      this.productosRecientes = this.productos.slice(-5).reverse();
+      this.productosPorCategoria = {};
+      this.productos.forEach(producto => {
+        const categoria = producto.categoria || 'Otros';
+        if (!this.productosPorCategoria[categoria]) {
+          this.productosPorCategoria[categoria] = [];
+        }
+        this.productosPorCategoria[categoria].push(producto);
+      });
+      console.log('Productos recientes:', this.productosRecientes);
+      console.log('Productos por categoría:', this.productosPorCategoria);
     }, error => {
       console.error('Error al cargar productos', error);
     });
@@ -195,19 +224,17 @@ export class HomePage implements OnInit{
   }
 
   isAdmin(): boolean {
-    return this.usuarioActual ? this.usuarioActual.es_admin : false;
+    return this.usuario ? this.usuario.es_admin : false;
   }
+  
   irAAdministrador() {
     console.log("Navegando a la página de administración");
-    this.router.navigate(['/administrador']);  // Navega hacia la página administrador
+    this.router.navigate(['/administrador']);  
   }
 
-  //para crear admin ingresar nombre del usuario al que quiera convertir en admin (funcion temporal)
   admin(){
     this.bd.establecerAdmin('ale');
 
   }
-
-
 
 }

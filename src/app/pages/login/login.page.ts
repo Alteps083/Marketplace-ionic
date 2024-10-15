@@ -3,6 +3,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Keyboard } from '@capacitor/keyboard';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
@@ -34,6 +35,8 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+   this.initializeKeyboardListeners();
+   this.iniciarControlTeclado();
    this.storage.getItem('usuario').then((usuario) => {
     if (usuario) {
       if(usuario.es_admin){
@@ -71,7 +74,7 @@ export class LoginPage implements OnInit {
       }
       if (usuarioActual && usuarioActual.es_admin) {
         this.presentAlert('Éxito', 'Bienvenido Administrador');
-        this.router.navigate(['tabs/home']); 
+        this.router.navigate(['tabs/administrador']); 
       } else {
         this.presentAlert('Éxito', 'Bienvenido Usuario');
         this.router.navigate(['tabs/home']); 
@@ -111,8 +114,26 @@ export class LoginPage implements OnInit {
   }
 
   regses(){
-    //crear logica de programación
     this.router.navigate(['/registro']);
   }
 
+  iniciarControlTeclado(){
+    Keyboard.addListener('keyboardWillShow', () => {
+      document.body.classList.add('keyboard-is-open');
+    })
+    Keyboard.addListener('keyboardWillHide', () => {
+      document.body.classList.remove('keyboard-is-open')
+    })
+  }
+
+  initializeKeyboardListeners() {
+    Keyboard.addListener('keyboardWillShow', (info) => {
+      const keyboardHeight = info.keyboardHeight; 
+      document.body.style.paddingBottom = `${keyboardHeight}px`; 
+    });
+
+    Keyboard.addListener('keyboardWillHide', () => {
+      document.body.style.paddingBottom = '0px'; 
+    });
+  }
 }

@@ -2,21 +2,27 @@ form{
     justify-content: center;
     flex-direction: column;
     display: flex;
+    overflow-y: auto; 
     margin-left: auto;
     margin-right: auto;
 }
 
 ion-content {
+    --keyboard-offset: 0px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center; 
     height: 100vh;
     overflow-y: auto; 
+    padding-bottom: 60px; 
 }
+
+.keyboard-is-open {
+    padding-bottom: 300px; 
+  }
 
 ion-input {
     align-items: center;
-    padding-bottom: 100px;
 }
 
 ion-item{
@@ -57,12 +63,11 @@ ion-item{
 }
 
 .iniciarsesion{
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 32px;
-    margin-left: 45px;
-    margin-right: 45px;
+    margin: 0 20px;
 }
 
 .donothave-account{

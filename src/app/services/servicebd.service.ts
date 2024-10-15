@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuario } from './usuario';
 import { Producto } from './producto';
 import { JsonPipe } from '@angular/common';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class ServicebdService {
 
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
   
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) { }
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) { }
 
   private usuarioActual: Usuario | null = null
 
@@ -103,8 +104,18 @@ export class ServicebdService {
         await this.database.executeSql(this.tablaProductos, []);
         await this.database.executeSql(this.tablaReclamos, []);
         await this.actualizarTablaUsuario();
+
+        const res = await this.database.executeSql('SELECT COUNT(*) as count FROM usuario WHERE es_admin = 1',[])
+        if(res.rows.item(0).count === 0 && this.usuarioActual?.nombre != 'admin' ){
+          await this.database.executeSql(
+            'INSERT INTO usuario(nombre, email, contrasenia, telefono, fecha_registro, es_admin, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            ['admin', 'admin@example.com', 'admin123', null, new Date().toISOString(), 1, '']
+          );
+          console.log('Admin creado correctamente');
+        }
       }catch(e){
         this.presentAlert('Error al crear tablas', JSON.stringify(e))
+        console.log('Error al crear el administrador');
       }
     }
 
@@ -120,7 +131,7 @@ export class ServicebdService {
 
     async registrarUsuario(nombre: string, email: string, contrasenia: string, telefono: number){
       const fecha_registro = new Date().toISOString();
-      const es_admin = false;
+      const es_admin = 0;
       const correoExistente =  await this.verificarCorreoExistente(email);
       if(correoExistente){
         this.presentAlert('Error', 'El correo ya está registrado');
@@ -174,6 +185,9 @@ export class ServicebdService {
         if (result.rows.length > 0){
           const usuario = result.rows.item(0)
           this.setUsuarioActual(usuario);
+          if(usuario.imagen && usuario.imagen.trim() !== ''){
+            await this.storage.setItem('usuario_imagen', usuario.imagen)
+          }
           return true;
         } else {
           this.presentAlert('Login Fallido', 'Nombre o Constraseña incorrectos')
@@ -237,6 +251,23 @@ export class ServicebdService {
         this.listarProductos.next(productos);
       } catch (e) {
         this.presentAlert('Error al cargar los productos', JSON.stringify(e));
+      }
+    }
+
+    async obtenerProductosPorCategoria(categoria: string): Promise<Producto[]> {
+      const sql = 'SELECT * FROM productos WHERE categoria = ?';
+      try {
+        const res = await this.database.executeSql(sql, [categoria]);
+        let productos: Producto[] = [];
+        for (let i = 0; i < res.rows.length; i++) {
+          const producto = res.rows.item(i);
+          producto.imagenes = JSON.parse(producto.imagenes || '[]');
+          productos.push(producto);
+        }
+        return productos;
+      } catch (e) {
+        this.presentAlert('Error al cargar los productos por categoría', JSON.stringify(e));
+        return [];
       }
     }
 
@@ -334,6 +365,21 @@ export class ServicebdService {
           }
         }
 
+        async obtenerUsuariosChat(): Promise<Usuario[]> {
+          const sql = 'SELECT * FROM usuario';
+          try {
+            const res = await this.database.executeSql(sql, []);
+            let usuarios: Usuario[] = [];
+            for (let i = 0; i < res.rows.length; i++) {
+              const usuario = res.rows.item(i);
+              usuarios.push(usuario);
+            }
+            return usuarios;
+          } catch (e) {
+            this.presentAlert('Error al cargar los usuarios', JSON.stringify(e));
+            return []; 
+          }
+        }
   }
 
 

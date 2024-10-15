@@ -1,6 +1,6 @@
 
 ion-header {
-    background-color: var(--ion-color-primary); /* Color del header */
+    background-color: var(--ion-color-primary); 
   }
 
   .titulo{
@@ -10,9 +10,23 @@ ion-header {
     font-size: x-large;
   }
 
-ion-content{
-  padding-top: 24px;
-}
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+  }
+
+  ion-content {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; 
+    align-items: center; 
+    padding: 0; 
+    height: 100%; 
+  }
+
   .home-page{
     background-image: url('../../../assets/img/background-1.jpeg');
     background-size: cover;
@@ -26,17 +40,34 @@ ion-content{
     z-index: -1;
   }
 
-  .editar-perfil{
-    padding-top: 64px;
+  .contenedor-general {
+    padding-top: 109px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin: auto;
+    justify-content: center; 
+    align-items: center; 
+    height: auto;
+    width: 100%; 
+  }
+
+  .editar-perfil {
+    min-height: calc(100vh - 240px);
+    background-color: var(--ion-color-tertiary);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center; 
+    padding: 20px; 
+    width: 100%; 
+    max-width: 400px; 
+    flex-grow: 1;
   }
 
   .editar-perfil form{
-    max-width: 400px;
-    margin: 0 auto;
+    width: 100%;
+    display: flex;           
+    flex-direction: column;
+    margin: 70px;
   }
 
   .editar-perfil ion-item{ 
@@ -61,13 +92,29 @@ ion-content{
         display: none;
       }
     }
-    
+
+    .container-img {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin: 20px 0;
+    }
     
     ion-fab-button {
       .fab { display: inline-block !important}
     }
     ion-item {
       --padding-start: 0;
+    }
+
+    .botones {
+      margin-top: auto; 
+      text-align: center; 
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: auto; 
     }
   
     .custom-tab-bar {
@@ -77,13 +124,16 @@ ion-content{
     .tab-button{
       --color:white;
     }
+
     .avatar {
-      margin-left: auto;
-      margin-right: auto;
-      height: 15%;
-      width: 25%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .avatar ion-button {
-      margin-left: auto;
-      margin-right: auto;
+
+    .avatar img{
+      width: 150px;  
+      height: 150px; 
+      border-radius: 50%; 
+      object-fit: cover; 
     }

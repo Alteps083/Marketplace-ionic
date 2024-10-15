@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Form, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Keyboard } from '@capacitor/keyboard';
 import { ServicebdService } from 'src/app/services/servicebd.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Usuario } from 'src/app/services/usuario';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { NotificationsPushService } from 'src/app/services/notifications-push.service';
+import { Notificacion } from 'src/app/services/notificacion';
 
 @Component({
   selector: 'app-agregar',
@@ -13,8 +18,9 @@ import { Usuario } from 'src/app/services/usuario';
 export class AgregarPage implements OnInit {
   imagePreviews: string[] = [];
   imageBase64: string | undefined;
-  usuarioActual: Usuario | null = null;
-
+  usuario: Usuario | null = null;
+  miFormulario: FormGroup;
+  marginBottom: string = '200px';
   profileImage: string | null = null;
 
   handleRefresh(event: CustomEvent) {
@@ -31,7 +37,20 @@ export class AgregarPage implements OnInit {
     fileInput.click();
   }
 
-  constructor(private router: Router, private bd: ServicebdService) { }
+  constructor(private router: Router, private bd: ServicebdService, private storage: NativeStorage, private fb: FormBuilder, private notificationService:NotificationsPushService) { 
+    this.miFormulario = this.fb.group({
+        titulo: ['', Validators.required],
+        precio: ['', [Validators.required, Validators.min(0)]],
+        categoria: ['', Validators.required],
+        estado: ['', Validators.required],
+        descripcion: ['', [Validators.required, Validators.minLength(50)]],
+      });
+   }
+
+   onDescriptionChange(event: any) {
+    const input = event.target.value;
+    this.miFormulario.controls['descripcion'].setValue(input);
+  }
 
   async takePicture(){
     const image = await Camera.getPhoto({
@@ -57,14 +76,31 @@ export class AgregarPage implements OnInit {
       this.imagePreviews.push(`data:image/jpeg;base64,${image.base64String}`);
     }
   }
-  async onSubmit(form: NgForm) {
-    if (form.valid) {
-      const producto = form.value;
+
+  async cargarUsuario() {
+    try {
+      const data = await this.storage.getItem('usuario');
+      if (data) {
+        this.usuario = data as Usuario;
+        this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+      } else {
+        console.log('No se encontró un usuario en el almacenamiento');
+        this.router.navigate(['/login']); 
+      }
+    } catch (error) {
+      console.log('Error al recuperar usuario: ', JSON.stringify(error));
+      this.router.navigate(['/login']); 
+    }
+  } 
+
+  async onSubmit() {
+    if (this.miFormulario.valid) {  
+      const producto = this.miFormulario.value; 
       const imagenes = this.imagePreviews;
-
-      if (this.usuarioActual) { 
-        const id_vendedor = this.usuarioActual.idusuario; 
-
+  
+      if (this.usuario) { 
+        const id_vendedor = this.usuario.idusuario; 
+  
         await this.bd.agregarProducto(
           id_vendedor,
           producto.titulo,
@@ -74,13 +110,21 @@ export class AgregarPage implements OnInit {
           producto.precio,
           imagenes
         );
+
+        const notificacion: Notificacion = {
+          imagen: this.usuario.imagen, 
+          nombreUsuario: this.usuario.nombre, 
+          nombreProducto: producto.titulo
+        };
+
+        this.notificationService.addNotification(notificacion);
         this.router.navigate(['tabs/home']);
-        console.log('Datos del producto: ', form.value);
-        form.reset();
+        console.log('Datos del producto: ', producto);
+        this.miFormulario.reset(); 
         this.imagePreviews = [];
       } else {
         console.log('No se pudo obtener el id del vendedor');
-        this.router.navigate(['/login']); // Redirigir si no hay usuario
+        this.router.navigate(['/login']); 
       }
     }
   }
@@ -90,17 +134,28 @@ export class AgregarPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.usuarioActual = this.bd.getUsuarioActual();
-    if(!this.usuarioActual){
+    await this.cargarUsuario();
+    this.usuario = this.bd.getUsuarioActual();
+    if(!this.usuario){
       console.log('No hay usuario actual');
       this.router.navigate(['/login']);
     }
-
     const usuarioActual = this.bd.getUsuarioActual();
     if (usuarioActual && usuarioActual.nombre) {
       this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
     }
 
+    Keyboard.addListener('keyboardWillShow', (info) => {
+      this.marginBottom = `${info.keyboardHeight}px`; 
+    });
+
+    Keyboard.addListener('keyboardWillHide', () => {
+      this.marginBottom = '0px'; 
+    });
+  }
+
+  get descripcion(){
+    return this.miFormulario.get('descripcion');
   }
 
 }

@@ -30,6 +30,7 @@
       <div *ngIf="miFormulario.get('phone')?.invalid && miFormulario.get('phone')?.touched">
         <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['required']">Debe Ingresar el Número</ion-text>
         <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['invalidPhone']">El número debe contener solo dígitos</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['maxlength']">El número no debe exceder los 11 dígitos</ion-text>
       </div>
       <ion-item>
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>

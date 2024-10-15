@@ -17,11 +17,9 @@
 </ion-header>
 
 <ion-content>
-  <!-- Botones para seleccionar qué tabla mostrar -->
   <ion-button (click)="mostrarTabla('usuarios')">Mostrar Tabla de Usuarios</ion-button>
   <ion-button (click)="mostrarTabla('productos')">Mostrar Tabla de Productos</ion-button>
 
-  <!-- Tabla de Usuarios -->
   <div *ngIf="tablaSeleccionada === 'usuarios'">
     <h2>Usuarios</h2>
     <ion-grid>

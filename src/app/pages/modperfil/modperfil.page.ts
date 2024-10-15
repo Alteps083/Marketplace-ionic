@@ -52,6 +52,7 @@ export class ModperfilPage implements OnInit {
           email: this.usuario.email,
           phone: this.usuario.telefono
         })
+        this.imagenper = this.usuario.imagen;
       }
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
@@ -63,6 +64,7 @@ export class ModperfilPage implements OnInit {
       const actualizarUsuario: Usuario = {
         ...this.usuario,
         ...this.miFormulario.value,
+        imagen: this.imagenper
       }
       await this.bd.actualizarUsuario(actualizarUsuario);
       await this.storage.setItem('usuario', actualizarUsuario);
@@ -118,17 +120,13 @@ home(){
       allowEditing: false,
       resultType: CameraResultType.Uri
     });
-  
-    // image.webPath will contain a path that can be set as an image src.
-    // You can access the original file using image.path, which can be
-    // passed to the Filesystem API to read the raw data of the image,
-    // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
+
     this.imagenper = image.webPath;
   
     if (this.usuario && this.usuario.nombre) {
-      // Guardar la imagen en SQLite en la columna `imagen`
       this.usuario.imagen = this.imagenper;
       await this.bd.actualizarUsuario(this.usuario);
+      await this.storage.setItem('usuario', this.usuario);
       this.presentToast('top');
     }
 };
