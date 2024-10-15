@@ -68,9 +68,20 @@ const routes: Routes = [
     loadChildren: () => import('./pages/administrador/administrador.module').then( m => m.AdministradorPageModule)
   },
   {
+    path: 'editarusuario',
+    loadChildren: () => import('./pages/editarusuario/editarusuario.module').then( m => m.EditarusuarioPageModule)
+  },
+  {
+    path: 'editarproducto',
+    loadChildren: () => import('./pages/editarproducto/editarproducto.module').then( m => m.EditarproductoPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
+
+
+
 
 
 

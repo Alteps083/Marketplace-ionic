@@ -1,5 +1,5 @@
 export class Usuario {
-    idusuario! : number;
+    id? : number;
     nombre! : string;
     email! : string;
     contrasenia! : string;

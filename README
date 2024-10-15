@@ -30,3 +30,7 @@ Markethub v2.3
 - se agrego la base de datos de reclamos
 - se agrego la funcion imagen mostrandolas en el navbar (faltan arreglos)
 - se agrego pagina para admin que muestra las tablas creadas
+
+Markethub v2.4
+- se soluciono el eliminar usuario
+- los nuevos usuarios ya no ingresan como admin

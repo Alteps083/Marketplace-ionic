@@ -5,7 +5,7 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title class="titulo">MarketHub</ion-title>
-    <ion-button class="btn-search" slot="end">
+    <ion-button class="btn-search" slot="end" (click)="toggleSearchBar()">
       <ion-icon name="search-outline"></ion-icon>
     </ion-button>
     <ion-buttons slot="end"> 
@@ -14,14 +14,32 @@
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
+  <ion-searchbar *ngIf="mostrarBarraBusqueda" [(ngModel)]="searchTerm" (ionInput)="filtrarProductos($event)"></ion-searchbar>
 </ion-header>
 
 <ion-content scrollY="true">
+
+  <ion-list *ngIf="mostrarBarraBusqueda">
+    <ion-item *ngFor="let producto of productosFiltrados" (click)="detalleProducto(producto)">
+      {{ producto.nombre_producto }}
+    </ion-item>
+  </ion-list>
+
   <div class="home-page"></div>
   <!-- Reload -->
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content pullingIcon="chevron-down-circle-outline"></ion-refresher-content>
   </ion-refresher>
+
+  <ion-button (click)="mostrarIDsUsuarios()">
+    Mostrar IDs de Usuarios
+  </ion-button>
+  <div *ngIf="idsUsuarios.length > 0">
+    <h3>IDs de Usuarios:</h3>
+    <ul>
+      <li *ngFor="let id of idsUsuarios">{{ id }}</li>
+    </ul>
+  </div>
 
   <!-- Administrador -->
 <div *ngIf="isAdmin()">
@@ -29,8 +47,7 @@
   <ion-button color="primary" (click)="irAAdministrador()">Ir a Administrador</ion-button>
 </div>
 
-  <!-- boton temporal para crear un usuario admin -->
-  <ion-button (click)="admin()">crear admin</ion-button>
+
 
   <!-- Parte del carrusel -->
   <div class="carousel-container">
@@ -61,23 +78,73 @@
   <div class="principal-productos">
     <h3>Procesadores</h3>
   </div>
-
   <div class="horizontal-scroll">
-    <ion-card (click)="detalle()" class="card">
-      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-2.webp">
-      <ion-card-header>
-        <ion-card-title>Nvidia RTX 3060</ion-card-title>
-        <ion-card-subtitle>Tarjeta Gráfica</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-    <!-- Repite esto para cada tarjeta que necesites -->
-    <ion-card (click)="detalle()" class="card">
-      <img alt="Silhouette of mountains" src="/../../assets/img/imagen-2.webp">
-      <ion-card-header>
-        <ion-card-title>Nvidia RTX 3060</ion-card-title>
-        <ion-card-subtitle>Tarjeta Gráfica</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-    <!-- Puedes seguir añadiendo más tarjetas aquí -->
+    <ng-container *ngIf="productosPorCategoria['Procesador'] && productosPorCategoria['Procesador'].length > 0">
+      <ion-card *ngFor="let producto of productosPorCategoria['Procesador']" (click)="detalleProducto(producto)" class="card">
+        <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
+        <ion-card-header>
+          <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
+          <ion-card-subtitle>{{producto.categoria}}</ion-card-subtitle>
+          <strong>Precio: {{ producto.precio }}</strong>
+        </ion-card-header>
+      </ion-card>
+    </ng-container>
+    <ng-container *ngIf="!productosPorCategoria['Procesador'] || productosPorCategoria['Procesador'].length === 0">
+      <p>No hay productos en esta categoría.</p>
+    </ng-container>
   </div>
+<div class="principal-productos">
+  <h3>Memoria Ram</h3>
+</div>
+<div class="horizontal-scroll">
+  <ng-container *ngIf="productosPorCategoria['Memoria-Ram'] && productosPorCategoria['Memoria-Ram'].length > 0">
+    <ion-card *ngFor="let producto of productosPorCategoria['Memoria-Ram']" (click)="detalleProducto(producto)" class="card">
+      <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
+      <ion-card-header>
+        <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
+        <ion-card-subtitle>{{ producto.categoria }}</ion-card-subtitle>
+        <strong>Precio: {{ producto.precio | currency }}</strong>
+      </ion-card-header>
+    </ion-card>
+  </ng-container>
+  <ng-container *ngIf="!productosPorCategoria['Memoria-Ram'] || productosPorCategoria['Memoria-Ram'].length === 0">
+    <p>No hay productos en esta categoría.</p>
+  </ng-container>
+</div>
+<div class="principal-productos">
+  <h3>Tarjetas Graficas</h3>
+</div>
+<div class="horizontal-scroll">
+  <ng-container *ngIf="productosPorCategoria['Tarjeta-Grafica'] && productosPorCategoria['Tarjeta-Grafica'].length > 0">
+    <ion-card *ngFor="let producto of productosPorCategoria['Tarjeta-Grafica']" (click)="detalleProducto(producto)" class="card">
+      <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
+      <ion-card-header>
+        <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
+        <ion-card-subtitle>{{ producto.categoria }}</ion-card-subtitle>
+        <strong>Precio: {{ producto.precio | currency }}</strong>
+      </ion-card-header>
+    </ion-card>
+  </ng-container>
+  <ng-container *ngIf="!productosPorCategoria['Tarjeta-Grafica'] || productosPorCategoria['Memoria-Ram'].length === 0">
+    <p>No hay productos en esta categoría.</p>
+  </ng-container>
+</div>
+<div class="principal-productos">
+  <h3>Almacenamiento</h3>
+</div>
+<div class="horizontal-scroll">
+  <ng-container *ngIf="productosPorCategoria['Almacenamiento'] && productosPorCategoria['Almacenamiento'].length > 0">
+    <ion-card *ngFor="let producto of productosPorCategoria['Almacenamiento']" (click)="detalleProducto(producto)" class="card">
+      <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
+      <ion-card-header>
+        <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
+        <ion-card-subtitle>{{ producto.categoria }}</ion-card-subtitle>
+        <strong>Precio: {{ producto.precio | currency }}</strong>
+      </ion-card-header>
+    </ion-card>
+  </ng-container>
+  <ng-container *ngIf="!productosPorCategoria['Almacenamiento'] || productosPorCategoria['Almacenamiento'].length === 0">
+    <p>No hay productos en esta categoría.</p>
+  </ng-container>
+</div>
 </ion-content>

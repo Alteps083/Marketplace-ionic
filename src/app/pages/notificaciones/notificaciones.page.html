@@ -17,14 +17,13 @@
   <div class="home-page"></div>
   <div class="seccion-news">
     <h1>Nuevas</h1>
-    <div class="notificaciones">
+    <div class="notificaciones" *ngFor="let notificacion of notificaciones">
       <div class="imagen-notificacion">
-        <img src="..\assets\img\user-1.PNG" alt="User Icon"> 
-        <small>Jaimelito</small> 
+        <img class="avatar" [src]="notificacion.imagen" alt="User Icon"> 
+        <small>{{ notificacion.nombreUsuario }}</small> 
       </div>
       <div class="text">
-        <h2>Nueva Notificacion!!</h2>
-        <p>Jaimelito ah agregado nuevos productos!!</p>
+        Nueva notificación: {{ notificacion.nombreProducto }}
       </div>
     </div>
   </div> 

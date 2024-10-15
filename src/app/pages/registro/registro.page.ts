@@ -4,6 +4,8 @@ import { EmailValidator, ReactiveFormsModule, AbstractControl, ValidationErrors 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
+import { Usuario } from 'src/app/services/usuario';
+
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.page.html',
@@ -15,6 +17,8 @@ export class RegistroPage implements OnInit {
 
   password: string = '';
   showPassword: boolean = false;
+
+  usuario: Usuario | null = null;
 
   constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder, private serviceBd: ServicebdService) { 
     this.miFormulario = this.fb.group({
@@ -41,9 +45,18 @@ export class RegistroPage implements OnInit {
     const telefono = this.miFormulario.value.phone;
     const contrasenia = this.miFormulario.value.password;
 
+    const nuevoUsuario: Usuario = {
+      nombre: nombre,
+      email: email,
+      contrasenia: contrasenia,
+      telefono: telefono,
+      fecha_registro: new Date().toISOString(), // Ajusta según tu implementación
+      es_admin: false // Establece como false si no es admin
+    };
+
     this.serviceBd.dbReady().subscribe(isReady => {
       if(isReady){
-        this.serviceBd.registrarUsuario(nombre,email,contrasenia,telefono).then((registroExistoso) => {
+        this.serviceBd.registrarUsuario(nuevoUsuario).then((registroExistoso) => {
         if(registroExistoso){
           this.router.navigate(['/login']);
         }else{
@@ -70,9 +83,14 @@ export class RegistroPage implements OnInit {
   }
 
   CorreoReal(control: AbstractControl){
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (control.value && !emailPattern.test(control.value)){
       return {invalidEmail: true};
+    }
+
+    const domainParts = control.value.split('.');
+    if (domainParts.length > 2 && domainParts[domainParts.length - 2].length > 2) {
+      return { invalidEmail: true };  
     }
     return null;
   }

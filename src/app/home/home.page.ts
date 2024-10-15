@@ -23,7 +23,18 @@ export class HomePage implements OnInit{
 
   productos: Producto[] = [];
 
+  productosFiltrados: Producto[] = [];
+  mostrarBarraBusqueda: boolean = false;
+  searchTerm: string = '';
+
+  idsUsuarios: number[] = [];
+
+  productosRecientes: Producto[] = []; 
+  productosPorCategoria: { [key: string]: Producto[] } = {}; 
+
+
   async ngOnInit() {
+    this.actualizarRecientesYCategorias();
     this.cargarUsuario(); 
     this.BotonCerrarSesion();
     this.autoSlide();
@@ -115,14 +126,34 @@ export class HomePage implements OnInit{
   }
 
   cargarProductos() {
+    this.actualizarRecientesYCategorias();
     this.bd.fetchProductos().subscribe(productos => {
       this.productos = productos; 
+      this.productosFiltrados = [...productos];
       console.log('Productos cargados: ', this.productos); 
     }, error => {
       console.error('Error al cargar productos', error);
     });
   }
   
+  actualizarRecientesYCategorias() {
+    this.bd.fetchProductos().subscribe(productos => {
+      this.productos = productos;
+      this.productosRecientes = this.productos.slice(-5).reverse();
+      this.productosPorCategoria = {};
+      this.productos.forEach(producto => {
+        const categoria = producto.categoria || 'Otros';
+        if (!this.productosPorCategoria[categoria]) {
+          this.productosPorCategoria[categoria] = [];
+        }
+        this.productosPorCategoria[categoria].push(producto);
+      });
+      console.log('Productos recientes:', this.productosRecientes);
+      console.log('Productos por categoría:', this.productosPorCategoria);
+    }, error => {
+      console.error('Error al cargar productos', error);
+    });
+  }
 
   swiperReady() {
     this.swiper = this.swiperRef?.nativeElement.swiper;
@@ -205,9 +236,32 @@ export class HomePage implements OnInit{
   //para crear admin ingresar nombre del usuario al que quiera convertir en admin (funcion temporal)
   admin(){
     this.bd.establecerAdmin('ale');
+  }
 
+  toggleSearchBar() {
+    this.mostrarBarraBusqueda = !this.mostrarBarraBusqueda;
+  }
+
+  filtrarProductos(event: any) {
+    const valorBusqueda = event.target.value.toLowerCase();
+
+    if (valorBusqueda && valorBusqueda.trim() !== '') {
+      this.productosFiltrados = this.productos.filter(producto => 
+        producto.nombre_producto.toLowerCase().includes(valorBusqueda)
+      );
+    } else {
+      this.productosFiltrados = [...this.productos]; // Si no hay término, muestra todos
+    }
   }
 
 
+  mostrarIDsUsuarios() {
+    this.bd.getUsuarios().then(usuarios => {
+      this.idsUsuarios = usuarios.map(usuario => usuario.id);  // Extrae los IDs de los usuarios
 
+      console.log("IDs de los usuarios:", this.idsUsuarios);
+    }).catch(error => {
+      console.error("Error al obtener los usuarios:", error);
+    });
+  }
 }

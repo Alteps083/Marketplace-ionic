@@ -29,8 +29,6 @@
   </ion-refresher-content>
 </ion-refresher>
 
-<h1>Tu cuenta</h1>
-
 <div class="container-img">
   <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
 </div>
@@ -49,9 +47,9 @@
       <ion-icon name="call"></ion-icon>
       <h3>{{usuario.telefono}}</h3>
     </ion-item>
-    <ion-button  (click)="modperfil()" >Modificar Perfil</ion-button>
-    <ion-button  (click)="modcontra()" >Cambiar Contraseña</ion-button>
-    <div class="iniciarsesion">
+    <div class="botones">
+      <ion-button (click)="modperfil()">Modificar Perfil</ion-button>
+      <ion-button (click)="modcontra()">Cambiar Contraseña</ion-button>
     </div>
   </div>
   <div *ngIf="!usuario">

@@ -8,7 +8,7 @@
     <ion-button class="btn-search" slot="end">
       <ion-icon name="search-outline"></ion-icon>
     </ion-button>
-    <ion-buttons slot="end"> 
+    <ion-buttons slot="end">
       <ion-avatar>
         <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
       </ion-avatar>
@@ -18,40 +18,53 @@
 
 <ion-content>
   <!-- Botones para seleccionar qué tabla mostrar -->
-  <ion-button (click)="mostrarTabla('usuarios')">Mostrar Tabla de Usuarios</ion-button>
-  <ion-button (click)="mostrarTabla('productos')">Mostrar Tabla de Productos</ion-button>
+  <ion-button (click)="mostrarTablaUsuarios()">Mostrar Usuarios</ion-button>
+  <ion-button (click)="mostrarTablaProductos()">Mostrar Productos</ion-button>
+  <ion-button (click)="mostrarTablaReclamos()">Mostrar Reclamos</ion-button>
 
   <!-- Tabla de Usuarios -->
-  <div *ngIf="tablaSeleccionada === 'usuarios'">
-    <h2>Usuarios</h2>
-    <ion-grid>
-      <ion-row>
-        <ion-col>ID</ion-col>
-        <ion-col>Nombre</ion-col>
-        <ion-col>Email</ion-col>
-      </ion-row>
-      <ion-row *ngFor="let usuario of usuarios">
-        <ion-col>{{ usuario.id }}</ion-col>
-        <ion-col>{{ usuario.nombre }}</ion-col>
-        <ion-col>{{ usuario.email }}</ion-col>
-      </ion-row>
-    </ion-grid>
+  <div *ngIf="mostrarUsuarios">
+    <h2>Lista de Usuarios</h2>
+    <ion-list>
+      <ion-item *ngFor="let usuario of usuarios">
+        <ion-label>
+          <h2>{{ usuario.nombre }}</h2>
+          <p>(ID: {{ usuario.id }})</p>
+          <p>Email: {{ usuario.email }}</p>
+          <p>Teléfono: {{ usuario.telefono }}</p>
+        </ion-label>
+        <ion-button (click)="eliminarusuario(usuario.id)">Eliminar</ion-button>
+        <ion-button color="primary" (click)="editarUsuario(usuario)">Editar</ion-button>
+      </ion-item>
+    </ion-list>
   </div>
 
   <!-- Tabla de Productos -->
-  <div *ngIf="tablaSeleccionada === 'productos'">
-    <h2>Productos</h2>
-    <ion-grid>
-      <ion-row>
-        <ion-col>ID</ion-col>
-        <ion-col>Nombre</ion-col>
-        <ion-col>Precio</ion-col>
-      </ion-row>
-      <ion-row *ngFor="let producto of productos">
-        <ion-col>{{ producto.id }}</ion-col>
-        <ion-col>{{ producto.nombre }}</ion-col>
-        <ion-col>{{ producto.precio }}</ion-col>
-      </ion-row>
-    </ion-grid>
+  <div *ngIf="mostrarProductos">
+    <h2>Lista de Productos</h2>
+    <ion-list>
+      <ion-item *ngFor="let producto of productos">
+        {{ producto.nombre_producto }} - {{ producto.precio }}
+        <ion-button color="danger" (click)="eliminarProducto(producto.id)">Eliminar</ion-button>
+        <ion-button (click)="editarProducto(producto)">Editar</ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Tabla de Reclamos -->
+  <div *ngIf="mostrarReclamos">
+    <h2>Lista de Reclamos</h2>
+    <ion-list>
+      <ion-item *ngFor="let reclamo of reclamos">
+        <ion-label>
+          <h2>{{ reclamo.email }}</h2>
+          <p>Tipo: {{ reclamo.tipoProblema }}</p>
+          <p>Descripción: {{ reclamo.descripcion }}</p>
+        </ion-label>
+        <ion-button color="danger" (click)="eliminarReclamo(reclamo.id)">
+          Eliminar
+        </ion-button>
+      </ion-item>
+    </ion-list>
   </div>
 </ion-content>

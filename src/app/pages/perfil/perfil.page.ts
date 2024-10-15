@@ -40,10 +40,15 @@ export class PerfilPage implements OnInit {
     }
   }
 
-  cargarUsuario(){
-    this.storage.getItem('usuario').then((data: Usuario) => {
-      if(data) {
+  cargarUsuario() {
+    this.storage.getItem('usuario').then(async (data: Usuario) => {
+      if (data) {
         this.usuario = data;
+        try {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+        } catch (error) {
+          console.log('Error al cargar la imagen de perfil:', error);
+        }
       }
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));

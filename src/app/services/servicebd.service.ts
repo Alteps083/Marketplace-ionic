@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuario } from './usuario';
 import { Producto } from './producto';
 import { JsonPipe } from '@angular/common';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,18 @@ export class ServicebdService {
 
   public database!: SQLiteObject;
 
-  tablaUsuario: string = 'CREATE TABLE IF NOT EXISTS usuario(id INTEGER PRIMARY KEY autoincrement, nombre VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, contrasenia VARCHAR(25) NOT NULL, telefono INTEGER, fecha_registro TEXT NOT NULL, es_admin BOOLEAN NOT NULL, imagen TEXT)'
+  tablaUsuario: string = `
+    CREATE TABLE IF NOT EXISTS usuario (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nombre TEXT NOT NULL,
+      email TEXT NOT NULL,
+      contrasenia TEXT NOT NULL,
+      telefono TEXT NOT NULL,
+      fecha_registro TEXT NOT NULL,
+      es_admin BOOLEAN DEFAULT 0, -- Aquí defines el valor por defecto
+      imagen TEXT
+    )`;
+    
   listaUsuarios = new BehaviorSubject<Usuario[]>([]);
 
   tablaProductos: string = `CREATE TABLE IF NOT EXISTS productos(id INTEGER PRIMARY KEY AUTOINCREMENT,id_vendedor INTEGER, nombre_producto TEXT NOT NULL, descripcion TEXT, categoria TEXT, estado TEXT, 
@@ -23,9 +35,13 @@ export class ServicebdService {
 
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
+  listarReclamos = new BehaviorSubject<any[]>([]);
+  
+  public listaReclamos$ = this.listarReclamos.asObservable();
+
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
   
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) { }
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) { }
 
   private usuarioActual: Usuario | null = null
 
@@ -43,6 +59,7 @@ export class ServicebdService {
 
   fetchUsuarios(): Observable<Usuario[]> {
     return this.listaUsuarios.asObservable()
+    
   };
 
   
@@ -103,11 +120,20 @@ export class ServicebdService {
         await this.database.executeSql(this.tablaProductos, []);
         await this.database.executeSql(this.tablaReclamos, []);
         await this.actualizarTablaUsuario();
+        await this.asignarIdAUsuariosExistentes();  // Asignar IDs a los usuarios existentes
+        
       }catch(e){
         this.presentAlert('Error al crear tablas', JSON.stringify(e))
       }
     }
-
+    async registrarUsuario(usuario: Usuario): Promise<boolean> {
+      const query = `INSERT INTO usuario (nombre, email, contrasenia, telefono, fecha_registro, es_admin, imagen) VALUES (?, ?, ?, ?, datetime('now'), ?, ?)`;
+      const params = [usuario.nombre, usuario.email, usuario.contrasenia, usuario.telefono, usuario.es_admin ? 1 : 0, usuario.imagen];
+      
+      return this.database.executeSql(query, params)
+        .then(() => true)
+        .catch(() => false);
+    }
 
     async eliminarTablas() {
       try {
@@ -115,25 +141,6 @@ export class ServicebdService {
         this.presentAlert('Éxito', 'Tablas eliminadas correctamente');
       } catch (e) {
         this.presentAlert('Error al eliminar tablas', JSON.stringify(e));
-      }
-    }
-
-    async registrarUsuario(nombre: string, email: string, contrasenia: string, telefono: number){
-      const fecha_registro = new Date().toISOString();
-      const es_admin = false;
-      const correoExistente =  await this.verificarCorreoExistente(email);
-      if(correoExistente){
-        this.presentAlert('Error', 'El correo ya está registrado');
-        return false;
-      } 
-      const sql = 'INSERT or IGNORE INTO usuario (nombre, email, contrasenia, telefono, fecha_registro, es_admin) VALUES (?, ?, ?, ?, ?, ?)';
-      try{
-        await this.database.executeSql(sql, [nombre, email, contrasenia, telefono, fecha_registro, es_admin]);
-        this.presentAlert('Exito', 'Usuario registrado Correctamente'); 
-        return true;
-      }catch(e){
-        this.presentAlert('Error al registrar el usuario', JSON.stringify(e));
-        return false;
       }
     }
 
@@ -151,10 +158,15 @@ export class ServicebdService {
       }
     }
 
-    async agregarProducto(idvendedor: number,nombre_producto: string, descripcion: string, categoria: string, estado: string, precio: number, imagenes: string[]) {
+    async agregarProducto(idvendedor: number | undefined, nombre_producto: string, descripcion: string, categoria: string, estado: string, precio: number, imagenes: string[]) {
+      if (idvendedor === undefined) {
+        this.presentAlert('Error', 'El id del vendedor no está definido');
+        return;
+      }
+    
       const query = `INSERT INTO productos (id_vendedor, nombre_producto, descripcion, categoria, estado, precio, imagenes) 
                      VALUES (?, ?, ?, ?, ?, ?, ?)`;
-
+    
       const imagenesJSON = JSON.stringify(imagenes);
       const values = [idvendedor, nombre_producto, descripcion, categoria, estado, precio, imagenesJSON];  
       try {
@@ -168,7 +180,6 @@ export class ServicebdService {
     async loginUsuario(nombre: string, contrasenia: string): Promise<boolean>{
       const sql = `SELECT * FROM usuario WHERE nombre = ? AND contrasenia = ?`;
       const params = [nombre,contrasenia];
- 
       try{
         const result = await this.database.executeSql(sql,params);
         if (result.rows.length > 0){
@@ -240,6 +251,23 @@ export class ServicebdService {
       }
     }
 
+    async obtenerProductosPorCategoria(categoria: string): Promise<Producto[]> {
+      const sql = 'SELECT * FROM productos WHERE categoria = ?';
+      try {
+        const res = await this.database.executeSql(sql, [categoria]);
+        let productos: Producto[] = [];
+        for (let i = 0; i < res.rows.length; i++) {
+          const producto = res.rows.item(i);
+          producto.imagenes = JSON.parse(producto.imagenes || '[]');
+          productos.push(producto);
+        }
+        return productos;
+      } catch (e) {
+        this.presentAlert('Error al cargar los productos por categoría', JSON.stringify(e));
+        return [];
+      }
+    }
+
     async eliminarProducto(id: number){
       const sql = 'DELETE FROM productos WHERE id = ?';
       try{
@@ -270,7 +298,6 @@ export class ServicebdService {
             if (!columnExists) {
               const alterTableSql = `ALTER TABLE usuario ADD COLUMN imagen TEXT`;
               await this.database.executeSql(alterTableSql, []);
-              this.presentAlert('Éxito', 'Columna "imagen" agregada correctamente');
             }
           } catch (e) {
             this.presentAlert('Error al actualizar la tabla usuario', JSON.stringify(e));
@@ -310,12 +337,12 @@ export class ServicebdService {
 
         //reclamos
         async agregarReclamo(email: string, tipoProblema: string, descripcion: string) {
-          const sql = `INSERT INTO reclamos (email, tipoProblema, descripcion) VALUES (?, ?, ?)`;
+          const sql = 'INSERT INTO reclamos (email, tipoProblema, descripcion) VALUES (?, ?, ?)';
           try {
             await this.database.executeSql(sql, [email, tipoProblema, descripcion]);
-            this.presentAlert('Éxito', 'Reclamo enviado correctamente.');
+            console.log('Reclamo guardado exitosamente');
           } catch (e) {
-            this.presentAlert('Error al enviar el reclamo', JSON.stringify(e));
+            console.error('Error al guardar reclamo:', e);
           }
         }
 
@@ -333,9 +360,103 @@ export class ServicebdService {
             return [];
           }
         }
+        
+        async cargarReclamos() {
+          const sql = 'SELECT * FROM reclamos';
+          try {
+            const res = await this.database.executeSql(sql, []);
+            let reclamos: any[] = [];
+            for (let i = 0; i < res.rows.length; i++) {
+              reclamos.push(res.rows.item(i));
+            }
+            this.listarReclamos.next(reclamos);
+          } catch (e) {
+            this.presentAlert('Error al cargar reclamos', JSON.stringify(e));
+          }
+        }
+        
+        async eliminarReclamo(id: number) {
+          const sql = 'DELETE FROM reclamos WHERE id = ?';
+          try {
+            await this.database.executeSql(sql, [id]);
+            this.presentAlert('Exito', 'Reclamo eliminado correctamente');
+            this.cargarReclamos();
+          } catch (e) {
+            this.presentAlert('Error al eliminar reclamo', JSON.stringify(e));
+          }
+        }
+        
+        async eliminarusuario(id: number) {
+          const sql = 'DELETE FROM usuario  WHERE id = ?';
+          try {
+            await this.database.executeSql(sql, [id]);
+            this.presentAlert('Exito', 'usaurio eliminado correctamente');
+            this.cargarUsuarios();
+          } catch (e) {
+            this.presentAlert('Error al eliminar usaurio', JSON.stringify(e));
+          }
+        }
 
+        // temporal, borrar despues de usar
+        getUsuarios(): Promise<any[]> {
+          return this.database.executeSql('SELECT * FROM usuario', [])
+            .then((res) => {
+              let usuarios: any[] = [];
+              for (let i = 0; i < res.rows.length; i++) {
+                usuarios.push(res.rows.item(i));
+              }
+              return usuarios;
+            })
+            .catch(e => {
+              console.error("Error al obtener usuarios:", e);
+              return [];
+            });
+        }
+
+
+
+async asignarIdAUsuariosExistentes() {
+  const sqlSelect = 'SELECT * FROM usuario';
+  const sqlUpdate = 'UPDATE usuario SET idusuario = ? WHERE rowid = ?';
+
+  try {
+    const res = await this.database.executeSql(sqlSelect, []);
+    for (let i = 0; i < res.rows.length; i++) {
+      const usuario = res.rows.item(i);
+
+      if (!usuario.idusuario || usuario.idusuario === null || usuario.idusuario === undefined) {
+        const rowid = usuario.rowid;  // Usamos rowid como identificador temporal
+        const nuevoId = i + 1;  // Generamos un ID, puedes ajustarlo según tu lógica
+
+        // Asignar el ID a cada usuario
+        await this.database.executeSql(sqlUpdate, [nuevoId, rowid]);
+        console.log(`Asignado ID ${nuevoId} al usuario con rowid ${rowid}`);
+      }
+    }
+
+    this.presentAlert('Éxito', 'IDs asignados correctamente a los usuarios existentes.');
+  } catch (e) {
+    this.presentAlert('Error al asignar IDs', JSON.stringify(e));
   }
+}
 
+async obtenerUsuariosChat(): Promise<Usuario[]> {
+  const sql = 'SELECT * FROM usuario';
+  try {
+    const res = await this.database.executeSql(sql, []);
+    let usuarios: Usuario[] = [];
+    for (let i = 0; i < res.rows.length; i++) {
+      const usuario = res.rows.item(i);
+      usuarios.push(usuario);
+    }
+    return usuarios;
+  } catch (e) {
+    this.presentAlert('Error al cargar los usuarios', JSON.stringify(e));
+    return []; 
+  }
+}
+
+}
 
 
 
