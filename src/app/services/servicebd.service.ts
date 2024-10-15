@@ -124,6 +124,7 @@ export class ServicebdService {
         
       }catch(e){
         this.presentAlert('Error al crear tablas', JSON.stringify(e))
+        console.log('Error al crear el administrador');
       }
     }
     async registrarUsuario(usuario: Usuario): Promise<boolean> {
@@ -185,6 +186,9 @@ export class ServicebdService {
         if (result.rows.length > 0){
           const usuario = result.rows.item(0)
           this.setUsuarioActual(usuario);
+          if(usuario.imagen && usuario.imagen.trim() !== ''){
+            await this.storage.setItem('usuario_imagen', usuario.imagen)
+          }
           return true;
         } else {
           this.presentAlert('Login Fallido', 'Nombre o Constraseña incorrectos')

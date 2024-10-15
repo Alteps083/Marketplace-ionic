@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "286590158604",
+    "project_id": "markethub-3c625",
+    "storage_bucket": "markethub-3c625.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286590158604:android:91d36e87cc3ddbd29f2b29",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXU-t7fVfXP52MVL88PU-nVCHIYisKqts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

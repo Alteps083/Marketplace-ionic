@@ -24,7 +24,7 @@ export class RegistroPage implements OnInit {
     this.miFormulario = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email, this.CorreoReal]],
-      phone: ['',[Validators.required, this.NumeroReal]],
+      phone: ['',[Validators.required, this.NumeroReal, Validators.maxLength(11)]],
       password: ['', [Validators.required, Validators.minLength(6), this.ContraseñaRestrincciones]],
     })
    }

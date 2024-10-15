@@ -55,7 +55,6 @@
       <img [src]="image" class="slide-image" />
     </div>
     
-    <!-- Botones para la transición manual -->
     <ion-button class="carousel-control prev" (click)="prevSlide()">&#10094;</ion-button>
     <ion-button class="carousel-control next" (click)="nextSlide()">&#10095;</ion-button>
   </div>
@@ -65,7 +64,7 @@
   </div>
 
   <div class="horizontal-scroll">
-    <ion-card *ngFor="let producto of productos" (click)="detalleProducto(producto)" class="card">
+    <ion-card *ngFor="let producto of productosRecientes" (click)="detalleProducto(producto)" class="card">
       <img [src]="producto.imagenes[0]" alt="{{ producto.nombre_producto }}" *ngIf="producto.imagenes.length > 0">
       <ion-card-header>
         <ion-card-title>{{producto.nombre_producto}}</ion-card-title>

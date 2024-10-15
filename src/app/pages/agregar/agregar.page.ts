@@ -23,6 +23,8 @@ export class AgregarPage implements OnInit {
   marginBottom: string = '200px';
   profileImage: string | null = null;
 
+  usuarioActual: Usuario | null = null;
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -94,13 +96,13 @@ export class AgregarPage implements OnInit {
   } 
 
   async onSubmit() {
-    if (this.miFormulario.valid) {  
+    if (this.miFormulario.valid) {
       const producto = this.miFormulario.value; 
       const imagenes = this.imagePreviews;
-  
-      if (this.usuario) { 
-        const id_vendedor = this.usuario.id; 
-  
+
+      if (this.usuarioActual) { 
+        const id_vendedor = this.usuarioActual.id; 
+
         await this.bd.agregarProducto(
           id_vendedor,
           producto.titulo,
@@ -112,19 +114,18 @@ export class AgregarPage implements OnInit {
         );
 
         const notificacion: Notificacion = {
-          imagen: this.usuario.imagen, 
-          nombreUsuario: this.usuario.nombre, 
+          imagen: this.usuarioActual.imagen, 
+          nombreUsuario: this.usuarioActual.nombre, 
           nombreProducto: producto.titulo
         };
-
+        
         this.notificationService.addNotification(notificacion);
         this.router.navigate(['tabs/home']);
         console.log('Datos del producto: ', producto);
-        this.miFormulario.reset(); 
         this.imagePreviews = [];
       } else {
         console.log('No se pudo obtener el id del vendedor');
-        this.router.navigate(['/login']); 
+        this.router.navigate(['/login']); // Redirigir si no hay usuario
       }
     }
   }
@@ -132,6 +133,7 @@ export class AgregarPage implements OnInit {
   homead(){
     this.router.navigate(['/tabs/homeadmin']);
   }
+
 
   async ngOnInit() {
     await this.cargarUsuario();
@@ -156,6 +158,8 @@ export class AgregarPage implements OnInit {
 
   get descripcion(){
     return this.miFormulario.get('descripcion');
+  
+
   }
 
 }

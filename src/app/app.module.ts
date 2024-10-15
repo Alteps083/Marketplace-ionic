@@ -1,5 +1,6 @@
 import { NgModule, importProvidersFrom } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { PushNotifications } from '@capacitor/push-notifications';
 import { RouteReuseStrategy } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AnimationController } from '@ionic/angular';
