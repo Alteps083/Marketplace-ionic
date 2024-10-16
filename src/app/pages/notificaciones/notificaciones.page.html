@@ -6,7 +6,7 @@
     </ion-buttons>
     <ion-title class="titulo">Notificaciones</ion-title>
     <ion-buttons slot="end"> 
-      <ion-avatar>
+      <ion-avatar (click)="perfil">
         <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>

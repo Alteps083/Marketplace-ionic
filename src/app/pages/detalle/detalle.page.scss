@@ -2,6 +2,10 @@ ion-header {
     background-color: var(--ion-color-primary);
 }
 
+ion-content {
+    --overflow: auto; 
+  }
+
 .titulo{
     display: flex;
     text-align: center;
@@ -9,10 +13,10 @@ ion-header {
     font-size: x-large;
 }
 
-.contenedor-imagen{
+.contenedor-imagen {
     position: relative;
     width: 100%;
-    height: 50%;
+    height: auto; 
     overflow: hidden;
 }
 
@@ -62,6 +66,12 @@ p{
     font-size: 19px;
 }
 
+.comentario {
+    display: flex;
+    align-items: center; 
+    margin-bottom: 10px; 
+  }
+
 .btn-vendedor{
     position: absolute;
     bottom: 32px;
@@ -75,10 +85,15 @@ p{
     height: 100%;
 }
 
-ion-card{
+ion-card {
     width: 100%;
-    height: 100%;
+    height: auto; 
     margin: auto;
+}
+
+ion-card-content {
+    max-height: 400px; 
+    overflow-y: auto; 
 }
 
 img{
@@ -90,9 +105,9 @@ img{
     background-size: cover;
     background-position: center;
     filter: blur(1px);
-    height: 100%;
+    height: 100vh;
     width: 100%;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     z-index: -1;

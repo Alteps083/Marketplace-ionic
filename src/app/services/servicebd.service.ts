@@ -22,7 +22,7 @@ export class ServicebdService {
       contrasenia TEXT NOT NULL,
       telefono TEXT NOT NULL,
       fecha_registro TEXT NOT NULL,
-      es_admin BOOLEAN DEFAULT 0, -- Aquí defines el valor por defecto
+      es_admin BOOLEAN DEFAULT 0, 
       imagen TEXT
     )`;
     
@@ -31,7 +31,17 @@ export class ServicebdService {
   tablaProductos: string = `CREATE TABLE IF NOT EXISTS productos(id INTEGER PRIMARY KEY AUTOINCREMENT,id_vendedor INTEGER, nombre_producto TEXT NOT NULL, descripcion TEXT, categoria TEXT, estado TEXT, 
     precio REAL NOT NULL, imagenes TEXT)`;
 
-    tablaReclamos: string = `CREATE TABLE IF NOT EXISTS reclamos(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL,tipoProblema TEXT NOT NULL, descripcion TEXT NOT NULL)`;
+  tablaReclamos: string = `CREATE TABLE IF NOT EXISTS reclamos(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL,tipoProblema TEXT NOT NULL, descripcion TEXT NOT NULL)`;
+  
+  tablaComentarios: string = `CREATE TABLE IF NOT EXISTS comentarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    productoId INTEGER,
+    usuarioId INTEGER,
+    comentario TEXT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (productoId) REFERENCES productos(id),
+    FOREIGN KEY (usuarioId) REFERENCES usuario(id)
+)`;
 
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
@@ -106,6 +116,7 @@ export class ServicebdService {
         this.crearTablas().then(() => {
           this.cargarUsuarios(); 
           this.cargarProductos();
+          this.crearUsuarioAdminPorDefecto();
           this.isDBReady.next(true);
         });
       }).catch(e => {
@@ -119,6 +130,7 @@ export class ServicebdService {
         await this.database.executeSql(this.tablaUsuario, []);
         await this.database.executeSql(this.tablaProductos, []);
         await this.database.executeSql(this.tablaReclamos, []);
+        await this.database.executeSql(this.tablaComentarios, []);
         await this.actualizarTablaUsuario();
         await this.asignarIdAUsuariosExistentes();  // Asignar IDs a los usuarios existentes
         
@@ -201,9 +213,9 @@ export class ServicebdService {
     }
 
     async actualizarUsuario(usuario: Usuario){
-      const sql = 'UPDATE usuario SET email = ?, telefono = ?, imagen = ? WHERE nombre = ?';
+      const sql = 'UPDATE usuario SET nombre = ?, email = ?, telefono = ?, contrasenia = ?, imagen = ? WHERE id = ?';
       try{
-        await this.database.executeSql(sql, [usuario.email, usuario.telefono, usuario.imagen, usuario.nombre])
+        await this.database.executeSql(sql, [usuario.nombre, usuario.email, usuario.telefono, usuario.contrasenia, usuario.imagen, usuario.id])
         this.presentAlert('Exito', 'Datos actualizados correctamente');
         this.cargarUsuarios();
       }catch (e){
@@ -211,15 +223,20 @@ export class ServicebdService {
       }
     }
 
-    async actualizarProducto(producto: Producto) {
-      const sql = `UPDATE productos SET nombre_producto = ?, descripcion = ?, categoria = ?, estado = ?, precio = ?, imagenes = ? WHERE id = ?`;
-      try {
-        await this.database.executeSql(sql, [producto.nombre_producto, producto.descripcion, producto.categoria, producto.estado, producto.precio, JSON.stringify(producto.imagenes), producto.id]);
-        this.presentAlert('Éxito', 'Producto actualizado correctamente');
-        this.cargarProductos(); 
-      } catch (e) {
-        this.presentAlert('Error al actualizar el producto', JSON.stringify(e));
-      }
+    actualizarProducto(producto: Producto): Promise<any> {
+      const query = `UPDATE productos 
+                     SET nombre_producto = ?, descripcion = ?, categoria = ?, estado = ?, precio = ? 
+                     WHERE id = ?`;
+      const values = [producto.nombre_producto, producto.descripcion, producto.categoria, producto.estado, producto.precio, producto.id];
+      
+      return this.database.executeSql(query, values)
+        .then(res => {
+          console.log('Producto actualizado', res);
+        })
+        .catch(e => {
+          console.log('Error al actualizar producto', e);
+          throw e;
+        });
     }
 
 
@@ -253,6 +270,23 @@ export class ServicebdService {
       } catch (e) {
         this.presentAlert('Error al cargar los productos', JSON.stringify(e));
       }
+    }
+
+    getPublicacionesPorUsuario(usuarioId: number): Promise<Producto[]> {
+      return this.database.executeSql('SELECT * FROM productos WHERE id_vendedor = ?', [usuarioId])
+        .then(res => {
+          let publicaciones: Producto[] = [];
+          for (let i = 0; i < res.rows.length; i++) {
+            const producto = res.rows.item(i);
+            if (producto.imagenes) {
+              producto.imagenes = JSON.parse(producto.imagenes || '[]');
+            } else {
+              producto.imagenes = []; 
+            }
+            publicaciones.push(producto);
+          }
+          return publicaciones;
+        });
     }
 
     async obtenerProductosPorCategoria(categoria: string): Promise<Producto[]> {
@@ -421,7 +455,7 @@ export class ServicebdService {
 
 async asignarIdAUsuariosExistentes() {
   const sqlSelect = 'SELECT * FROM usuario';
-  const sqlUpdate = 'UPDATE usuario SET idusuario = ? WHERE rowid = ?';
+  const sqlUpdate = 'UPDATE usuario SET id = ? WHERE rowid = ?';
 
   try {
     const res = await this.database.executeSql(sqlSelect, []);
@@ -429,16 +463,13 @@ async asignarIdAUsuariosExistentes() {
       const usuario = res.rows.item(i);
 
       if (!usuario.idusuario || usuario.idusuario === null || usuario.idusuario === undefined) {
-        const rowid = usuario.rowid;  // Usamos rowid como identificador temporal
-        const nuevoId = i + 1;  // Generamos un ID, puedes ajustarlo según tu lógica
-
-        // Asignar el ID a cada usuario
+        const rowid = usuario.rowid;  
+        const nuevoId = i + 1;  
         await this.database.executeSql(sqlUpdate, [nuevoId, rowid]);
         console.log(`Asignado ID ${nuevoId} al usuario con rowid ${rowid}`);
       }
     }
-
-    this.presentAlert('Éxito', 'IDs asignados correctamente a los usuarios existentes.');
+    console.log('IDS asignados correctamente a los usuarios');
   } catch (e) {
     this.presentAlert('Error al asignar IDs', JSON.stringify(e));
   }
@@ -459,6 +490,55 @@ async obtenerUsuariosChat(): Promise<Usuario[]> {
     return []; 
   }
 }
+
+async agregarComentario(productoId: number, usuarioId: number, comentario: string) {
+  const sql = 'INSERT INTO comentarios (productoId, usuarioId, comentario) VALUES (?, ?, ?)';
+  await this.database.executeSql(sql, [productoId, usuarioId, comentario]);
+}
+
+async obtenerComentarios(productoId: number) {
+  const sql = `
+    SELECT c.comentario, c.fecha, u.nombre, u.imagen 
+    FROM comentarios c 
+    JOIN usuario u ON c.usuarioId = u.id 
+    WHERE c.productoId = ? 
+    ORDER BY c.fecha DESC`;
+    
+  const res = await this.database.executeSql(sql, [productoId]);
+  let comentarios = [];
+  
+  for (let i = 0; i < res.rows.length; i++) {
+    comentarios.push(res.rows.item(i));
+  }
+  
+  return comentarios;
+}
+
+async crearUsuarioAdminPorDefecto() {
+  const sql = 'SELECT COUNT(*) as count FROM usuario WHERE es_admin = 1';
+  try {
+    const res = await this.database.executeSql(sql, []);
+    if (res.rows.item(0).count === 0) {
+      const usuarioAdmin: Usuario = {
+        id: 0,  
+        nombre: 'admin',
+        email: 'admin@example.com',
+        contrasenia: 'admin123',
+        telefono: 123456789,
+        fecha_registro: new Date().toISOString(),
+        es_admin: true,
+        imagen: '' 
+      };
+      await this.registrarUsuario(usuarioAdmin);
+      this.presentAlert('Éxito', 'Usuario administrador por defecto creado.');
+    } else {
+      console.log('Ya existe un administrador, no es necesario crear otro.');
+    }
+  } catch (e) {
+    this.presentAlert('Error al verificar el administrador por defecto', JSON.stringify(e));
+  }
+}
+
 
 }
 

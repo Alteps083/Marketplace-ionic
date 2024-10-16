@@ -8,8 +8,8 @@
     <ion-button class="btn-search" slot="end" (click)="toggleSearchBar()">
       <ion-icon name="search-outline"></ion-icon>
     </ion-button>
-    <ion-buttons slot="end"> 
-      <ion-avatar>
+    <ion-buttons slot="end" (click)="perfil"> 
+      <ion-avatar (click)="perfil">
         <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>
@@ -31,22 +31,11 @@
     <ion-refresher-content pullingIcon="chevron-down-circle-outline"></ion-refresher-content>
   </ion-refresher>
 
-  <ion-button (click)="mostrarIDsUsuarios()">
-    Mostrar IDs de Usuarios
-  </ion-button>
-  <div *ngIf="idsUsuarios.length > 0">
-    <h3>IDs de Usuarios:</h3>
-    <ul>
-      <li *ngFor="let id of idsUsuarios">{{ id }}</li>
-    </ul>
-  </div>
-
   <!-- Administrador -->
 <div *ngIf="isAdmin()">
   <h3>admministrar</h3>
   <ion-button color="primary" (click)="irAAdministrador()">Ir a Administrador</ion-button>
 </div>
-
 
 
   <!-- Parte del carrusel -->

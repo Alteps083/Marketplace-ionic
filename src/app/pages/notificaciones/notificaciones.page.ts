@@ -4,6 +4,7 @@ import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { NotificationsPushService } from 'src/app/services/notifications-push.service';
 import { Notificacion } from 'src/app/services/notificacion';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-notificaciones',
   templateUrl: './notificaciones.page.html',
@@ -14,7 +15,7 @@ export class NotificacionesPage implements OnInit {
   usuario: Usuario | null = null;
   notificaciones: Notificacion[] = [];
 
-  constructor(private bd: ServicebdService, private storage: NativeStorage, private notificacion: NotificationsPushService) { }
+  constructor(private bd: ServicebdService, private storage: NativeStorage, private notificacion: NotificationsPushService, private router: Router) { }
 
   async ngOnInit() {
     this.notificacion.notifications$.subscribe((data: Notificacion[]) => {
@@ -40,6 +41,10 @@ export class NotificacionesPage implements OnInit {
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
     });
+  }
+
+  perfil(){
+    this.router.navigate(['/tabs/perfil'])
   }
 
 }

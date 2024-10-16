@@ -10,14 +10,22 @@
       <ion-label position="stacked">Nombre</ion-label>
       <ion-input [(ngModel)]="usuario.nombre" name="nombre" required></ion-input>
     </ion-item>
+
     <ion-item>
-      <ion-label position="stacked">Email</ion-label>
-      <ion-input type="email" [(ngModel)]="usuario.email" name="email" required></ion-input>
+      <ion-label position="stacked">Correo Electrónico</ion-label>
+      <ion-input [(ngModel)]="usuario.email" name="email" type="email" required></ion-input>
     </ion-item>
+
     <ion-item>
       <ion-label position="stacked">Teléfono</ion-label>
-      <ion-input type="tel" [(ngModel)]="usuario.telefono" name="telefono" required></ion-input>
+      <ion-input [(ngModel)]="usuario.telefono" name="telefono" type="tel" required></ion-input>
     </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Contraseña</ion-label>
+      <ion-input [(ngModel)]="usuario.contrasenia" name="contrasenia" type="password" required></ion-input>
+    </ion-item>
+
     <ion-button expand="full" type="submit">Guardar Cambios</ion-button>
   </form>
 </ion-content>

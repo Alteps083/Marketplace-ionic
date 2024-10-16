@@ -5,7 +5,7 @@ import { ImageModalComponent } from '../../components/image-modal/image-modal.co
 import { Producto } from 'src/app/services/producto';
 import { ActivatedRoute } from '@angular/router';
 import { ServicebdService } from 'src/app/services/servicebd.service';
-
+import { Usuario } from 'src/app/services/usuario';
 @Component({
   selector: 'app-detalle',
   templateUrl: './detalle.page.html',
@@ -16,6 +16,9 @@ export class DetallePage implements OnInit {
   profileImage: string | null = null;
 
   producto : Producto | null = null;
+
+  comentarios: any[] = [];
+  nuevoComentario: string = '';
 
   constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService) { }
 
@@ -32,7 +35,7 @@ export class DetallePage implements OnInit {
   async ngOnInit() {
     const id = parseInt(this.activeRouter.snapshot.paramMap.get('id') || '0', 10); 
     this.cargarProducto(id);
-
+    this.cargarComentarios();  
     const usuarioActual = this.bd.getUsuarioActual();
     if (usuarioActual && usuarioActual.nombre) {
       this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
@@ -55,6 +58,27 @@ export class DetallePage implements OnInit {
         imagenes: []
       }; 
     }
+  }
+
+  async cargarComentarios() {
+    if (this.producto) { 
+      this.comentarios = await this.bd.obtenerComentarios(this.producto.id);
+    } else {
+      console.error('No se puede cargar comentarios, el producto es null');
+    }
+  }
+
+  async publicarComentario() {
+    const usuarioActual = await this.bd.getUsuarioActual();
+    const usuarioId = usuarioActual ? usuarioActual.id : undefined;
+  
+    if (!this.producto || usuarioId === undefined) {
+      console.error('No se puede publicar el comentario, el producto o el usuario no están disponibles.');
+      return; 
+    }
+    await this.bd.agregarComentario(this.producto.id, usuarioId, this.nuevoComentario);
+    this.nuevoComentario = ''; 
+    this.cargarComentarios(); 
   }
   
   perfil() {

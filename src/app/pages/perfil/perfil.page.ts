@@ -65,10 +65,6 @@ export class PerfilPage implements OnInit {
   modperfil(){
     this.router.navigate(['/modperfil']);
   }
-  modcontra(){
-
-    this.router.navigate(['/modcontra']);
-  }
 
   async takePicture(){
   const actionSheet = await this.actionSheetControler.create({

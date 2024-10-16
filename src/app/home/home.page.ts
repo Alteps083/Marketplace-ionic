@@ -210,9 +210,6 @@ export class HomePage implements OnInit{
     this.swiper?.slidePrev();
   }
 
-  perfil() {
-  }
-
   swiperSlideChanged(e: any) {
     console.log('changed: ', e);
   }
@@ -243,6 +240,10 @@ export class HomePage implements OnInit{
 
   admin(){
     this.bd.establecerAdmin('ale');
+  }
+
+  perfil(){
+    this.router.navigate(['tabs/perfil'])
   }
 
   toggleSearchBar() {

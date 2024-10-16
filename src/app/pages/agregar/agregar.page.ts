@@ -18,7 +18,6 @@ import { Notificacion } from 'src/app/services/notificacion';
 export class AgregarPage implements OnInit {
   imagePreviews: string[] = [];
   imageBase64: string | undefined;
-  usuario: Usuario | null = null;
   miFormulario: FormGroup;
   marginBottom: string = '200px';
   profileImage: string | null = null;
@@ -83,8 +82,8 @@ export class AgregarPage implements OnInit {
     try {
       const data = await this.storage.getItem('usuario');
       if (data) {
-        this.usuario = data as Usuario;
-        this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+        this.usuarioActual = data as Usuario;
+        this.profileImage = await this.bd.obtenerImagenUsuario(this.usuarioActual.nombre);
       } else {
         console.log('No se encontró un usuario en el almacenamiento');
         this.router.navigate(['/login']); 
@@ -137,8 +136,8 @@ export class AgregarPage implements OnInit {
 
   async ngOnInit() {
     await this.cargarUsuario();
-    this.usuario = this.bd.getUsuarioActual();
-    if(!this.usuario){
+    this.usuarioActual = this.bd.getUsuarioActual();
+    if(!this.usuarioActual){
       console.log('No hay usuario actual');
       this.router.navigate(['/login']);
     }
@@ -158,8 +157,10 @@ export class AgregarPage implements OnInit {
 
   get descripcion(){
     return this.miFormulario.get('descripcion');
-  
+  }
 
+  perfil(){
+    this.router.navigate(['tabs/perfil'])
   }
 
 }

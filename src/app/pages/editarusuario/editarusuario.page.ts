@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 interface NavigationExtras {
   state?: {
@@ -40,11 +41,22 @@ export class EditarusuarioPage {
     };
   }
 
+  async takePicture() {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Uri
+    });
+  
+    this.usuario.imagen = image.webPath;
+    await this.bd.actualizarUsuario(this.usuario); // Actualizar el usuario con la imagen nueva
+  }
+
   async guardarCambios() {
     try {
-      await this.bd.actualizarUsuario(this.usuario); // Implementa este método en tu servicio
+      await this.bd.actualizarUsuario(this.usuario);
       this.presentAlert('Éxito', 'Usuario actualizado correctamente.');
-      this.router.navigate(['/administrador']); // Regresar a la página del administrador
+      this.router.navigate(['/administrador']);
     } catch (e) {
       this.presentAlert('Error', 'No se pudo actualizar el usuario.');
     }
@@ -54,7 +66,7 @@ export class EditarusuarioPage {
     const alert = await this.alertController.create({
       header,
       message,
-      buttons: ['OK']
+      buttons: ['OK'],
     });
 
     await alert.present();

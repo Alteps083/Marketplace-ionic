@@ -36,10 +36,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/detalle/detalle.module').then( m => m.DetallePageModule)
   },
   {
-    path: 'cambiarcontra',
-    loadChildren: () => import('./pages/cambiarcontra/cambiarcontra.module').then( m => m.CambiarcontraPageModule)
-  },
-  {
     path: 'modperfil',
     loadChildren: () => import('./pages/modperfil/modperfil.module').then( m => m.ModperfilPageModule)
   },

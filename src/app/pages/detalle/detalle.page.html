@@ -1,4 +1,4 @@
-<ion-header >
+<ion-header>
   <ion-toolbar color="--ion-color-primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
@@ -13,21 +13,38 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-card>
-  <div class="contenedor-imagen">
-    <img *ngIf="producto" alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0]" (click)="producto.imagenes[0] ? presentImageModal(producto.imagenes[0]) : null" />
-    <div class="degradado-inferior">
-      <ion-card-title class="titulo-imagen">{{ producto?.nombre_producto || 'Sin título' }}</ion-card-title>
+<ion-content>
+  <ion-card>
+    <div class="contenedor-imagen">
+      <img *ngIf="producto" alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0]" (click)="producto.imagenes[0] ? presentImageModal(producto.imagenes[0]) : null" />
+      <div class="degradado-inferior">
+        <ion-card-title class="titulo-imagen">{{ producto?.nombre_producto || 'Sin título' }}</ion-card-title>
+      </div>
     </div>
-  </div>
-  <ion-card-header>
-    <ion-card-subtitle>Categoria: {{ producto?.categoria || 'Sin categoría' }}</ion-card-subtitle>
-    <ion-card-subtitle>Precio: ${{ producto?.precio || 0 }} CLP</ion-card-subtitle>
-    <ion-card-subtitle>Estado: {{ producto?.estado || 'Sin estado' }}</ion-card-subtitle>
-    <ion-card-subtitle>Descripcion de referencia:</ion-card-subtitle>
-    <p>{{ producto?.descripcion || 'Sin descripción' }}</p>
-  </ion-card-header>
-  <ion-button (click)="vendedor()" class="btn-vendedor">Contactar al vendedor</ion-button>
-</ion-card>
-
-
+    <ion-card-header>
+      <ion-card-subtitle>Categoria: {{ producto?.categoria || 'Sin categoría' }}</ion-card-subtitle>
+      <ion-card-subtitle>Precio: ${{ producto?.precio || 0 }} CLP</ion-card-subtitle>
+      <ion-card-subtitle>Estado: {{ producto?.estado || 'Sin estado' }}</ion-card-subtitle>
+      <ion-card-subtitle>Descripcion de referencia:</ion-card-subtitle>
+      <p>{{ producto?.descripcion || 'Sin descripción' }}</p>
+    </ion-card-header>
+    <ion-card-header>
+      <ion-card-title>Comentarios</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="scrollable-content">
+      <div *ngFor="let comentario of comentarios" class="comentario"> 
+        <ion-avatar slot="start">
+          <img [src]="comentario.imagen || 'assets/img/nouser.png'" />
+        </ion-avatar>
+        <div>
+          <strong>{{ comentario.nombre }}</strong>
+          <p>{{ comentario.comentario }}</p>
+        </div>
+      </div>
+      <ion-item>
+        <ion-input [(ngModel)]="nuevoComentario" placeholder="Escribe tu comentario..."></ion-input>
+        <ion-button (click)="publicarComentario()">Publicar</ion-button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

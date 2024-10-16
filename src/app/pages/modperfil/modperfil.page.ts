@@ -18,6 +18,7 @@ export class ModperfilPage implements OnInit {
   imagenper: any;
 
   miFormulario: FormGroup;
+  miFormularioContrasenia: FormGroup;
   usuario: Usuario | null = null;
   password: string = '';
   showPassword: boolean = false;
@@ -31,12 +32,20 @@ export class ModperfilPage implements OnInit {
     }, 2000); 
   }
 
+ 
+
   constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder, private bd: ServicebdService, private storage: NativeStorage) {
     this.miFormulario = this.fb.group({
       name: ['', [Validators.minLength(3)]],
       email: ['', [Validators.email, this.CorreoReal]],
-      phone: ['',[this.NumeroReal]],
-    })
+      phone: ['', [this.NumeroReal]],
+      password: ['', [Validators.minLength(6)]],
+    });
+    this.miFormularioContrasenia = this.fb.group({
+      currentPassword: ['', [Validators.required]], 
+      password: ['', [Validators.minLength(6), this.ContraseñaRestrincciones]],
+      confirmPassword: ['', [Validators.minLength(6)]],
+    });
    }
 
   ngOnInit() {
@@ -59,21 +68,61 @@ export class ModperfilPage implements OnInit {
     });
   }
 
-  async onSubmit(){
-    if(this.miFormulario.valid){
-      const actualizarUsuario: Usuario = {
-        ...this.usuario,
-        ...this.miFormulario.value,
-        imagen: this.imagenper
+  async onSubmit() {
+    if (this.miFormulario.valid) {
+      const actualizarUsuario: Partial<Usuario> = {  
+        nombre: this.miFormulario.value.name || this.usuario?.nombre,
+        contrasenia: this.miFormulario.value.password || this.usuario?.contrasenia,
+        email: this.miFormulario.value.email || this.usuario?.email,
+        telefono: this.miFormulario.value.phone || this.usuario?.telefono,
+        imagen: this.imagenper || this.usuario?.imagen
+      };
+      try {
+        if (this.usuario?.id) {
+          await this.bd.actualizarUsuario({...this.usuario, ...actualizarUsuario}); 
+        }
+
+        await this.storage.setItem('usuario', {...this.usuario, ...actualizarUsuario});
+  
+        await this.presentToast('bottom');
+
+        this.router.navigate(['tabs/perfil']);
+      } catch (error) {
+        console.error('Error al actualizar usuario: ', error);
+        this.presentToast('top');
       }
-      await this.bd.actualizarUsuario(actualizarUsuario);
-      await this.storage.setItem('usuario', actualizarUsuario);
-      await this.presentToast('bottom');
-      this.router.navigate(['tabs/perfil'])
     }
-    console.log('Formulario enviado', this.miFormulario.value);
   }
 
+  async onChangePassword() {
+    if (this.miFormularioContrasenia.valid) {
+      if (this.miFormularioContrasenia.value.password !== this.miFormularioContrasenia.value.confirmPassword) {
+        this.presentToast('middle', 'Las contraseñas no coinciden');
+        return;
+      }
+
+      if (this.usuario) {
+        if (this.usuario.contrasenia !== this.miFormularioContrasenia.value.currentPassword) {
+          this.presentToast('middle', 'La contraseña actual es incorrecta');
+          return;
+        }
+
+        this.usuario.contrasenia = this.miFormularioContrasenia.value.password;
+
+        try {
+          await this.bd.actualizarUsuario(this.usuario);
+          await this.storage.setItem('usuario', this.usuario);
+          this.presentToast('bottom', 'Contraseña actualizada exitosamente');
+        } catch (error) {
+          console.error('Error al actualizar la contraseña: ', error);
+          this.presentToast('top', 'Error al actualizar la contraseña');
+        }
+      } else {
+        this.presentToast('middle', 'No se encontró el usuario');
+      }
+    }
+  }
+  
   CorreoReal(control: AbstractControl){
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (control.value && !emailPattern.test(control.value)){
@@ -90,17 +139,33 @@ export class ModperfilPage implements OnInit {
     return null;
   }
 
+  ContraseñaRestrincciones(control: AbstractControl){
+    const contra: string = control.value || '';
+
+    const hasUpperCase = /[A-Z]/.test(contra);
+    const hasLowerCase = /[a-z]/.test(contra);
+    const hasNumber = /\d/.test(contra);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(contra);
+
+    const valid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
+    if(!valid){
+      return { RangoContrasenia: true }
+    }
+
+    return null;
+  }
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 
-  async presentToast(position: 'top' | 'middle' | 'bottom') {
+  async presentToast(position: 'top' | 'middle' | 'bottom', message: string = 'Cambios guardados') {
     const toast = await this.toastController.create({
-      message: 'Cambios guardados',
+      message: message,
       duration: 1500,
       position: position,
     });
-
+  
     await toast.present();
   }
 

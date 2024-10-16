@@ -27,36 +27,36 @@ export class LoginPage implements OnInit {
   showPassword: boolean = false;
 
   constructor(private router:Router, private toastController: ToastController, private formBuilder: FormBuilder, 
-    private storage: NativeStorage, private servicebd: ServicebdService) { 
+    private storage: NativeStorage, private bd: ServicebdService) { 
     this.miFormulario = this.formBuilder.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
    this.initializeKeyboardListeners();
    this.iniciarControlTeclado();
    this.storage.getItem('usuario').then((usuario) => {
     if (usuario) {
       if(usuario.es_admin){
-        this.router.navigate(['tabs/home']);
+        this.router.navigate(['/administrador']);
       } else {
-        this.router.navigate(['tabs/home']);
+        this.router.navigate(['/tabs/home']);
       }
     }
    }).catch(() => {
     console.log('No hay sesion activa');
    });
 
-   this.servicebd.fetchUsuarios().subscribe(usuarios => {
+   this.bd.fetchUsuarios().subscribe(usuarios => {
     this.listaUsuarios = usuarios;
    }
   )
   
-   this.servicebd.dbReady().subscribe(isReady => {
+   this.bd.dbReady().subscribe(isReady => {
     if(isReady){
-      this.servicebd.cargarUsuarios();
+      this.bd.cargarUsuarios();
     }
    })
   }
@@ -64,17 +64,17 @@ export class LoginPage implements OnInit {
   async iniciarSesion() {
     const nombre = this.miFormulario.get('nombre')?.value; 
     const contrasenia = this.miFormulario.get('password')?.value; 
-    const loginExitoso = await this.servicebd.loginUsuario(nombre, contrasenia);
+    const loginExitoso = await this.bd.loginUsuario(nombre, contrasenia);
     
     if (loginExitoso) {
-      const usuarioActual = this.servicebd.getUsuarioActual();
+      const usuarioActual = this.bd.getUsuarioActual();
       console.log('Usuario después del login:', usuarioActual);
       if(usuarioActual){
         await this.storage.setItem('usuario', usuarioActual);
       }
       if (usuarioActual && usuarioActual.es_admin) {
         this.presentAlert('Éxito', 'Bienvenido Administrador');
-        this.router.navigate(['tabs/administrador']); 
+        this.router.navigate(['/administrador']); 
       } else {
         this.presentAlert('Éxito', 'Bienvenido Usuario');
         this.router.navigate(['tabs/home']); 

@@ -20,21 +20,25 @@
   <div class="publicaciones">
     <ion-button (click)="crear()" class="btn-crear">Crear publicacion</ion-button>
     <h2>Todas tus publicaciones</h2>
-    <div class="publicacion">
-      <div class="publicacion-detalles">
-        <img src="https://via.placeholder.com/100" alt="Imagen de publicacion">
-        <div class="info">
-          <h3>Titulo publicacion</h3>
-          <div class="precio-estado">
-            <h4>Precio: $100</h4>
-            <h4>Estado: Nuevo</h4>
+    <div *ngIf="publicaciones && publicaciones.length > 0; else noPublicaciones">
+      <div class="publicacion" *ngFor="let producto of publicaciones">
+        <div class="publicacion-detalles">
+          <img [src]="producto.imagenes[0]" alt="Imagen de publicacion" *ngIf="producto.imagenes.length > 0">
+          <div class="info">
+            <h3>{{ producto.nombre_producto }}</h3>
+            <div class="precio-estado">
+              <h4>Precio: ${{ producto.precio }}</h4>
+              <h4>Estado: {{ producto.estado }}</h4>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="btns">
-        <ion-button>Marcar como vendido</ion-button>
-        <ion-button>Volver a publicar este articulo</ion-button>
+        <div class="btns">
+          <ion-button (click)="irAVerPublicacion(producto.id)">Ir a ver Publicacion</ion-button>
+        </div>
       </div>
     </div>
+    <ng-template #noPublicaciones>
+      <h3>No tienes publicaciones aún.</h3>
+    </ng-template>
   </div>
 </ion-content>

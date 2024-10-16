@@ -223,18 +223,18 @@ ion-toolbar {
 
 .horizontal-scroll {
   display: flex;
-  overflow-x: auto; /* Habilitar scroll horizontal */
+  overflow-x: auto; 
   padding: 10px;
 }
 
 .horizontal-scroll ion-card {
-  flex: 0 0 auto; /* Para que las tarjetas no se ajusten al ancho completo */
-  margin-right: 10px; /* Espacio entre las tarjetas */
-  width: 200px; /* Ancho fijo de las tarjetas, ajusta según sea necesario */
+  flex: 0 0 auto; 
+  margin-right: 10px; 
+  width: 200px; 
 }
 
 ion-card img {
-  width: 100%; /* Asegura que la imagen ocupe el ancho completo de la tarjeta */
+  width: 100%; 
   height: auto;
 }
 
