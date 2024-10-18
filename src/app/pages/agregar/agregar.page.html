@@ -5,8 +5,8 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title class="titulo">Agregar</ion-title>
-    <ion-buttons slot="end"> 
-      <ion-avatar (click)="perfil">
+    <ion-buttons slot="end" (click)="perfil"> 
+      <ion-avatar >
         <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>

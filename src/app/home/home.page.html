@@ -9,7 +9,7 @@
       <ion-icon name="search-outline"></ion-icon>
     </ion-button>
     <ion-buttons slot="end" (click)="perfil"> 
-      <ion-avatar (click)="perfil">
+      <ion-avatar>
         <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>

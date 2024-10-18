@@ -1,11 +1,15 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Editar Usuario</ion-title>
+  <ion-toolbar color="--ion-color-primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="titulo">Editar usuario</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <form (ngSubmit)="guardarCambios()">
+  <form #form="ngForm" (ngSubmit)="guardarCambios(form)">
     <ion-item>
       <ion-label position="stacked">Nombre</ion-label>
       <ion-input [(ngModel)]="usuario.nombre" name="nombre" required></ion-input>
@@ -17,15 +21,21 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Teléfono</ion-label>
-      <ion-input [(ngModel)]="usuario.telefono" name="telefono" type="tel" required></ion-input>
-    </ion-item>
-
-    <ion-item>
       <ion-label position="stacked">Contraseña</ion-label>
       <ion-input [(ngModel)]="usuario.contrasenia" name="contrasenia" type="password" required></ion-input>
     </ion-item>
 
-    <ion-button expand="full" type="submit">Guardar Cambios</ion-button>
+    <ion-item>
+      <ion-label position="stacked">Teléfono</ion-label>
+      <ion-input [(ngModel)]="usuario.telefono" name="telefono" type="number" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Imagen de Perfil</ion-label>
+      <ion-button (click)="takePicture()">Cambiar Imagen</ion-button>
+      <img *ngIf="usuario.imagen" [src]="usuario.imagen" alt="Imagen de perfil" style="max-width: 100px;">
+    </ion-item>
+
+    <ion-button expand="block" type="submit">Guardar Cambios</ion-button>
   </form>
 </ion-content>

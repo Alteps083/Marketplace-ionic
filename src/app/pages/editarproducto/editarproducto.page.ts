@@ -1,54 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Producto } from 'src/app/services/producto';
-
-interface NavigationExtras {
-  state?: {
-    producto: Producto;
-  };
-}
+import { ServicebdService } from 'src/app/services/servicebd.service';
 
 @Component({
   selector: 'app-editarproducto',
   templateUrl: './editarproducto.page.html',
   styleUrls: ['./editarproducto.page.scss'],
 })
-export class EditarproductoPage {
-  producto!: Producto; // Usamos '!' para indicar que no es undefined al ser inicializado.
+export class EditarproductoPage implements OnInit {
 
-  constructor(
-    private router: Router,
-    private bd: ServicebdService,
-    private alertController: AlertController
-  ) {
-    const navigation = this.router.getCurrentNavigation() as NavigationExtras;
-    if (navigation?.state?.['producto']) {
-      this.producto = navigation.state['producto']; // Asigna solo si no es undefined
+  producto: Producto = {
+    id: 0,
+    id_vendedor: 0,
+    nombre_producto: '',
+    descripcion: '',
+    categoria: '',
+    estado: '',
+    precio: 0,
+    imagenes: []
+  };
+
+  constructor(private router: Router, private bd: ServicebdService) {}
+
+  ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const receivedProduct = navigation.extras.state['producto'];
+      if (receivedProduct) {
+        this.producto = { ...receivedProduct };
+        console.log('Producto recibido para editar:', this.producto);
+      } else {
+        console.error('No se encontró el producto en el estado de navegación');
+        this.router.navigate(['/administrador']);
+      }
     } else {
-      this.presentAlert('Error', 'No se encontró el producto.');
-      this.router.navigate(['/administrador']); // Regresar a la página del administrador si no hay producto
+      console.error('No se recibió información del producto');
+      this.router.navigate(['/administrador']);
     }
   }
 
-  async guardarCambios() {
-    try {
-      await this.bd.actualizarProducto(this.producto); // Implementa este método en tu servicio
-      this.presentAlert('Éxito', 'Producto actualizado correctamente.');
-      this.router.navigate(['/administrador']); // Regresar a la página del administrador
-    } catch (e) {
-      this.presentAlert('Error', 'No se pudo actualizar el producto.');
+  guardarCambios() {
+    if (this.producto.id) {
+      this.bd.actualizarProducto(this.producto).then(() => {
+        console.log('Producto actualizado correctamente');
+        this.router.navigate(['/administrador']).then(() => {
+          // Aquí puedes llamar a cargarProductos si es necesario
+          this.bd.cargarProductos(); // Solo si estás usando el mismo servicio
+        });
+      }).catch(error => {
+        console.error('Error al actualizar el producto:', error);
+      });
+    } else {
+      console.error('ID del producto no válido');
     }
   }
-
-  async presentAlert(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
+  
 }

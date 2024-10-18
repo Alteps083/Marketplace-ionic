@@ -5,17 +5,12 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title class="titulo">Administrador</ion-title>
-    <ion-button class="btn-search" slot="end">
+    <ion-button class="btn-search" slot="end" (click)="toggleSearchBar()">
       <ion-icon name="search-outline"></ion-icon>
     </ion-button>
-    <ion-buttons slot="end">
-      <ion-avatar>
-        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
-      </ion-avatar>
-    </ion-buttons>
   </ion-toolbar>
+  <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="filtrarItems($event)" placeholder="Buscar..."></ion-searchbar>
 </ion-header>
-
 <ion-content>
   <!-- Botones para seleccionar qué tabla mostrar -->
   <ion-button (click)="mostrarTablaUsuarios()">Mostrar Usuarios</ion-button>
@@ -26,15 +21,15 @@
   <div *ngIf="mostrarUsuarios">
     <h2>Lista de Usuarios</h2>
     <ion-list>
-      <ion-item *ngFor="let usuario of usuarios">
+      <ion-item *ngFor="let usuario of usuariosFiltrados">
         <ion-label>
           <h2>{{ usuario.nombre }}</h2>
           <p>(ID: {{ usuario.id }})</p>
           <p>Email: {{ usuario.email }}</p>
           <p>Teléfono: {{ usuario.telefono }}</p>
         </ion-label>
-        <ion-button (click)="eliminarusuario(usuario.id)">Eliminar</ion-button>
         <ion-button color="primary" (click)="editarUsuario(usuario)">Editar</ion-button>
+        <ion-button (click)="eliminarusuario(usuario.id!)">Eliminar</ion-button>
       </ion-item>
     </ion-list>
   </div>
@@ -43,10 +38,14 @@
   <div *ngIf="mostrarProductos">
     <h2>Lista de Productos</h2>
     <ion-list>
-      <ion-item *ngFor="let producto of productos">
-        {{ producto.nombre_producto }} - {{ producto.precio }}
+      <ion-item *ngFor="let producto of productosFiltrados">
+        <ion-label>
+          <h2>{{ producto.nombre_producto }}</h2>
+          <p>{{ producto.descripcion }}</p>
+          <p>Precio: {{ producto.precio | currency }}</p>
+        </ion-label>
+        <ion-button color="primary" (click)="editarProducto(producto)">Editar</ion-button>
         <ion-button color="danger" (click)="eliminarProducto(producto.id)">Eliminar</ion-button>
-        <ion-button (click)="editarProducto(producto)">Editar</ion-button>
       </ion-item>
     </ion-list>
   </div>
@@ -55,15 +54,13 @@
   <div *ngIf="mostrarReclamos">
     <h2>Lista de Reclamos</h2>
     <ion-list>
-      <ion-item *ngFor="let reclamo of reclamos">
+      <ion-item *ngFor="let reclamo of reclamosFiltrados">
         <ion-label>
           <h2>{{ reclamo.email }}</h2>
           <p>Tipo: {{ reclamo.tipoProblema }}</p>
           <p>Descripción: {{ reclamo.descripcion }}</p>
         </ion-label>
-        <ion-button color="danger" (click)="eliminarReclamo(reclamo.id)">
-          Eliminar
-        </ion-button>
+        <ion-button color="danger" (click)="eliminarReclamo(reclamo.id)">Eliminar</ion-button>
       </ion-item>
     </ion-list>
   </div>

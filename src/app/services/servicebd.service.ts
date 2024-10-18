@@ -12,6 +12,9 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 })
 export class ServicebdService {
 
+  private productosSubject = new BehaviorSubject<Producto[]>([]);
+  public productos$ = this.productosSubject.asObservable();
+
   public database!: SQLiteObject;
 
   tablaUsuario: string = `
@@ -258,6 +261,9 @@ export class ServicebdService {
 
     async cargarProductos() {
       const sql = 'SELECT * FROM productos';
+      this.obtenerProductos().then(productos => {
+        this.productosSubject.next(productos);
+      });
       try {
         const res = await this.database.executeSql(sql, []);
         let productos: Producto[] = [];
@@ -539,6 +545,17 @@ async crearUsuarioAdminPorDefecto() {
   }
 }
 
+obtenerProductos(): Promise<Producto[]> {
+  const query = 'SELECT * FROM productos';
+  
+  return this.database.executeSql(query, []).then(result => {
+    const productos: Producto[] = [];
+    for (let i = 0; i < result.rows.length; i++) {
+      productos.push(result.rows.item(i));
+    }
+    return productos;
+  });
+}
 
 }
 

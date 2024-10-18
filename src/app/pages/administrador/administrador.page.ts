@@ -25,6 +25,18 @@ export class AdministradorPage {
   mostrarProductos: boolean = false; // Bandera para mostrar productos
   mostrarReclamos: boolean = false;
 
+  searchText: string = '';  // Para la búsqueda
+  mostrarBarraBusqueda: boolean = false;  // Controla si se muestra la barra de búsqueda
+
+  usuariosFiltrados: Usuario[] = [];
+  productosFiltrados: Producto[] = [];
+  reclamosFiltrados: any[] = [];
+  searchTerm: string = '';
+
+
+
+  
+
   constructor(private router: Router, private bd: ServicebdService, private storage: NativeStorage, private alertController: AlertController) {}
 
   ionViewWillEnter() {
@@ -33,6 +45,10 @@ export class AdministradorPage {
   }
 
   async ngOnInit() {
+    this.cargarProductos();
+    this.bd.productos$.subscribe(productos => {
+      this.productos = productos;
+    });
     this.cargarUsuario();
     this.bd.fetchUsuarios().subscribe((data: Usuario[]) => {
       this.usuarios = data;
@@ -43,6 +59,9 @@ export class AdministradorPage {
     this.bd.fetchUsuarios().subscribe(usuarios => {
       this.usuarios = usuarios;
     });
+    this.usuariosFiltrados = this.usuarios;
+    this.productosFiltrados = this.productos;
+    this.reclamosFiltrados = this.reclamos;
     this.usuarioActual = this.bd.getUsuarioActual();
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
@@ -63,6 +82,7 @@ export class AdministradorPage {
   }
 
   cargarUsuario() {
+    
     this.storage.getItem('usuario').then((data: Usuario) => {
       if (data) {
         this.usuario = data;
@@ -82,15 +102,28 @@ export class AdministradorPage {
   }
 
   cargarProductos() {
-    this.bd.fetchProductos().subscribe(productos => {
+    this.bd.obtenerProductos().then(productos => {
       this.productos = productos;
+    }).catch(error => {
+      console.error('Error al cargar productos:', error);
     });
   }
 
   cargarDatos() {
-    this.bd.fetchUsuarios().subscribe(usuarios => this.usuarios = usuarios);  // Actualiza 'usuarios'
-    this.bd.fetchProductos().subscribe(productos => this.productos = productos);
-    this.bd.listarReclamos.subscribe(reclamos => this.reclamos = reclamos);
+    this.bd.fetchUsuarios().subscribe((usuarios: Usuario[]) => {
+      this.usuarios = usuarios;
+      this.usuariosFiltrados = usuarios; // Asegurarse de que usuariosFiltrados tenga los datos iniciales
+    });
+
+    this.bd.fetchProductos().subscribe((productos: Producto[]) => {
+      this.productos = productos;
+      this.productosFiltrados = productos; // Asegurarse de que productosFiltrados tenga los datos iniciales
+    });
+
+    this.bd.listarReclamos.subscribe(reclamos => {
+      this.reclamos = reclamos;
+      this.reclamosFiltrados = reclamos;  // Inicializa los filtrados
+    });
   }
 
 
@@ -111,7 +144,7 @@ export class AdministradorPage {
 
   editarProducto(producto: Producto) {
     this.router.navigate(['/editarproducto'], { state: { producto } });
-  }
+  } 
 
   eliminarReclamo(id: number) {
     this.bd.eliminarReclamo(id).then(() => this.cargarDatos());
@@ -126,18 +159,71 @@ export class AdministradorPage {
     this.mostrarUsuarios = true;
     this.mostrarProductos = false;
     this.mostrarReclamos = false;
+    this.usuariosFiltrados = this.usuarios; // Reinicia la lista filtrada al mostrar la tabla
   }
 
   mostrarTablaProductos() {
     this.mostrarUsuarios = false;
     this.mostrarProductos = true;
     this.mostrarReclamos = false;
+    this.productosFiltrados = this.productos; // Reinicia la lista filtrada al mostrar la tabla
   }
 
   mostrarTablaReclamos() {
     this.mostrarUsuarios = false;
     this.mostrarProductos = false;
     this.mostrarReclamos = true;
+    this.reclamosFiltrados = this.reclamos; // Reinicia la lista filtrada al mostrar la tabla
+  }
+
+  toggleSearchBar() {
+    this.mostrarBarraBusqueda = !this.mostrarBarraBusqueda;
+  }
+
+  buscar() {
+    const lowerSearchText = this.searchText.toLowerCase();
+
+    if (this.mostrarUsuarios) {
+      this.usuariosFiltrados = this.usuarios.filter(usuario =>
+        usuario.nombre.toLowerCase().includes(lowerSearchText) ||
+        usuario.email.toLowerCase().includes(lowerSearchText) ||
+        usuario.telefono.toString().includes(lowerSearchText)
+      );
+    }
+
+    if (this.mostrarProductos) {
+      this.productosFiltrados = this.productos.filter(producto =>
+        producto.nombre_producto.toLowerCase().includes(lowerSearchText) ||
+        producto.descripcion.toLowerCase().includes(lowerSearchText) ||
+        producto.precio.toString().includes(lowerSearchText)
+      );
+    }
+
+    if (this.mostrarReclamos) {
+      this.reclamosFiltrados = this.reclamos.filter(reclamo =>
+        reclamo.email.toLowerCase().includes(lowerSearchText) ||
+        reclamo.tipoProblema.toLowerCase().includes(lowerSearchText) ||
+        reclamo.descripcion.toLowerCase().includes(lowerSearchText)
+      );
+    }
+  }
+
+  filtrarItems(event: any) {
+    const searchTerm = event.target.value ? event.target.value.toLowerCase() : '';
+
+    if (this.mostrarUsuarios) {
+      this.usuariosFiltrados = this.usuarios.filter(usuario => 
+        usuario.nombre.toLowerCase().includes(searchTerm) || 
+        usuario.email.toLowerCase().includes(searchTerm));
+    } else if (this.mostrarProductos) {
+      this.productosFiltrados = this.productos.filter(producto => 
+        producto.nombre_producto.toLowerCase().includes(searchTerm) || 
+        producto.descripcion.toLowerCase().includes(searchTerm));
+    } else if (this.mostrarReclamos) {
+      this.reclamosFiltrados = this.reclamos.filter(reclamo => 
+        reclamo.email.toLowerCase().includes(searchTerm) || 
+        reclamo.tipoProblema.toLowerCase().includes(searchTerm));
+    }
   }
 
   async presentAlert(header: string, message: string) {

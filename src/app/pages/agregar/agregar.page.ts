@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Form, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Keyboard } from '@capacitor/keyboard';
 import { ServicebdService } from 'src/app/services/servicebd.service';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Usuario } from 'src/app/services/usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
@@ -17,66 +16,37 @@ import { Notificacion } from 'src/app/services/notificacion';
 })
 export class AgregarPage implements OnInit {
   imagePreviews: string[] = [];
-  imageBase64: string | undefined;
   miFormulario: FormGroup;
   marginBottom: string = '200px';
   profileImage: string | null = null;
-
   usuarioActual: Usuario | null = null;
 
+  constructor(
+    private router: Router, 
+    private bd: ServicebdService, 
+    private storage: NativeStorage, 
+    private fb: FormBuilder, 
+    private notificationService: NotificationsPushService
+  ) {
+    this.miFormulario = this.fb.group({
+      titulo: ['', Validators.required],
+      precio: ['', [Validators.required, Validators.min(0)]],
+      categoria: ['', Validators.required],
+      estado: ['', Validators.required],
+      descripcion: ['', [Validators.required, Validators.minLength(50)]],
+    });
+  }
+
+  onDescriptionChange(event: any) {
+    const input = event.target.value;
+    this.miFormulario.controls['descripcion'].setValue(input);
+  }
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
       if (refresher) {
         refresher.complete(); 
-      }
-    }, 2000); 
-  }
-
-  triggerFileInput() {
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    fileInput.click();
-  }
-
-  constructor(private router: Router, private bd: ServicebdService, private storage: NativeStorage, private fb: FormBuilder, private notificationService:NotificationsPushService) { 
-    this.miFormulario = this.fb.group({
-        titulo: ['', Validators.required],
-        precio: ['', [Validators.required, Validators.min(0)]],
-        categoria: ['', Validators.required],
-        estado: ['', Validators.required],
-        descripcion: ['', [Validators.required, Validators.minLength(50)]],
-      });
-   }
-
-   onDescriptionChange(event: any) {
-    const input = event.target.value;
-    this.miFormulario.controls['descripcion'].setValue(input);
-  }
-
-  async takePicture(){
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing:false,
-      resultType: CameraResultType.Base64,
-      source: CameraSource.Camera
-    });
-    if (image && image.base64String) {
-      this.imagePreviews.push(`data:image/jpeg;base64,${image.base64String}`);
-    }
-  }
-
-  async selectFromGallery() {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing: false,
-      resultType: CameraResultType.Base64, 
-      source: CameraSource.Photos
-    });
-
-    if (image && image.base64String) {
-      this.imagePreviews.push(`data:image/jpeg;base64,${image.base64String}`);
-    }
-  }
+      }})}
 
   async cargarUsuario() {
     try {
@@ -92,14 +62,14 @@ export class AgregarPage implements OnInit {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
       this.router.navigate(['/login']); 
     }
-  } 
+  }
 
   async onSubmit() {
     if (this.miFormulario.valid) {
       const producto = this.miFormulario.value; 
       const imagenes = this.imagePreviews;
 
-      if (this.usuarioActual) { 
+      if (this.usuarioActual) {
         const id_vendedor = this.usuarioActual.id; 
 
         await this.bd.agregarProducto(
@@ -124,43 +94,61 @@ export class AgregarPage implements OnInit {
         this.imagePreviews = [];
       } else {
         console.log('No se pudo obtener el id del vendedor');
-        this.router.navigate(['/login']); // Redirigir si no hay usuario
+        this.router.navigate(['/login']); 
       }
     }
   }
 
-  homead(){
-    this.router.navigate(['/tabs/homeadmin']);
-  }
-
-
   async ngOnInit() {
-    await this.cargarUsuario();
-    this.usuarioActual = this.bd.getUsuarioActual();
-    if(!this.usuarioActual){
+    await this.cargarUsuario(); 
+    if (!this.usuarioActual) {
       console.log('No hay usuario actual');
       this.router.navigate(['/login']);
     }
-    const usuarioActual = this.bd.getUsuarioActual();
-    if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
-    }
 
     Keyboard.addListener('keyboardWillShow', (info) => {
-      this.marginBottom = `${info.keyboardHeight}px`; 
+      this.marginBottom = `${info.keyboardHeight}px`;
     });
 
     Keyboard.addListener('keyboardWillHide', () => {
-      this.marginBottom = '0px'; 
+      this.marginBottom = '0px';
     });
   }
 
-  get descripcion(){
+  async takePicture() {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64,
+      source: CameraSource.Camera
+    });
+    if (image && image.base64String) {
+      this.imagePreviews.push(`data:image/jpeg;base64,${image.base64String}`);
+    }
+  }
+
+  async selectFromGallery() {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64,
+      source: CameraSource.Photos
+    });
+
+    if (image && image.base64String) {
+      this.imagePreviews.push(`data:image/jpeg;base64,${image.base64String}`);
+    }
+  }
+
+  get descripcion() {
     return this.miFormulario.get('descripcion');
   }
-
-  perfil(){
-    this.router.navigate(['tabs/perfil'])
+  
+  perfil() {
+    this.router.navigate(['tabs/perfil']);
   }
 
+  homead() {
+    this.router.navigate(['/tabs/homeadmin']);
+  }
 }

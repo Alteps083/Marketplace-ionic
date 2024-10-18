@@ -1,33 +1,37 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Editar Producto</ion-title>
+  <ion-toolbar color="--ion-color-primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="titulo">Editar producto</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <form (ngSubmit)="guardarCambios()">
     <ion-item>
-      <ion-label position="stacked">Nombre del Producto</ion-label>
+      <ion-label position="floating">Nombre del Producto</ion-label>
       <ion-input [(ngModel)]="producto.nombre_producto" name="nombre_producto" required></ion-input>
-    </ion-item>
-    
-    <ion-item>
-      <ion-label position="stacked">Descripción</ion-label>
-      <ion-input [(ngModel)]="producto.descripcion" name="descripcion" required></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Categoría</ion-label>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea [(ngModel)]="producto.descripcion" name="descripcion" required></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Categoría</ion-label>
       <ion-input [(ngModel)]="producto.categoria" name="categoria" required></ion-input>
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="stacked">Estado</ion-label>
+      <ion-label position="floating">Estado</ion-label>
       <ion-input [(ngModel)]="producto.estado" name="estado" required></ion-input>
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="stacked">Precio</ion-label>
+      <ion-label position="floating">Precio</ion-label>
       <ion-input type="number" [(ngModel)]="producto.precio" name="precio" required></ion-input>
     </ion-item>
 

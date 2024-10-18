@@ -4,12 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { Camera, CameraResultType } from '@capacitor/camera';
-
-interface NavigationExtras {
-  state?: {
-    usuario: Usuario;
-  };
-}
+import { NgForm } from '@angular/forms'; // Asegúrate de importar esto
 
 @Component({
   selector: 'app-editarusuario',
@@ -17,28 +12,26 @@ interface NavigationExtras {
   styleUrls: ['./editarusuario.page.scss'],
 })
 export class EditarusuarioPage {
-  usuario: Usuario;
+  usuario: Usuario = {
+    id: 0,
+    nombre: '',
+    email: '',
+    contrasenia: '',
+    telefono: 0,
+    fecha_registro: '',
+    es_admin: false,
+    imagen: ''
+  };
 
   constructor(
     private router: Router,
     private bd: ServicebdService,
     private alertController: AlertController
   ) {
-    const navigation = this.router.getCurrentNavigation() as NavigationExtras;
-    this.usuario = navigation?.state?.['usuario'] || this.getDefaultUsuario(); // Inicializa con un objeto por defecto
-  }
-
-  private getDefaultUsuario(): Usuario {
-    return {
-      id: 0,
-      nombre: '',
-      email: '',
-      contrasenia: '',
-      telefono: 0,
-      fecha_registro: '',
-      es_admin: false,
-      imagen: ''
-    };
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras?.state) {
+      this.usuario = navigation.extras.state['usuario'];
+    }
   }
 
   async takePicture() {
@@ -48,17 +41,22 @@ export class EditarusuarioPage {
       resultType: CameraResultType.Uri
     });
   
-    this.usuario.imagen = image.webPath;
-    await this.bd.actualizarUsuario(this.usuario); // Actualizar el usuario con la imagen nueva
+    if (image?.webPath) {
+      this.usuario.imagen = image.webPath; 
+    }
   }
 
-  async guardarCambios() {
-    try {
-      await this.bd.actualizarUsuario(this.usuario);
-      this.presentAlert('Éxito', 'Usuario actualizado correctamente.');
-      this.router.navigate(['/administrador']);
-    } catch (e) {
-      this.presentAlert('Error', 'No se pudo actualizar el usuario.');
+  async guardarCambios(form: NgForm) {
+    if (form.valid) {
+      try {
+        await this.bd.actualizarUsuario(this.usuario);
+        this.presentAlert('Éxito', 'Usuario actualizado correctamente.');
+        this.router.navigate(['/administrador']);
+      } catch (e) {
+        this.presentAlert('Error', 'No se pudo actualizar el usuario.');
+      }
+    } else {
+      this.presentAlert('Error', 'Por favor, completa todos los campos.');
     }
   }
 
@@ -68,7 +66,6 @@ export class EditarusuarioPage {
       message,
       buttons: ['OK'],
     });
-
     await alert.present();
   }
 }
