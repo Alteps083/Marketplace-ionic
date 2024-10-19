@@ -20,7 +20,7 @@
 <ion-content scrollY="true">
 
   <ion-list *ngIf="mostrarBarraBusqueda">
-    <ion-item *ngFor="let producto of productosFiltrados" (click)="detalleProducto(producto)">
+    <ion-item *ngFor="let producto of productosFiltrados" (click)="detalleProducto(producto.id)">
       {{ producto.nombre_producto }}
     </ion-item>
   </ion-list>
@@ -53,7 +53,7 @@
   </div>
 
   <div class="horizontal-scroll">
-    <ion-card *ngFor="let producto of productosRecientes" (click)="detalleProducto(producto)" class="card">
+    <ion-card *ngFor="let producto of productosRecientes" (click)="detalleProducto(producto.id)" class="card">
       <img [src]="producto.imagenes[0]" alt="{{ producto.nombre_producto }}" *ngIf="producto.imagenes.length > 0">
       <ion-card-header>
         <ion-card-title>{{producto.nombre_producto}}</ion-card-title>
@@ -68,7 +68,7 @@
   </div>
   <div class="horizontal-scroll">
     <ng-container *ngIf="productosPorCategoria['Procesador'] && productosPorCategoria['Procesador'].length > 0">
-      <ion-card *ngFor="let producto of productosPorCategoria['Procesador']" (click)="detalleProducto(producto)" class="card">
+      <ion-card *ngFor="let producto of productosPorCategoria['Procesador']" (click)="detalleProducto(producto.id)" class="card">
         <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
         <ion-card-header>
           <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
@@ -86,7 +86,7 @@
 </div>
 <div class="horizontal-scroll">
   <ng-container *ngIf="productosPorCategoria['Memoria-Ram'] && productosPorCategoria['Memoria-Ram'].length > 0">
-    <ion-card *ngFor="let producto of productosPorCategoria['Memoria-Ram']" (click)="detalleProducto(producto)" class="card">
+    <ion-card *ngFor="let producto of productosPorCategoria['Memoria-Ram']" (click)="detalleProducto(producto.id)" class="card">
       <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
       <ion-card-header>
         <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
@@ -104,7 +104,7 @@
 </div>
 <div class="horizontal-scroll">
   <ng-container *ngIf="productosPorCategoria['Tarjeta-Grafica'] && productosPorCategoria['Tarjeta-Grafica'].length > 0">
-    <ion-card *ngFor="let producto of productosPorCategoria['Tarjeta-Grafica']" (click)="detalleProducto(producto)" class="card">
+    <ion-card *ngFor="let producto of productosPorCategoria['Tarjeta-Grafica']" (click)="detalleProducto(producto.id)" class="card">
       <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
       <ion-card-header>
         <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
@@ -122,7 +122,7 @@
 </div>
 <div class="horizontal-scroll">
   <ng-container *ngIf="productosPorCategoria['Almacenamiento'] && productosPorCategoria['Almacenamiento'].length > 0">
-    <ion-card *ngFor="let producto of productosPorCategoria['Almacenamiento']" (click)="detalleProducto(producto)" class="card">
+    <ion-card *ngFor="let producto of productosPorCategoria['Almacenamiento']" (click)="detalleProducto(producto.id)" class="card">
       <img alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0] || '/assets/img/default.jpg'">
       <ion-card-header>
         <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>

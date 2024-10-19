@@ -19,7 +19,7 @@ export class AgregarPage implements OnInit {
   miFormulario: FormGroup;
   marginBottom: string = '200px';
   profileImage: string | null = null;
-  usuarioActual: Usuario | null = null;
+  usuario: Usuario | null = null;
 
   constructor(
     private router: Router, 
@@ -41,6 +41,7 @@ export class AgregarPage implements OnInit {
     const input = event.target.value;
     this.miFormulario.controls['descripcion'].setValue(input);
   }
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -49,19 +50,18 @@ export class AgregarPage implements OnInit {
       }})}
 
   async cargarUsuario() {
-    try {
-      const data = await this.storage.getItem('usuario');
+    this.storage.getItem('usuario').then(async (data: Usuario) => {
       if (data) {
-        this.usuarioActual = data as Usuario;
-        this.profileImage = await this.bd.obtenerImagenUsuario(this.usuarioActual.nombre);
-      } else {
-        console.log('No se encontró un usuario en el almacenamiento');
-        this.router.navigate(['/login']); 
+        this.usuario = data;
+        try {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+        } catch (error) {
+          console.log('Error al cargar la imagen de perfil:', error);
+        }
       }
-    } catch (error) {
+    }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
-      this.router.navigate(['/login']); 
-    }
+    });
   }
 
   async onSubmit() {
@@ -69,8 +69,8 @@ export class AgregarPage implements OnInit {
       const producto = this.miFormulario.value; 
       const imagenes = this.imagePreviews;
 
-      if (this.usuarioActual) {
-        const id_vendedor = this.usuarioActual.id; 
+      if (this.usuario) {
+        const id_vendedor = this.usuario.id; 
 
         await this.bd.agregarProducto(
           id_vendedor,
@@ -83,8 +83,8 @@ export class AgregarPage implements OnInit {
         );
 
         const notificacion: Notificacion = {
-          imagen: this.usuarioActual.imagen, 
-          nombreUsuario: this.usuarioActual.nombre, 
+          imagen: this.usuario.imagen, 
+          nombreUsuario: this.usuario.nombre, 
           nombreProducto: producto.titulo
         };
         
@@ -101,9 +101,9 @@ export class AgregarPage implements OnInit {
 
   async ngOnInit() {
     await this.cargarUsuario(); 
-    if (!this.usuarioActual) {
-      console.log('No hay usuario actual');
-      this.router.navigate(['/login']);
+    this.usuario = this.bd.getUsuarioActual();
+    if (this.usuario) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
     }
 
     Keyboard.addListener('keyboardWillShow', (info) => {

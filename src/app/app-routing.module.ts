@@ -32,7 +32,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/agregar/agregar.module').then( m => m.AgregarPageModule)
   },
   {
-    path: 'detalle',
+    path: 'detalle/:id',
     loadChildren: () => import('./pages/detalle/detalle.module').then( m => m.DetallePageModule)
   },
   {

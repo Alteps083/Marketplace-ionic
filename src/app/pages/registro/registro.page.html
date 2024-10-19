@@ -25,11 +25,11 @@
       </div>
       <ion-item>
         <ion-icon name="call-outline" slot="start"></ion-icon>
-        <ion-input placeholder="Número" formControlName="phone" type="tel" required></ion-input>
+        <ion-input placeholder="56 9 XXXX XXXX" (ionInput)="onPhoneInput($event)" formControlName="phone" type="tel" required></ion-input>
       </ion-item>
       <div *ngIf="miFormulario.get('phone')?.invalid && miFormulario.get('phone')?.touched">
         <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['required']">Debe Ingresar el Número</ion-text>
-        <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['invalidPhone']">El número debe contener solo dígitos</ion-text>
+        <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['invalidPhone']">El número debe contener solo dígitos y tener el formato 56 9 XXXX XXXX</ion-text>
         <ion-text color="danger" *ngIf="miFormulario.get('phone')?.errors?.['maxlength']">El número no debe exceder los 11 dígitos</ion-text>
       </div>
       <ion-item>

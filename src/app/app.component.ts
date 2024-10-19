@@ -20,7 +20,7 @@ register();
 export class AppComponent {
   VerMenu = true;
 
-  constructor(private cargarPagina: ModalController,private router: Router , private bd: ServicebdService, private platform: Platform, private notifications: NotificationsPushService) {
+  constructor(private cargarPagina: ModalController,private router: Router , private bd: ServicebdService) {
     this.router.events.subscribe((event) =>{
       if(event instanceof NavigationEnd) {
         this.updateMenuVisibility(event.url)
@@ -30,15 +30,11 @@ export class AppComponent {
   }
 
   ngOnInit(){
-    this.eventosTeclado()
+    this.initializeApp();
   }
 
 
   async initializeApp() {
-    this.platform.ready().then(() => {
-      this.eventosTeclado();
-    
-    })
     const loading = await this.cargarPagina.create({
       component: PantallaCargaComponent, 
       componentProps: {
@@ -51,16 +47,6 @@ export class AppComponent {
     await this.loadData();
 
     await loading.dismiss(); 
-  }
-
-  eventosTeclado(){
-    Keyboard.addListener('keyboardWillShow', (info) => {
-      document.body.style.paddingBottom = info.keyboardHeight + 'px';
-    })
-
-    Keyboard.addListener('keyboardWillHide', () => {
-      document.body.style.paddingBottom = '0px'
-    })
   }
 
   async loadData() {

@@ -135,7 +135,7 @@ export class ServicebdService {
         await this.database.executeSql(this.tablaReclamos, []);
         await this.database.executeSql(this.tablaComentarios, []);
         await this.actualizarTablaUsuario();
-        await this.asignarIdAUsuariosExistentes();  // Asignar IDs a los usuarios existentes
+        await this.asignarIdAUsuariosExistentes();  
         
       }catch(e){
         this.presentAlert('Error al crear tablas', JSON.stringify(e))
@@ -219,6 +219,9 @@ export class ServicebdService {
       const sql = 'UPDATE usuario SET nombre = ?, email = ?, telefono = ?, contrasenia = ?, imagen = ? WHERE id = ?';
       try{
         await this.database.executeSql(sql, [usuario.nombre, usuario.email, usuario.telefono, usuario.contrasenia, usuario.imagen, usuario.id])
+        if (usuario.imagen && usuario.imagen.trim() !== '') {
+          await this.storage.setItem('usuario_imagen', usuario.imagen);
+        }
         this.presentAlert('Exito', 'Datos actualizados correctamente');
         this.cargarUsuarios();
       }catch (e){

@@ -24,12 +24,38 @@ export class RegistroPage implements OnInit {
     this.miFormulario = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email, this.CorreoReal]],
-      phone: ['',[Validators.required, this.NumeroReal, Validators.maxLength(11)]],
+      phone: ['', [Validators.required, this.NumeroReal]],
       password: ['', [Validators.required, Validators.minLength(6), this.ContraseñaRestrincciones]],
     })
    }
 
   ngOnInit() {
+  }
+
+  formatPhoneNumber() {
+    let phoneInput = this.miFormulario.get('phone');
+    if (phoneInput) {
+        let value = phoneInput.value.replace(/\D/g, ''); 
+
+        if (!value.startsWith('56')) {
+            value = '56' + value; 
+        } else {
+            value = value.slice(2); 
+        }
+
+        if (value.length > 8) {
+            value = value.replace(/(\d{2})(\d)(\d{4})(\d{4})/, '$1 $2 $3 $4'); 
+        } else if (value.length === 8) {
+            value = value.replace(/(\d{2})(\d{1})(\d{4})/, '$1 $2 $3'); 
+        } else if (value.length === 7) {
+            value = value.replace(/(\d{2})(\d{1})(\d{3})/, '$1 $2 $3'); 
+        } else if (value.length === 6) {
+            value = value.replace(/(\d{2})(\d{1})(\d{2})/, '$1 $2 $3'); 
+        } else if (value.length === 5) {
+            value = value.replace(/(\d{2})(\d{1})/, '$1 $2'); 
+        }
+        phoneInput.setValue(value.trim()); 
+    }
   }
 
   onSubmit() {
@@ -42,7 +68,7 @@ export class RegistroPage implements OnInit {
   
     const nombre = this.miFormulario.value.nombre;
     const email = this.miFormulario.value.email;
-    const telefono = this.miFormulario.value.phone;
+    const telefono = this.miFormulario.value.phone.replace(/\s/g, '');;
     const contrasenia = this.miFormulario.value.password;
 
     const nuevoUsuario: Usuario = {
@@ -50,8 +76,8 @@ export class RegistroPage implements OnInit {
       email: email,
       contrasenia: contrasenia,
       telefono: telefono,
-      fecha_registro: new Date().toISOString(), // Ajusta según tu implementación
-      es_admin: false // Establece como false si no es admin
+      fecha_registro: new Date().toISOString(), 
+      es_admin: false 
     };
 
     this.serviceBd.dbReady().subscribe(isReady => {
@@ -82,17 +108,23 @@ export class RegistroPage implements OnInit {
     await toast.present();
   }
 
-  CorreoReal(control: AbstractControl){
+  CorreoReal(control: AbstractControl) {
+    if (!control.value) {
+      return null; 
+    }
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (control.value && !emailPattern.test(control.value)){
-      return {invalidEmail: true};
+    if (!emailPattern.test(control.value)) {
+      return { invalidEmail: true };
     }
-
-    const domainParts = control.value.split('.');
-    if (domainParts.length > 2 && domainParts[domainParts.length - 2].length > 2) {
-      return { invalidEmail: true };  
+    const parts = control.value.split('@');
+    if (parts.length !== 2) {
+      return { invalidEmail: true };
     }
-    return null;
+    const domainParts = parts[1].split('.'); 
+    if (domainParts.length > 2) {
+      return { invalidEmail: true }; 
+    }
+    return null; 
   }
 
   ContraseñaRestrincciones(control: AbstractControl){
@@ -111,30 +143,41 @@ export class RegistroPage implements OnInit {
     return null;
   }
 
-  NumeroReal(control: AbstractControl){
-    const phonePattern = /^[0-9]+$/;
-    if(control.value && !phonePattern.test(control.value)){
-      return {invalidPhone: true};
+  NumeroReal(control: AbstractControl) {
+    const phoneNumber = control.value.replace(/\D/g, ''); 
+    const phonePattern = /^569\d{8}$/; 
+  
+    if (control.value && !phonePattern.test(phoneNumber)) {
+      return { invalidPhone: true }; 
     }
+  
+    if (phoneNumber.length !== 11) { 
+      return { maxlength: true }; 
+    }
+  
     return null;
   }
+
+  onPhoneInput(event: any) {
+    const input = event.target.value;
+    this.miFormulario.get('phone')?.setValue(input); 
+    this.formatPhoneNumber();
+}
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 
   iniciarses(){
-    //crear logica de programación
     this.router.navigate(['/home']);
   }
   camcont(){
-    //crear logica de programación
     this.router.navigate(['/cambiarcontra']);
   }
   regses(){
-    //crear logica de programación
     this.router.navigate(['/registro']);
   }
+
   accountcreate(){
     this.router.navigate(['/login'])
   }

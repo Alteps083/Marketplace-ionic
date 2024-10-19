@@ -41,7 +41,6 @@ export class HomePage implements OnInit{
         this.cargarProductos();
       }
     })
-
     this.usuario = this.bd.getUsuarioActual();
     if (this.usuario) {
       this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
@@ -64,11 +63,9 @@ export class HomePage implements OnInit{
 
   }
 
-
-
-  detalleProducto(productoId: Producto){
+  detalleProducto(productoId: number){
     console.log('Detalle del producto', productoId);
-    this.router.navigate(['/detalle', { id: productoId.id }]);
+    this.router.navigate(['/detalle', productoId]);
   }
 
   nextSlide() {
@@ -214,19 +211,12 @@ export class HomePage implements OnInit{
     console.log('changed: ', e);
   }
 
-  // hipervinculos
-  chat(){
-    //crear logica de programación
-    this.router.navigate(['/chat']);
-  }
-
   carrito(){
-    //crear logica de programación
     this.router.navigate(['/carrito']);
   }
 
-  detalle(){
-    this.router.navigate(['/detalle']);
+  detalle(id: number){
+    this.router.navigate(['/detalle', id]);
   }
 
   isAdmin(): boolean {
@@ -258,15 +248,13 @@ export class HomePage implements OnInit{
         producto.nombre_producto.toLowerCase().includes(valorBusqueda)
       );
     } else {
-      this.productosFiltrados = [...this.productos]; // Si no hay término, muestra todos
+      this.productosFiltrados = [...this.productos]; 
     }
   }
 
-
   mostrarIDsUsuarios() {
     this.bd.getUsuarios().then(usuarios => {
-      this.idsUsuarios = usuarios.map(usuario => usuario.id);  // Extrae los IDs de los usuarios
-
+      this.idsUsuarios = usuarios.map(usuario => usuario.id);  
       console.log("IDs de los usuarios:", this.idsUsuarios);
     }).catch(error => {
       console.error("Error al obtener los usuarios:", error);
