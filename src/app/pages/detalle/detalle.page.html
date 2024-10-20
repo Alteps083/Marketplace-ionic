@@ -47,4 +47,25 @@
       </ion-item>
     </ion-card-content>
   </ion-card>
+  <div>
+    <h3>Calificaciones</h3>
+    <ul>
+      <li *ngFor="let rating of ratings">
+        <strong>Calificación:</strong> {{ rating.score }} - <strong>Reseña:</strong> {{ rating.review }}
+      </li>
+    </ul>
+  </div>
+  
+  <div>
+    <h3>Publica tu calificación</h3>
+    
+    <label for="ratingSelect">Selecciona una calificación:</label>
+    <select [(ngModel)]="userRating.score" id="ratingSelect">
+      <option *ngFor="let score of [1, 2, 3, 4, 5]" [value]="score">{{ score }}</option>
+    </select>
+  
+    <textarea [(ngModel)]="userRating.review" id="reviewInput" placeholder="Escribe tu reseña..."></textarea>
+    
+    <button (click)="submitRating()">Publicar Calificación</button>
+  </div>
 </ion-content>

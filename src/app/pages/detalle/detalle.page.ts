@@ -6,12 +6,20 @@ import { Producto } from 'src/app/services/producto';
 import { ActivatedRoute } from '@angular/router';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
+import { RatingService } from 'src/app/services/rating.service';
 @Component({
   selector: 'app-detalle',
   templateUrl: './detalle.page.html',
   styleUrls: ['./detalle.page.scss'],
 })
 export class DetallePage implements OnInit {
+
+  ratings: any[] = [];
+  selectedRating: any;
+  userRating = {
+    score: 0,
+    review: ''
+  };
 
   profileImage: string | null = null;
 
@@ -20,7 +28,8 @@ export class DetallePage implements OnInit {
   comentarios: any[] = [];
   nuevoComentario: string = '';
 
-  constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService) { }
+  constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService, private ratingService: RatingService) { 
+   }
 
   async presentImageModal(imageSrc: string) {
     const modal = await this.modelController.create({
@@ -35,6 +44,8 @@ export class DetallePage implements OnInit {
   async ngOnInit() {
     const id = parseInt(this.activeRouter.snapshot.paramMap.get('id') || '0', 10); 
     this.cargarProducto(id);
+    this.loadRatings();
+    this.submitRating();
     this.cargarComentarios();  
     const usuarioActual = this.bd.getUsuarioActual();
     if (usuarioActual && usuarioActual.nombre) {
@@ -83,6 +94,42 @@ export class DetallePage implements OnInit {
   
   perfil() {
     this.router.navigate(['/tabs/perfil']);
+  }
+
+  fetchRatings() {
+    this.ratingService.getRatings().subscribe(data => {
+      this.ratings = data;
+    });
+  }
+
+  loadRatings() {
+    this.ratingService.getRatings().subscribe(
+      (data) => {
+        console.log('Calificaciones obtenidas:', data); 
+        this.ratings = data; 
+      },
+      (error) => {
+        console.error('Error al obtener calificaciones:', error);
+      }
+    );
+  }
+
+  submitRating() {
+    const ratingToSend = {
+      score: Number(this.userRating.score), 
+      review: this.userRating.review
+    };
+  
+    console.log('Intentando enviar calificación:', ratingToSend);
+    
+    this.ratingService.postRatings(ratingToSend).subscribe(
+      response => {
+        console.log('Calificación enviada con éxito:', response);
+      },
+      error => {
+        console.error('Error al enviar la calificación:', error);
+      }
+    );
   }
 
 }

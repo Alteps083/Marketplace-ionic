@@ -17,6 +17,8 @@ import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { ServicebdService } from './services/servicebd.service';
 import { PantallaCargaComponent } from './components/pantalla-carga/pantalla-carga.component';
 import { environment } from 'src/environments/environment';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { RatingService } from './services/rating.service';
 @NgModule({
   declarations: [AppComponent, ImageModalComponent, PantallaCargaComponent],
   imports: [
@@ -25,7 +27,9 @@ import { environment } from 'src/environments/environment';
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig)
+    HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig,
+    )
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -34,6 +38,7 @@ import { environment } from 'src/environments/environment';
     provideFirestore(() => getFirestore()),
     SQLite,
     ServicebdService,
+    RatingService,
   ],
   bootstrap: [AppComponent],
 })
