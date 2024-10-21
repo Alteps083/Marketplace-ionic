@@ -30,14 +30,12 @@ export class HomePage implements OnInit{
 
   idsUsuarios: number[] = [];
 
-//modificado
 async ngOnInit() {
   await this.obtenerUsuarioActual();
   const usuario = await this.obtenerUsuarioActual();
   if (this.usuario?.id !== undefined) {
     this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
   }
-  // Cargar el usuario actual
   this.usuario = this.bd.getUsuarioActual();
 
   if (this.usuario?.id) {
@@ -57,20 +55,17 @@ async ngOnInit() {
     }
   });
 
-  // Cargar otros datos necesarios
   await this.cargarUsuario();
   this.actualizarRecientesYCategorias();
   this.BotonCerrarSesion();
   this.autoSlide();
 
-  // Suscribirse a la base de datos y cargar productos
   this.bd.dbReady().subscribe(ready => {
     if (ready) {
       this.cargarProductos();
     }
   });
 
-  // Manejar la navegación y estados adicionales
   const navigation = this.router.getCurrentNavigation();
   if (navigation?.extras.state) {
     const user = navigation.extras.state['user'];

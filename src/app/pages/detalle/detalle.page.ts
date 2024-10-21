@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { RatingService } from 'src/app/services/rating.service';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 @Component({
   selector: 'app-detalle',
   templateUrl: './detalle.page.html',
@@ -28,7 +29,7 @@ export class DetallePage implements OnInit {
   comentarios: any[] = [];
   nuevoComentario: string = '';
 
-  constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService, private ratingService: RatingService) { 
+  constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService, private ratingService: RatingService, private storage: NativeStorage) { 
    }
 
    ionViewWillEnter() {
@@ -44,15 +45,48 @@ export class DetallePage implements OnInit {
     return await modal.present();
   }
 
+  
+
   async ngOnInit() {
+    this.usuario = this.bd.getUsuarioActual();
+    if (this.usuario?.id !== undefined) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
+    } else {
+      console.error('El ID del usuario no está definido.');
+      this.profileImage = 'ruta/a/nouser.png'; 
+    }
+    await this.cargarUsuario();
     const id = parseInt(this.activeRouter.snapshot.paramMap.get('id') || '0', 10); 
     await this.cargarProducto(id);
     this.cargarComentarios();  
-    const usuarioActual = this.bd.getUsuarioActual();
-    if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
-    }
   }
+
+  async cargarUsuario() {
+    try {
+      const data = await this.storage.getItem('usuario');
+      if (data) {
+        this.usuario = data;
+        this.storage.getItem('usuario').then(async (data: Usuario) => {
+          if (data) {
+            this.usuario = data;
+            try {
+              this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); 
+            } catch (error) {
+              console.log('Error al cargar la imagen de perfil:', error);
+            }
+          }
+        }).catch(error => {
+          console.log('Error al recuperar usuario: ', JSON.stringify(error));
+        });
+        if (this.usuario?.id) {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id); 
+          console.log('Imagen de perfil cargada para:', this.usuario.nombre);
+        }
+      }
+    } catch (error) {
+      console.log('Error al cargar usuario:', error);
+    }
+  } 
 
   async cargarProducto(id: number) {
     const productoCargado = await this.bd.fetchProductoPorId(id);
@@ -87,13 +121,14 @@ export class DetallePage implements OnInit {
   
     if (!this.producto || usuarioId === undefined) {
       console.error('No se puede publicar el comentario, el producto o el usuario no están disponibles.');
+      this.router.navigate(['tabs/home']); 
       return; 
     }
     await this.bd.agregarComentario(this.producto.id, usuarioId, this.nuevoComentario);
     this.nuevoComentario = ''; 
     this.cargarComentarios(); 
+    this.router.navigate(['tabs/home']); 
   }
-  
   perfil() {
     this.router.navigate(['/tabs/perfil']);
   }
