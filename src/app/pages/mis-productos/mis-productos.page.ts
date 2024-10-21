@@ -23,9 +23,11 @@ export class MisProductosPage implements OnInit {
     this.usuario = this.bd.getUsuarioActual();
     if (this.usuario?.id !== undefined) {
       this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
+      this.idusuario = this.usuario.id;
+      this.cargarPublicaciones();
     } else {
       console.error('El ID del usuario no está definido.');
-      this.profileImage = 'ruta/a/nouser.png'; // Imagen predeterminada en caso de error
+      this.profileImage = 'ruta/a/nouser.png'; 
     }
     this.cargarUsuario();
   }
@@ -45,13 +47,15 @@ export class MisProductosPage implements OnInit {
     });
   }
 
-  cargarPublicaciones(){
-    if(this.idusuario){
+  cargarPublicaciones() {
+    if (this.idusuario) {
       this.bd.getPublicacionesPorUsuario(this.idusuario).then(publicaciones => {
         this.publicaciones = publicaciones;
       }).catch(e => {
         console.log('Error al cargar publicaciones', JSON.stringify(e));
-      })
+      });
+    } else {
+      console.error('No se puede cargar las publicaciones, el ID de usuario no está definido.');
     }
   }
 
