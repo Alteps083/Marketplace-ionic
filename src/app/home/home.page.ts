@@ -13,7 +13,7 @@ import { Usuario } from '../services/usuario';
 })
 export class HomePage implements OnInit{
 
-  profileImage: string | null = null;
+  profileImage: string = 'assets/img/nouser.png';
 
   productosRecientes: Producto[] = []; 
   productosPorCategoria: { [key: string]: Producto[] } = {}; 
@@ -30,38 +30,82 @@ export class HomePage implements OnInit{
 
   idsUsuarios: number[] = [];
 
+//modificado
+async ngOnInit() {
+  // Cargar el usuario actual
+  this.usuario = this.bd.getUsuarioActual();
 
-  async ngOnInit() {
-    this.actualizarRecientesYCategorias();
-    this.cargarUsuario(); 
-    this.BotonCerrarSesion();
-    this.autoSlide();
-    this.bd.dbReady().subscribe(ready => {
-      if (ready){
-        this.cargarProductos();
-      }
-    })
-    this.usuario = this.bd.getUsuarioActual();
-    if (this.usuario) {
+  // Inicializar la imagen de perfil con la imagen predeterminada
+  this.profileImage = '/assets/img/nouser.png'; // Imagen predeterminada
+
+  // Intentar obtener la imagen del usuario
+  if (this.usuario && this.usuario.nombre) {
+    try {
       this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+      console.log('Imagen de perfil cargada:', this.profileImage); // Depurar
+    } catch (error) {
+      console.log('Error al obtener la imagen del usuario, manteniendo la imagen por defecto');
+      // profileImage ya se inicializa con la imagen predeterminada
     }
-    this.autoSlide();
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      const user = navigation.extras.state['user'];
-      if (user) {
-        this.usuario = user.usuario;
-        console.log('Usuario recibido:', this.usuario);
-      }
-
-    }
-    this.actualizarRecientesYCategorias();
-    const usuarioActual = this.bd.getUsuarioActual();
-    if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
-    }
-
   }
+
+  // Cargar otros datos necesarios
+  await this.cargarUsuario();
+  this.actualizarRecientesYCategorias();
+  this.BotonCerrarSesion();
+  this.autoSlide();
+
+  // Suscribirse a la base de datos y cargar productos
+  this.bd.dbReady().subscribe(ready => {
+    if (ready) {
+      this.cargarProductos();
+    }
+  });
+
+  // Manejar la navegación y estados adicionales
+  const navigation = this.router.getCurrentNavigation();
+  if (navigation?.extras.state) {
+    const user = navigation.extras.state['user'];
+    if (user) {
+      this.usuario = user.usuario;
+      console.log('Usuario recibido:', this.usuario);
+      if (this.usuario && this.usuario.nombre) {
+        try {
+          const imagenUsuario = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+          if (imagenUsuario) {
+            this.profileImage = imagenUsuario; // Actualiza la imagen si existe
+            console.log('Imagen de perfil actualizada:', this.profileImage);
+          }
+        } catch (error) {
+          console.log('Error al obtener la imagen del usuario recibido, manteniendo la imagen por defecto');
+          // profileImage ya se inicializa con la imagen predeterminada
+        }
+      }
+    }
+  }
+
+  // Actualizar los productos recientes y por categoría
+  this.actualizarRecientesYCategorias();
+}
+
+
+
+async obtenerImagenUsuario(nombre: string): Promise<string> {
+  try {
+    console.log('Obteniendo imagen de usuario con nombre:', nombre);
+    
+    const imagen = await this.storage.getItem(`imagen_${nombre}`);
+    
+    if (imagen && imagen.startsWith('http')) {
+      return imagen; // Retornar la URL de la imagen
+    } else {
+      return 'assets/img/nouser.png'; // Retornar imagen predeterminada
+    }
+  } catch (error) {
+    console.log('Error al obtener la imagen del usuario:', error);
+    return 'assets/img/nouser.png'; // En caso de error, devolver la imagen por defecto
+  }
+}
 
   detalleProducto(productoId: number){
     console.log('Detalle del producto', productoId);
@@ -113,20 +157,30 @@ export class HomePage implements OnInit{
 
   constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {}
 
-  cargarUsuario() {
-    this.storage.getItem('usuario').then(async (data: Usuario) => {
+  //modificado
+  async cargarUsuario() {
+    try {
+      const data = await this.storage.getItem('usuario');
       if (data) {
         this.usuario = data;
-        try {
+        console.log('Usuario cargado:', this.usuario?.nombre);
+  
+        // Limpiar imagen predeterminada mientras se carga la nueva
+        this.profileImage = 'assets/img/nouser.png'; 
+  
+        // Verificar y obtener imagen para el usuario correcto
+        if (this.usuario && this.usuario.nombre) {
+          console.log('Cargando imagen de perfil para:', this.usuario.nombre);
           this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
-        } catch (error) {
-          console.log('Error al cargar la imagen de perfil:', error);
+          console.log('Imagen de perfil cargada para:', this.usuario.nombre);
+        } else {
+          console.log('No se pudo cargar el nombre del usuario');
         }
       }
-    }).catch(error => {
-      console.log('Error al recuperar usuario: ', JSON.stringify(error));
-    });
-  }
+    } catch (error) {
+      console.log('Error al cargar usuario:', error);
+    }
+  }  
 
   cargarProductos() {
     this.actualizarRecientesYCategorias();

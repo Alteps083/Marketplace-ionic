@@ -15,7 +15,6 @@ import { RatingService } from 'src/app/services/rating.service';
 export class DetallePage implements OnInit {
 
   ratings: any[] = [];
-  selectedRating: any;
   userRating = {
     score: 0,
     review: ''
@@ -31,6 +30,9 @@ export class DetallePage implements OnInit {
   constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService, private ratingService: RatingService) { 
    }
 
+   ionViewWillEnter() {
+  }
+
   async presentImageModal(imageSrc: string) {
     const modal = await this.modelController.create({
       component: ImageModalComponent,
@@ -43,9 +45,7 @@ export class DetallePage implements OnInit {
 
   async ngOnInit() {
     const id = parseInt(this.activeRouter.snapshot.paramMap.get('id') || '0', 10); 
-    this.cargarProducto(id);
-    this.loadRatings();
-    this.submitRating();
+    await this.cargarProducto(id);
     this.cargarComentarios();  
     const usuarioActual = this.bd.getUsuarioActual();
     if (usuarioActual && usuarioActual.nombre) {
@@ -57,6 +57,7 @@ export class DetallePage implements OnInit {
     const productoCargado = await this.bd.fetchProductoPorId(id);
     if (productoCargado) {
       this.producto = productoCargado;
+      await this.loadRatingsByProductId(this.producto.id);
     } else {
       this.producto = {
         id: 0,
@@ -114,20 +115,33 @@ export class DetallePage implements OnInit {
     );
   }
 
+  loadRatingsByProductId(productId: number) {
+    this.ratingService.getRatingsByProductId(productId).subscribe(
+      (data) => {
+        console.log('Calificaciones obtenidas para el producto:', data); 
+        this.ratings = data; 
+      },
+      (error) => {
+        console.error('Error al obtener calificaciones:', error);
+      }
+    );
+  }
+
   submitRating() {
     const ratingToSend = {
+      productId: this.producto!.id,
       score: Number(this.userRating.score), 
       review: this.userRating.review
     };
   
-    console.log('Intentando enviar calificación:', ratingToSend);
+    console.log('Intentando enviar calificación:', JSON.stringify(ratingToSend));
     
-    this.ratingService.postRatings(ratingToSend).subscribe(
+    this.ratingService.postRating(ratingToSend).subscribe(
       response => {
-        console.log('Calificación enviada con éxito:', response);
+        console.log('Calificación enviada con éxito:', JSON.stringify(response));
       },
       error => {
-        console.error('Error al enviar la calificación:', error);
+        console.error('Error al enviar la calificación:', JSON.stringify(error));
       }
     );
   }

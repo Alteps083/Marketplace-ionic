@@ -8,10 +8,10 @@
     <ion-button class="btn-search" slot="end" (click)="toggleSearchBar()">
       <ion-icon name="search-outline"></ion-icon>
     </ion-button>
-    <ion-buttons slot="end" (click)="perfil"> 
+    <ion-buttons slot="end" (click)="perfil()"> 
       <ion-avatar>
-        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
-      </ion-avatar>
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" />
+      </ion-avatar>      
     </ion-buttons>
   </ion-toolbar>
   <ion-searchbar *ngIf="mostrarBarraBusqueda" [(ngModel)]="searchTerm" (ionInput)="filtrarProductos($event)"></ion-searchbar>
@@ -28,8 +28,22 @@
   <div class="home-page"></div>
   <!-- Reload -->
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-    <ion-refresher-content pullingIcon="chevron-down-circle-outline"></ion-refresher-content>
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline">
+
+      <div class="honeycomb">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+    </ion-refresher-content>
   </ion-refresher>
+
+
 
   <!-- Administrador -->
 <div *ngIf="isAdmin()">

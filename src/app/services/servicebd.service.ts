@@ -58,10 +58,12 @@ export class ServicebdService {
 
   private usuarioActual: Usuario | null = null
 
-  setUsuarioActual(usuario: Usuario){
+  setUsuarioActual(usuario: Usuario) {
     this.usuarioActual = usuario;
+    if (usuario.imagen && usuario.imagen.trim() !== '') {
+      this.storage.setItem('usuario_imagen', usuario.imagen);
+    }
   }
-
   getUsuarioActual(): Usuario | null {
     return this.usuarioActual;
   }
@@ -94,6 +96,27 @@ export class ServicebdService {
       return null;
     });
   }
+
+  async obtenerImagenPerfil(nombre: string): Promise<string> {
+    try {
+      console.log('Obteniendo imagen de perfil para el usuario:', nombre);
+      
+      // Obtener la imagen del usuario desde el almacenamiento
+      const imagen = await this.storage.getItem(`imagen_${nombre}`);
+      
+      // Verifica si la imagen es válida
+      if (imagen && imagen.startsWith('http')) {
+        return imagen; // Retorna la URL de la imagen si es válida
+      } else {
+        console.log('No se encontró imagen, usando la imagen predeterminada');
+        return 'assets/img/nouser.png'; // Retorna la imagen predeterminada
+      }
+    } catch (error) {
+      console.log('Error al obtener la imagen de perfil:', error);
+      return 'assets/img/nouser.png'; // En caso de error, devuelve la imagen predeterminada
+    }
+  }
+  
 
   dbReady(){
     return this.isDBReady.asObservable();

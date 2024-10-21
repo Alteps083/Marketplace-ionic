@@ -10,6 +10,7 @@ import { LoadingController, ModalController } from '@ionic/angular';
 import { PantallaCargaComponent } from './components/pantalla-carga/pantalla-carga.component';
 import { NotificationsPushService } from './services/notifications-push.service';
 import { Capacitor } from '@capacitor/core';
+import { Usuario } from './services/usuario';
 register();
 
 @Component({
@@ -19,6 +20,8 @@ register();
 })
 export class AppComponent {
   VerMenu = true;
+
+  usuario: Usuario | null = null;
 
   constructor(private cargarPagina: ModalController,private router: Router , private bd: ServicebdService) {
     this.router.events.subscribe((event) =>{
@@ -56,5 +59,10 @@ export class AppComponent {
   updateMenuVisibility(url: string){
     const hiddenRoutes = ['/login', '/register', '/cambiarcontra'];
     this.VerMenu = !hiddenRoutes.includes(url);
+  }
+
+  isAdmin(): boolean {
+    const usuarioActual = this.bd.getUsuarioActual();
+    return usuarioActual ? usuarioActual.es_admin : false; 
   }
 }

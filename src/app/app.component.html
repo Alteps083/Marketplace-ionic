@@ -9,10 +9,12 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item *ngIf="isAdmin()" [routerDirection]="'root'" [routerLink]="'/administrador'">
+        <div *ngIf="isAdmin()">
+        <ion-item [routerDirection]="'root'" [routerLink]="'/administrador'">
           <ion-icon name="person-circle-outline"></ion-icon>
           <ion-label>Administrador</ion-label>
         </ion-item>
+      </div>
         <ion-item [routerDirection]="'root'" [routerLink]="'/tabs/home'">
           <ion-icon name="home"></ion-icon>
           <ion-label>Inicio</ion-label>

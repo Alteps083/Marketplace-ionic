@@ -73,10 +73,8 @@ export class LoginPage implements OnInit {
         await this.storage.setItem('usuario', usuarioActual);
       }
       if (usuarioActual && usuarioActual.es_admin) {
-        this.presentAlert('Éxito', 'Bienvenido Administrador');
         this.router.navigate(['/administrador']); 
       } else {
-        this.presentAlert('Éxito', 'Bienvenido Usuario');
         this.router.navigate(['tabs/home']); 
       }
     } else {
