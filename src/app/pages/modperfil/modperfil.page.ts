@@ -16,6 +16,7 @@ import { Camera, CameraResultType } from '@capacitor/camera';
 export class ModperfilPage implements OnInit {
 
   imagenper: any;
+  profileImage: string | null = null;
 
   miFormulario: FormGroup;
   miFormularioContrasenia: FormGroup;
@@ -48,7 +49,14 @@ export class ModperfilPage implements OnInit {
     });
    }
 
-  ngOnInit() {
+   async ngOnInit() {
+    this.usuario = this.bd.getUsuarioActual();
+    if (this.usuario?.id !== undefined) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
+    } else {
+      console.error('El ID del usuario no está definido.');
+      this.profileImage = 'ruta/a/nouser.png'; // Imagen predeterminada en caso de error
+    }
     this.cargarUsuario();
   }
 
@@ -66,6 +74,17 @@ export class ModperfilPage implements OnInit {
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
     });
+    this.storage.getItem('usuario').then(async (data: Usuario) => {
+      if (data) {
+        this.usuario = data;
+        try {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); // Aquí puedes usar 0 o un ID predeterminado
+        } catch (error) {
+          console.log('Error al cargar la imagen de perfil:', error);
+        }
+      }
+    }).catch(error => {
+      console.log('Error al recuperar usuario: ', JSON.stringify(error));})
   }
 
   async onSubmit() {

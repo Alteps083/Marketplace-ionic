@@ -13,7 +13,7 @@ import { Usuario } from '../services/usuario';
 })
 export class HomePage implements OnInit{
 
-  profileImage: string = 'assets/img/nouser.png';
+  profileImage: string | null = null;
 
   productosRecientes: Producto[] = []; 
   productosPorCategoria: { [key: string]: Producto[] } = {}; 
@@ -32,22 +32,30 @@ export class HomePage implements OnInit{
 
 //modificado
 async ngOnInit() {
+  await this.obtenerUsuarioActual();
+  const usuario = await this.obtenerUsuarioActual();
+  if (this.usuario?.id !== undefined) {
+    this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
+  }
   // Cargar el usuario actual
   this.usuario = this.bd.getUsuarioActual();
 
-  // Inicializar la imagen de perfil con la imagen predeterminada
-  this.profileImage = '/assets/img/nouser.png'; // Imagen predeterminada
-
-  // Intentar obtener la imagen del usuario
-  if (this.usuario && this.usuario.nombre) {
+  if (this.usuario?.id) {
     try {
-      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
-      console.log('Imagen de perfil cargada:', this.profileImage); // Depurar
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id); // Cambiar a id
+      console.log('Imagen de perfil cargada:', this.profileImage);
     } catch (error) {
       console.log('Error al obtener la imagen del usuario, manteniendo la imagen por defecto');
-      // profileImage ya se inicializa con la imagen predeterminada
     }
   }
+
+  await this.cargarUsuario();
+  this.actualizarRecientesYCategorias();
+  this.bd.dbReady().subscribe(ready => {
+    if (ready) {
+      this.cargarProductos();
+    }
+  });
 
   // Cargar otros datos necesarios
   await this.cargarUsuario();
@@ -71,8 +79,8 @@ async ngOnInit() {
       console.log('Usuario recibido:', this.usuario);
       if (this.usuario && this.usuario.nombre) {
         try {
-          const imagenUsuario = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
-          if (imagenUsuario) {
+          const imagenUsuario = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); // Cambiar a ID si se espera un number
+      if (imagenUsuario) {
             this.profileImage = imagenUsuario; // Actualiza la imagen si existe
             console.log('Imagen de perfil actualizada:', this.profileImage);
           }
@@ -88,6 +96,16 @@ async ngOnInit() {
   this.actualizarRecientesYCategorias();
 }
 
+async obtenerUsuarioActual() {
+  // Obtén el usuario actual desde la base de datos o servicio
+  this.usuario = await this.bd.obtenerUsuarioPorId(1); // Cambia por el ID correcto
+  if (this.usuario && this.usuario.imagen) {
+    this.profileImage = this.usuario.imagen;
+  } else {
+    // Si no tiene imagen, usa la imagen por defecto
+    this.profileImage = '/assets/img/nouser.png';
+  }
+}
 
 
 async obtenerImagenUsuario(nombre: string): Promise<string> {
@@ -163,24 +181,16 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
       const data = await this.storage.getItem('usuario');
       if (data) {
         this.usuario = data;
-        console.log('Usuario cargado:', this.usuario?.nombre);
-  
-        // Limpiar imagen predeterminada mientras se carga la nueva
-        this.profileImage = 'assets/img/nouser.png'; 
-  
-        // Verificar y obtener imagen para el usuario correcto
-        if (this.usuario && this.usuario.nombre) {
-          console.log('Cargando imagen de perfil para:', this.usuario.nombre);
-          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+
+        if (this.usuario?.id) {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id); // Cambiar a id
           console.log('Imagen de perfil cargada para:', this.usuario.nombre);
-        } else {
-          console.log('No se pudo cargar el nombre del usuario');
         }
       }
     } catch (error) {
       console.log('Error al cargar usuario:', error);
     }
-  }  
+  } 
 
   cargarProductos() {
     this.actualizarRecientesYCategorias();

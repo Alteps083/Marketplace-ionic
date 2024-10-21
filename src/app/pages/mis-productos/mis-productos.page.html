@@ -7,10 +7,10 @@
     <ion-title class="titulo">
       Mis Publicaciones
     </ion-title>
-    <ion-buttons slot="end"> 
+    <ion-buttons slot="end" (click)="perfil()"> 
       <ion-avatar>
-        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
-      </ion-avatar>
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
+      </ion-avatar>    
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

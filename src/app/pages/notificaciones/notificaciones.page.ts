@@ -24,7 +24,7 @@ export class NotificacionesPage implements OnInit {
     const usuarioActual = this.bd.getUsuarioActual();
     this.cargarUsuario();
     if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
     }
   }
 
@@ -33,7 +33,7 @@ export class NotificacionesPage implements OnInit {
       if (data) {
         this.usuario = data;
         try {
-          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
         } catch (error) {
           console.log('Error al cargar la imagen de perfil:', error);
         }

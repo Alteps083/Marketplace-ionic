@@ -54,7 +54,7 @@ export class AgregarPage implements OnInit {
       if (data) {
         this.usuario = data;
         try {
-          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
         } catch (error) {
           console.log('Error al cargar la imagen de perfil:', error);
         }
@@ -103,7 +103,7 @@ export class AgregarPage implements OnInit {
     await this.cargarUsuario(); 
     this.usuario = this.bd.getUsuarioActual();
     if (this.usuario) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
     }
 
     Keyboard.addListener('keyboardWillShow', (info) => {

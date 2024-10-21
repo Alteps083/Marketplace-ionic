@@ -375,17 +375,13 @@ export class ServicebdService {
         }
         
     
-        async obtenerImagenUsuario(nombre: string): Promise<string> {
-          const sql = 'SELECT imagen FROM usuario WHERE nombre = ?';
+        async obtenerImagenUsuario(id: number): Promise<string> {
+          const sql = 'SELECT imagen FROM usuario WHERE id = ?';
           try {
-            const result = await this.database.executeSql(sql, [nombre]);
+            const result = await this.database.executeSql(sql, [id]);
             if (result.rows.length > 0) {
               const imagen = result.rows.item(0).imagen;
-              if (imagen && imagen.trim() !== '') {
-                return imagen;
-              } else {
-                return 'src/assets/img/nouser.png';
-              }
+              return imagen && imagen.trim() !== '' ? imagen : 'src/assets/img/nouser.png';
             } else {
               return 'src/assets/img/nouser.png';
             }
@@ -394,6 +390,49 @@ export class ServicebdService {
             return 'src/assets/img/nouser.png';
           }
         }
+
+        // Método para obtener el ID del usuario logueado
+async obtenerIdUsuarioLogueado(): Promise<number | null> {
+  // Aquí puedes usar SQLite, localStorage o lo que estés usando
+  const usuarioId = await localStorage.getItem('idUsuario'); // o SQLite si es el caso
+  return usuarioId ? parseInt(usuarioId, 10) : null;
+}
+
+// Método para obtener el usuario por su ID
+async obtenerUsuarioPorId(id: number): Promise<Usuario | null> {
+  const query = `SELECT * FROM usuario WHERE idusuario = ?`;
+
+  try {
+    if (this.database) {
+      const resultado = await this.database.executeSql(query, [id]);
+
+      if (resultado.rows.length > 0) {
+        // Devuelve el primer usuario encontrado
+        const row = resultado.rows.item(0);
+        const usuario: Usuario = {
+          id: row.idusuario,
+          nombre: row.nombre,
+          email: row.email,
+          contrasenia: row.contrasenia,
+          telefono: row.telefono,
+          fecha_registro: row.fecha_registro,
+          es_admin: row.es_admin,
+          imagen: row.imagen
+        };
+        return usuario;
+      }
+    }
+    return null; // No se encontró el usuario
+  } catch (error) {
+    console.error('Error ejecutando la consulta', error);
+    return null;
+  }
+}
+
+// Método para inicializar la base de datos y asignar el objeto db
+setDatabase(db: SQLiteObject) {
+  this.database = db;
+} 
 
         async establecerAdmin(nombre: string) {
           const sql = 'UPDATE usuario SET es_admin = ? WHERE nombre = ?';

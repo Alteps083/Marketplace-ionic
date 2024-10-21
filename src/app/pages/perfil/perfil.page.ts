@@ -18,6 +18,8 @@ export class PerfilPage implements OnInit {
 
   profileImage: string | null = null;
 
+  imagenPerfil: string = 'src/assets/img/nouser.png';
+
   handleRefresh(event: CustomEvent) {
     this.cargarUsuario();
     setTimeout(() => {
@@ -37,15 +39,17 @@ export class PerfilPage implements OnInit {
 
   async ngOnInit() {
     this.usuario = this.bd.getUsuarioActual();
-    const usuarioActual = this.bd.getUsuarioActual();
-    if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    if (this.usuario?.id !== undefined) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
+    } else {
+      console.error('El ID del usuario no está definido.');
+      this.profileImage = 'ruta/a/nouser.png'; // Imagen predeterminada en caso de error
     }
     this.cargarUsuario();
+  }
 
-
-
-
+  async cargarImagenPerfil(usuarioId: number) {
+    this.imagenPerfil = await this.bd.obtenerImagenUsuario(usuarioId);
   }
 
   cargarUsuario() {
@@ -53,7 +57,7 @@ export class PerfilPage implements OnInit {
       if (data) {
         this.usuario = data;
         try {
-          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.nombre);
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); // Aquí puedes usar 0 o un ID predeterminado
         } catch (error) {
           console.log('Error al cargar la imagen de perfil:', error);
         }

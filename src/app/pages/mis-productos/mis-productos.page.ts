@@ -3,6 +3,8 @@ import { Router, NavigationExtras } from '@angular/router';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 import { Producto } from 'src/app/services/producto';
 import { ServicebdService } from 'src/app/services/servicebd.service';
+import { Usuario } from 'src/app/services/usuario';
+
 
 @Component({
   selector: 'app-mis-productos',
@@ -13,21 +15,31 @@ export class MisProductosPage implements OnInit {
   profileImage: string | null = null;
   publicaciones: Producto[] | null = null;
   idusuario: number | null = null;
+  usuario: Usuario | null = null;
 
   constructor(private router:Router, private bd: ServicebdService, private storage: NativeStorage) { }
 
   async ngOnInit() {
-    this.cargarUsuario();
-    const usuarioActual = this.bd.getUsuarioActual();
-    if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    this.usuario = this.bd.getUsuarioActual();
+    if (this.usuario?.id !== undefined) {
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
+    } else {
+      console.error('El ID del usuario no está definido.');
+      this.profileImage = 'ruta/a/nouser.png'; // Imagen predeterminada en caso de error
     }
+    this.cargarUsuario();
   }
 
   cargarUsuario() {
-    this.storage.getItem('usuario').then((data: any) => {
-      this.idusuario = data.id; 
-      this.cargarPublicaciones();
+    this.storage.getItem('usuario').then(async (data: Usuario) => {
+      if (data) {
+        this.usuario = data;
+        try {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); // Aquí puedes usar 0 o un ID predeterminado
+        } catch (error) {
+          console.log('Error al cargar la imagen de perfil:', error);
+        }
+      }
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
     });
@@ -50,4 +62,9 @@ export class MisProductosPage implements OnInit {
   crear(){
     this.router.navigate(['tabs/agregar']);
   }
+
+  perfil(){
+    this.router.navigate(['tabs/perfil'])
+  }
+
 }

@@ -5,9 +5,9 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title class="titulo">Notificaciones</ion-title>
-    <ion-buttons slot="end" (click)="perfil"> 
+    <ion-buttons slot="end" (click)="perfil()"> 
       <ion-avatar >
-        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>

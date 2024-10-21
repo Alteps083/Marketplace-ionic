@@ -69,21 +69,7 @@ ion-header {
     flex-direction: column;
     margin: 70px;
   }
-
-  .avatar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .avatar img{
-    width: 150px;  
-    height: 150px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-  }
-  
-  
+ 
     .container {
   
       overflow: hidden; 
@@ -138,9 +124,10 @@ ion-header {
       align-items: center;
     }
 
-    .avatar img{
-      width: 150px;  
-      height: 150px; 
+    .avatar img {
+      width: 200px;  
+      height: 200px; 
       border-radius: 50%; 
       object-fit: cover; 
-    }
+      margin-bottom: 20px; 
+  }

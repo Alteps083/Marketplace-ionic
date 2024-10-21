@@ -10,8 +10,8 @@
     </ion-button>
     <ion-buttons slot="end" (click)="perfil()"> 
       <ion-avatar>
-        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" />
-      </ion-avatar>      
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
+      </ion-avatar>    
     </ion-buttons>
   </ion-toolbar>
   <ion-searchbar *ngIf="mostrarBarraBusqueda" [(ngModel)]="searchTerm" (ionInput)="filtrarProductos($event)"></ion-searchbar>

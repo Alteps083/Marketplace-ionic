@@ -2,6 +2,8 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import Swiper from 'swiper';
 import { Router } from '@angular/router';
 import { ServicebdService } from 'src/app/services/servicebd.service';
+import { Usuario } from 'src/app/services/usuario';
+
 
 
 @Component({
@@ -13,8 +15,8 @@ export class HomeadminPage implements OnInit {
 
   profileImage: string | null = null;
 
-  usuario: string = "";
-
+  usuario: Usuario | null = null;
+  
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -94,7 +96,7 @@ export class HomeadminPage implements OnInit {
   }
   const usuarioActual = this.bd.getUsuarioActual();
   if (usuarioActual && usuarioActual.nombre) {
-    this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+    this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
   }
 }
 

@@ -77,7 +77,7 @@ export class AdministradorPage {
 
     const usuarioActual = this.bd.getUsuarioActual();
     if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
     }
   }
 

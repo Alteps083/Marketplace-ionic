@@ -7,7 +7,7 @@
     <ion-title class="titulo">MarketHub</ion-title>
     <ion-buttons slot="end"> 
       <ion-avatar>
-        <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
@@ -55,17 +55,16 @@
       </li>
     </ul>
   </div>
-  
-  <div>
-    <h3>Publica tu calificación</h3>
+  <div class="rating-container">
+    <h3 class="rating-title">Publica tu calificación</h3>
     
-    <label for="ratingSelect">Selecciona una calificación:</label>
-    <select [(ngModel)]="userRating.score" id="ratingSelect">
-      <option *ngFor="let score of [1, 2, 3, 4, 5]" [value]="score">{{ score }}</option>
+    <label for="ratingSelect" class="rating-label">Selecciona una calificación:</label>
+    <select [(ngModel)]="userRating.score" id="ratingSelect" class="rating-select">
+        <option *ngFor="let score of [1, 2, 3, 4, 5]" [value]="score">{{ score }}</option>
     </select>
   
-    <textarea [(ngModel)]="userRating.review" id="reviewInput" placeholder="Escribe tu reseña..."></textarea>
+    <textarea [(ngModel)]="userRating.review" id="reviewInput" class="rating-textarea" placeholder="Escribe tu reseña..."></textarea>
     
-    <button (click)="submitRating()">Publicar Calificación</button>
+    <button (click)="submitRating()" class="rating-button">Publicar Calificación</button>
   </div>
 </ion-content>

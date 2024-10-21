@@ -28,7 +28,7 @@
   <div class="contenedor-general">
     <div class="container-img">
       <ion-avatar class="avatar">
-        <img alt="Profile Image" *ngIf="imagenper" [src]="imagenper || 'assets/img/nouser.png'" />
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
       </ion-avatar>
       <ion-button (click)="takePicture()">Cambiar</ion-button>
     </div>

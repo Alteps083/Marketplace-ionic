@@ -28,7 +28,7 @@
 </ion-refresher>
 
 <div class="container-img">
-  <img *ngIf="profileImage" [src]="profileImage || 'assets/img/nouser.png'" />
+  <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
 </div>
 
   <div *ngIf="usuario" class="perfil">

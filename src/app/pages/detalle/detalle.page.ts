@@ -14,6 +14,7 @@ import { RatingService } from 'src/app/services/rating.service';
 })
 export class DetallePage implements OnInit {
 
+  usuario: Usuario | null = null;
   ratings: any[] = [];
   userRating = {
     score: 0,
@@ -49,7 +50,7 @@ export class DetallePage implements OnInit {
     this.cargarComentarios();  
     const usuarioActual = this.bd.getUsuarioActual();
     if (usuarioActual && usuarioActual.nombre) {
-      this.profileImage = await this.bd.obtenerImagenUsuario(usuarioActual.nombre);
+      this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
     }
   }
 
