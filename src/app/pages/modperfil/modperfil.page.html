@@ -25,15 +25,15 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <div class="contenedor-general">
-    <div class="container-img">
-      <ion-avatar class="avatar">
-        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
-      </ion-avatar>
-      <ion-button (click)="takePicture()">Cambiar</ion-button>
-    </div>
-
     <div class="editar-perfil">
+      <div class="contenedor-general">
+        <div class="container-img">
+          <ion-avatar class="avatar">
+            <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
+          </ion-avatar>
+          <ion-button (click)="takePicture()">Cambiar</ion-button>
+        </div>
+
       <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
         <!-- Datos del perfil -->
         <ion-item>
@@ -64,7 +64,6 @@
           <ion-button class="button-editar" expand="full" type="submit" [disabled]="!miFormulario.dirty || miFormulario.invalid">Guardar Cambios</ion-button>
         </div>
       </form>
-
       <h2>Modificar Contraseña</h2>
       <form [formGroup]="miFormularioContrasenia" (ngSubmit)="onChangePassword()">
         <ion-item>

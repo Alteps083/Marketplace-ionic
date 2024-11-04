@@ -16,7 +16,7 @@ ion-content {
 .contenedor-imagen {
     position: relative;
     width: 100%;
-    height: auto; 
+    height: 450px; 
     overflow: hidden;
 }
 
@@ -25,6 +25,16 @@ ion-content {
     height: 100%;
     object-fit: cover;
 }
+
+.image-navigation-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px; /* Ajusta según sea necesario */
+  }
+  
+  ion-button {
+    color: white; /* Asegúrate de que el color sea visible */
+  }
 
 .degradado-inferior{
     position: absolute;

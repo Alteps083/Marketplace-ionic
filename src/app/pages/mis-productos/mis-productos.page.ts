@@ -33,7 +33,7 @@ export class MisProductosPage implements OnInit {
   }
 
   cargarUsuario() {
-    this.storage.getItem('usuario').then(async (data: Usuario) => {
+    this.storage.getItem('usuario_actual').then(async (data: Usuario) => {
       if (data) {
         this.usuario = data;
         try {
@@ -48,16 +48,21 @@ export class MisProductosPage implements OnInit {
   }
 
   cargarPublicaciones() {
-    if (this.idusuario) {
-      this.bd.getPublicacionesPorUsuario(this.idusuario).then(publicaciones => {
+    this.storage.getItem('usuario_actual')
+      .then((usuario: { id: number } | null) => {
+        if (usuario?.id) {
+          return this.bd.getPublicacionesPorUsuario(usuario.id); 
+        } else {
+          throw new Error('No se encontró el ID de usuario en NativeStorage');
+        }
+      })
+      .then(publicaciones => {
         this.publicaciones = publicaciones;
-      }).catch(e => {
-        console.log('Error al cargar publicaciones', JSON.stringify(e));
+      })
+      .catch(e => {
+        console.log('Error al cargar publicaciones:', e.message || JSON.stringify(e));
       });
-    } else {
-      console.error('No se puede cargar las publicaciones, el ID de usuario no está definido.');
-    }
-  }
+}
 
   irAVerPublicacion(id: number) {
     this.router.navigate(['/detalle', id]);

@@ -27,11 +27,10 @@
   </ion-refresher-content>
 </ion-refresher>
 
-<div class="container-img">
-  <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
-</div>
-
   <div *ngIf="usuario" class="perfil">
+    <div class="container-img">
+      <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
+    </div>
     <ion-item class="input">
       <ion-icon name="person-outline"></ion-icon>
       <h3>{{usuario.nombre}}

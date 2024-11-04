@@ -26,12 +26,17 @@ export class RegistroPage implements OnInit {
       email: ['', [Validators.required, Validators.email, this.CorreoReal]],
       phone: ['', [Validators.required, this.NumeroReal]],
       password: ['', [Validators.required, Validators.minLength(6), this.ContraseñaRestrincciones]],
-    })
+      confirmPassword: ['', [Validators.required]]
+    }, { validator: this.passwordsMatch });
    }
 
   ngOnInit() {
   }
 
+  ionViewWillEnter() {
+    this.miFormulario.reset();
+  }
+  
   formatPhoneNumber() {
     let phoneInput = this.miFormulario.get('phone');
     if (phoneInput) {
@@ -84,6 +89,7 @@ export class RegistroPage implements OnInit {
       if(isReady){
         this.serviceBd.registrarUsuario(nuevoUsuario).then((registroExistoso) => {
         if(registroExistoso){
+          this.presentToast('bottom', 'Usuario registrado Correctamente, Inicie sesion');
           this.router.navigate(['/login']);
         }else{
           console.log('El correo ya existe :v');
@@ -141,6 +147,12 @@ export class RegistroPage implements OnInit {
     }
 
     return null;
+  }
+
+   passwordsMatch(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordsMismatch: true };
   }
 
   NumeroReal(control: AbstractControl) {

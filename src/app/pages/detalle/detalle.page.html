@@ -20,6 +20,14 @@
       <div class="degradado-inferior">
         <ion-card-title class="titulo-imagen">{{ producto?.nombre_producto || 'Sin título' }}</ion-card-title>
       </div>
+      <ion-buttons class="image-navigation-buttons">
+        <ion-button (click)="prevImage()" fill="clear">
+          <ion-icon name="arrow-back-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="nextImage()" fill="clear">
+          <ion-icon name="arrow-forward-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </div>
     <ion-card-header>
       <ion-card-subtitle>Categoria: {{ producto?.categoria || 'Sin categoría' }}</ion-card-subtitle>

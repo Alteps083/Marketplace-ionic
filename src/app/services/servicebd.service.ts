@@ -4,6 +4,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuario } from './usuario';
 import { Producto } from './producto';
+import { Subject } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
@@ -12,7 +13,7 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 })
 export class ServicebdService {
 
-  private productosSubject = new BehaviorSubject<Producto[]>([]);
+  public productosSubject = new BehaviorSubject<Producto[]>([]);
   public productos$ = this.productosSubject.asObservable();
 
   public database!: SQLiteObject;
@@ -49,6 +50,8 @@ export class ServicebdService {
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
   listarReclamos = new BehaviorSubject<any[]>([]);
+
+  private profileImageSubject = new Subject<string | null>();
   
   public listaReclamos$ = this.listarReclamos.asObservable();
 
@@ -76,8 +79,7 @@ export class ServicebdService {
     return this.listaUsuarios.asObservable()
     
   };
-
-  
+ 
   fetchProductos(): Observable<Producto[]>{
     return this.listarProductos.asObservable();
   }
@@ -100,20 +102,18 @@ export class ServicebdService {
   async obtenerImagenPerfil(nombre: string): Promise<string> {
     try {
       console.log('Obteniendo imagen de perfil para el usuario:', nombre);
-      
-      // Obtener la imagen del usuario desde el almacenamiento
+
       const imagen = await this.storage.getItem(`imagen_${nombre}`);
-      
-      // Verifica si la imagen es válida
+
       if (imagen && imagen.startsWith('http')) {
-        return imagen; // Retorna la URL de la imagen si es válida
+        return imagen; 
       } else {
         console.log('No se encontró imagen, usando la imagen predeterminada');
-        return 'assets/img/nouser.png'; // Retorna la imagen predeterminada
+        return 'assets/img/nouser.png'; 
       }
     } catch (error) {
       console.log('Error al obtener la imagen de perfil:', error);
-      return 'assets/img/nouser.png'; // En caso de error, devuelve la imagen predeterminada
+      return 'assets/img/nouser.png'; 
     }
   }
   
@@ -216,24 +216,31 @@ export class ServicebdService {
       }
     }
 
-    async loginUsuario(nombre: string, contrasenia: string): Promise<boolean>{
+    async loginUsuario(nombre: string, contrasenia: string): Promise<boolean> {
       const sql = `SELECT * FROM usuario WHERE nombre = ? AND contrasenia = ?`;
-      const params = [nombre,contrasenia];
-      try{
-        const result = await this.database.executeSql(sql,params);
-        if (result.rows.length > 0){
-          const usuario = result.rows.item(0)
+      const params = [nombre, contrasenia];
+      try {
+        const result = await this.database.executeSql(sql, params);
+        if (result.rows.length > 0) {
+          const usuario = result.rows.item(0);
           this.setUsuarioActual(usuario);
-          if(usuario.imagen && usuario.imagen.trim() !== ''){
-            await this.storage.setItem('usuario_imagen', usuario.imagen)
-          }
+
+          await this.storage.setItem('usuario_actual', { 
+            id: usuario.id, 
+            nombre: usuario.nombre, 
+            email: usuario.email, 
+            telefono: usuario.telefono, 
+            es_admin: usuario.es_admin, 
+            imagen: usuario.imagen 
+          });
+    
           return true;
         } else {
-          this.presentAlert('Login Fallido', 'Nombre o Constraseña incorrectos')
+          this.presentAlert('Login Fallido', 'Nombre o Contraseña incorrectos');
           return false;
         }
-      }catch(e){
-        this.presentAlert('Error en el login',JSON.stringify(e));
+      } catch (e) {
+        this.presentAlert('Error en el login', JSON.stringify(e));
         return false;
       }
     }
@@ -281,7 +288,21 @@ export class ServicebdService {
         }
         this.listaUsuarios.next(usuarios);
       } catch (e) {
-        this.presentAlert('Error al cargar usuarios', JSON.stringify(e));
+      }
+    }
+
+    async cargarUsuarioActual() {
+      try {
+          const usuario = await this.storage.getItem('usuario_actual');
+          if (usuario) {
+              this.usuarioActual = usuario;
+              const imagen = await this.obtenerImagenUsuario(usuario.id);
+              this.profileImageSubject.next(imagen); 
+          } else {
+              console.warn('No se encontró el usuario actual en NativeStorage');
+          }
+      } catch (e) {
+          console.error('Error al cargar el usuario actual', e);
       }
     }
 
@@ -304,22 +325,21 @@ export class ServicebdService {
       }
     }
 
-    getPublicacionesPorUsuario(usuarioId: number): Promise<Producto[]> {
-      return this.database.executeSql('SELECT * FROM productos WHERE id_vendedor = ?', [usuarioId])
-        .then(res => {
+    async getPublicacionesPorUsuario(usuarioId: number): Promise<Producto[]> {
+      try {
+          const res = await this.database.executeSql('SELECT * FROM productos WHERE id_vendedor = ?', [usuarioId]);
           let publicaciones: Producto[] = [];
           for (let i = 0; i < res.rows.length; i++) {
-            const producto = res.rows.item(i);
-            if (producto.imagenes) {
-              producto.imagenes = JSON.parse(producto.imagenes || '[]');
-            } else {
-              producto.imagenes = []; 
-            }
-            publicaciones.push(producto);
+              const producto = res.rows.item(i);
+              producto.imagenes = producto.imagenes ? JSON.parse(producto.imagenes) : [];
+              publicaciones.push(producto);
           }
           return publicaciones;
-        });
-    }
+      } catch (error) {
+          console.error('Error al obtener publicaciones por usuario:', error);
+          return [];
+      }
+  }
 
     async obtenerProductosPorCategoria(categoria: string): Promise<Producto[]> {
       const sql = 'SELECT * FROM productos WHERE categoria = ?';
@@ -386,21 +406,35 @@ export class ServicebdService {
               return 'src/assets/img/nouser.png';
             }
           } catch (e) {
-            this.presentAlert('Error al obtener imagen del usuario', JSON.stringify(e));
             return 'src/assets/img/nouser.png';
           }
         }
 
-        // Método para obtener el ID del usuario logueado
+        async buscarProductosPorNombre(nombre: string): Promise<Producto[]> {
+          const sql = 'SELECT * FROM productos WHERE nombre_producto LIKE ?';
+          const params = [`%${nombre}%`]; // El % es un comodín para buscar coincidencias
+          try {
+            const res = await this.database.executeSql(sql, params);
+            let productos: Producto[] = [];
+            for (let i = 0; i < res.rows.length; i++) {
+              const producto = res.rows.item(i);
+              producto.imagenes = JSON.parse(producto.imagenes || '[]');
+              productos.push(producto);
+            }
+            return productos;
+          } catch (e) {
+            this.presentAlert('Error al buscar productos', JSON.stringify(e));
+            return [];
+          }
+        }
+
 async obtenerIdUsuarioLogueado(): Promise<number | null> {
-  // Aquí puedes usar SQLite, localStorage o lo que estés usando
-  const usuarioId = await localStorage.getItem('idUsuario'); // o SQLite si es el caso
+  const usuarioId = await localStorage.getItem('idUsuario'); 
   return usuarioId ? parseInt(usuarioId, 10) : null;
 }
 
-// Método para obtener el usuario por su ID
 async obtenerUsuarioPorId(id: number): Promise<Usuario | null> {
-  const query = `SELECT * FROM usuario WHERE idusuario = ?`;
+  const query = `SELECT * FROM usuario WHERE id = ?`;
 
   try {
     if (this.database) {

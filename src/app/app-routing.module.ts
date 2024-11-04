@@ -72,9 +72,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/editarproducto/editarproducto.module').then( m => m.EditarproductoPageModule)
   },
   {
+    path: 'busqueda',
+    loadChildren: () => import('./pages/busqueda/busqueda.module').then( m => m.BusquedaPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
+ 
 
 
 

@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="--ion-color-primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="titulo">MarketHub</ion-title>
+    <ion-buttons slot="end" (click)="perfil()"> 
+      <ion-avatar>
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
+      </ion-avatar>    
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="filtrarProductos($event)"
+    placeholder="Buscar productos..."
+  ></ion-searchbar>
+</ion-header>
+
+<div class="horizontal-scroll">
+  <ng-container *ngIf="productosFiltrados && productosFiltrados.length > 0">
+    <ion-card *ngFor="let producto of productosFiltrados" (click)="detalle(producto.id)" class="card">
+      <img [src]="producto.imagenes[0] || '/assets/img/default.jpg'" alt="{{ producto.nombre_producto }}">
+      <ion-card-header>
+        <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
+        <ion-card-subtitle>{{ producto.categoria }}</ion-card-subtitle>
+        <strong>Precio: {{ producto.precio | currency }}</strong>
+      </ion-card-header>
+    </ion-card>
+  </ng-container>
+  <ng-container *ngIf="!productosFiltrados || productosFiltrados.length === 0">
+    <p>No se encontraron productos.</p>
+  </ng-container>
+</div>

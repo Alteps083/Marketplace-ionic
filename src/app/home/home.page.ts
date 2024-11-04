@@ -57,7 +57,6 @@ async ngOnInit() {
 
   await this.cargarUsuario();
   this.actualizarRecientesYCategorias();
-  this.BotonCerrarSesion();
   this.autoSlide();
 
   this.bd.dbReady().subscribe(ready => {
@@ -101,7 +100,6 @@ async obtenerUsuarioActual() {
     this.profileImage = '/assets/img/nouser.png';
   }
 }
-
 
 async obtenerImagenUsuario(nombre: string): Promise<string> {
   try {
@@ -171,22 +169,21 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
   constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {}
 
   //modificado
-  async cargarUsuario() {
-    try {
-      const data = await this.storage.getItem('usuario');
+  cargarUsuario() {
+    this.storage.getItem('usuario').then(async (data: Usuario) => {
       if (data) {
         this.usuario = data;
-
-        if (this.usuario?.id) {
-          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id); // Cambiar a id
-          console.log('Imagen de perfil cargada para:', this.usuario.nombre);
+        try {
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);
+        } catch (error) {
+          console.log('Error al cargar la imagen de perfil:', error);
         }
       }
-    } catch (error) {
-      console.log('Error al cargar usuario:', error);
-    }
-  } 
-
+    }).catch(error => {
+      console.log('Error al recuperar usuario: ', JSON.stringify(error));
+    });
+  }
+  
   cargarProductos() {
     this.actualizarRecientesYCategorias();
     this.bd.fetchProductos().subscribe(productos => {
@@ -222,42 +219,6 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
     this.swiper = this.swiperRef?.nativeElement.swiper;
   }
 
-  BotonCerrarSesion(){
-    this.platform.backButton.subscribeWithPriority(10, async () => {
-      const alert = await this.alertController.create({
-        header: 'Cerrar Sesión',
-        message: '¿Estás seguro de que deseas cerrar la sesión?',
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('La sesión no se cerró');
-            }
-          },
-          {
-            text: 'Cerrar Sesión',
-            handler: () => {
-              this.cerrarSesion();
-            }
-          }
-        ]
-      })
-      await alert.present(); 
-    })
-  }
-
-  async cerrarSesion(){
-    try{
-      await this.storage.remove('usuario');
-      console.log('Datos de usuario eliminados correctamente');
-      this.router.navigate(['/login']);
-    }catch (e){
-      console.log('Error al cerrar sesion', JSON.stringify(e));
-    }
-  }
-
   goNext() {
     this.swiper?.slideNext();
   }
@@ -289,6 +250,10 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
 
   admin(){
     this.bd.establecerAdmin('ale');
+  }
+
+  paginaBusqueda(){
+    this.router.navigate(['/busqueda']);
   }
 
   perfil(){

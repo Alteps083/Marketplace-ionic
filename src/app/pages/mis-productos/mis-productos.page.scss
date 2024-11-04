@@ -53,10 +53,10 @@
   }
 
   .publicacion-detalles img {
-    width: 100%; 
-    height: 200px;
+    width: 200px; /* Cambia este valor al ancho deseado */
+    height: 200px; /* Mantiene la relación de aspecto de la imagen */
     object-fit: cover; 
-  }
+}
 
   .info{
     margin-left: 16px;

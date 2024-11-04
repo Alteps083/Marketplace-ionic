@@ -100,6 +100,11 @@ export class AgregarPage implements OnInit {
   }
 
   async ngOnInit() {
+
+    if (this.descripcion) {
+      this.descripcion.markAsTouched();
+    }
+    
     await this.cargarUsuario(); 
     this.usuario = this.bd.getUsuarioActual();
     if (this.usuario) {

@@ -34,6 +34,10 @@ export class LoginPage implements OnInit {
     });
   }
 
+  ionViewWillEnter() {
+    this.miFormulario.reset();
+  }
+
   async ngOnInit() {
    this.initializeKeyboardListeners();
    this.iniciarControlTeclado();

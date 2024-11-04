@@ -204,15 +204,19 @@ home(){
       allowEditing: false,
       resultType: CameraResultType.Uri
     });
-
-    this.imagenper = image.webPath;
   
-    if (this.usuario && this.usuario.nombre) {
-      this.usuario.imagen = this.imagenper;
-      await this.bd.actualizarUsuario(this.usuario);
-      await this.storage.setItem('usuario', this.usuario);
-      this.presentToast('top');
+    if (image.webPath) {
+      // Asigna la nueva imagen a la variable
+      this.imagenper = image.webPath;
+      this.profileImage = image.webPath; // Actualiza la imagen de perfil también
+    
+      if (this.usuario && this.usuario.nombre) {
+        this.usuario.imagen = this.imagenper; // Guarda la imagen en el usuario
+        await this.bd.actualizarUsuario(this.usuario); // Actualiza en la base de datos
+        await this.storage.setItem('usuario', this.usuario); // Guarda en el almacenamiento
+        this.presentToast('top'); // Muestra el toast de éxito
+      }
     }
-};
+  };
 
 }

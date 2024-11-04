@@ -22,6 +22,8 @@ export class DetallePage implements OnInit {
     review: ''
   };
 
+  currentImageIndex: number = 0;
+
   profileImage: string | null = null;
 
   producto : Producto | null = null;
@@ -63,10 +65,10 @@ export class DetallePage implements OnInit {
 
   async cargarUsuario() {
     try {
-      const data = await this.storage.getItem('usuario');
+      const data = await this.storage.getItem('usuario_actual');
       if (data) {
         this.usuario = data;
-        this.storage.getItem('usuario').then(async (data: Usuario) => {
+        this.storage.getItem('usuario_actual').then(async (data: Usuario) => {
           if (data) {
             this.usuario = data;
             try {
@@ -107,6 +109,23 @@ export class DetallePage implements OnInit {
     }
   }
 
+  nextImage() {
+    if (this.producto && this.currentImageIndex < this.producto.imagenes.length - 1) {
+      this.currentImageIndex++;
+    } else {
+      this.currentImageIndex = 0; 
+    }
+  }
+
+  prevImage() {
+    if (this.producto?.imagenes && this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+    } else if (this.producto?.imagenes) {
+      this.currentImageIndex = this.producto.imagenes.length - 1; // Volver a la última imagen si se llega al principio
+    }
+  }
+  
+
   async cargarComentarios() {
     if (this.producto) { 
       this.comentarios = await this.bd.obtenerComentarios(this.producto.id);
@@ -121,13 +140,11 @@ export class DetallePage implements OnInit {
   
     if (!this.producto || usuarioId === undefined) {
       console.error('No se puede publicar el comentario, el producto o el usuario no están disponibles.');
-      this.router.navigate(['tabs/home']); 
       return; 
     }
     await this.bd.agregarComentario(this.producto.id, usuarioId, this.nuevoComentario);
     this.nuevoComentario = ''; 
     this.cargarComentarios(); 
-    this.router.navigate(['tabs/home']); 
   }
   perfil() {
     this.router.navigate(['/tabs/perfil']);
