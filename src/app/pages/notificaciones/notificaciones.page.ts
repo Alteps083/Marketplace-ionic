@@ -4,7 +4,9 @@ import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { NotificationsPushService } from 'src/app/services/notifications-push.service';
 import { Notificacion } from 'src/app/services/notificacion';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Producto } from 'src/app/services/producto';
+
 @Component({
   selector: 'app-notificaciones',
   templateUrl: './notificaciones.page.html',
@@ -15,12 +17,14 @@ export class NotificacionesPage implements OnInit {
   usuario: Usuario | null = null;
   notificaciones: Notificacion[] = [];
 
-  constructor(private bd: ServicebdService, private storage: NativeStorage, private notificacion: NotificationsPushService, private router: Router) { }
+  constructor(private bd: ServicebdService, private storage: NativeStorage, private notificacion: NotificationsPushService, private router: Router, private route: ActivatedRoute) { }
 
   async ngOnInit() {
-    this.notificacion.notifications$.subscribe((data: Notificacion[]) => {
-      this.notificaciones = data
-    })
+    await this.notificacion.loadNotifications();
+    this.notificacion.notifications$.subscribe(notifications => {
+      this.notificaciones = notifications;
+    });
+    
     const usuarioActual = this.bd.getUsuarioActual();
     this.cargarUsuario();
     if (usuarioActual && usuarioActual.nombre) {
@@ -41,6 +45,19 @@ export class NotificacionesPage implements OnInit {
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
     });
+  }
+
+  eliminarNotificacion(id: number | undefined) {
+    if (id !== undefined) {
+      this.notificacion.deleteNotification(id);
+      this.notificacion.loadNotifications(); // Vuelve a cargar las notificaciones después de eliminar
+    } else {
+      console.error('No se puede eliminar la notificación, el ID es undefined');
+    }
+  }
+
+  irAlProducto(notificacion: Notificacion) {
+    this.router.navigate(['/detalle', { id: notificacion.id }]); 
   }
 
   perfil(){

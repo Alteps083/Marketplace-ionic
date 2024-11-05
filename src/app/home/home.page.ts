@@ -19,6 +19,7 @@ export class HomePage implements OnInit{
   productosPorCategoria: { [key: string]: Producto[] } = {}; 
 
   currentIndex = 0;
+  intervalId: any;
   
   usuario: Usuario | null = null;
 
@@ -31,6 +32,7 @@ export class HomePage implements OnInit{
   idsUsuarios: number[] = [];
 
 async ngOnInit() {
+  await this.cargarUsuario();
   await this.obtenerUsuarioActual();
   const usuario = await this.obtenerUsuarioActual();
   if (this.usuario?.id !== undefined) {
@@ -46,16 +48,12 @@ async ngOnInit() {
       console.log('Error al obtener la imagen del usuario, manteniendo la imagen por defecto');
     }
   }
-
-  await this.cargarUsuario();
   this.actualizarRecientesYCategorias();
   this.bd.dbReady().subscribe(ready => {
     if (ready) {
       this.cargarProductos();
     }
   });
-
-  await this.cargarUsuario();
   this.actualizarRecientesYCategorias();
   this.autoSlide();
 
@@ -166,7 +164,9 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
   ];
 
 
-  constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {}
+  constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {
+     this.cargarUsuario();
+  }
 
   //modificado
   cargarUsuario() {

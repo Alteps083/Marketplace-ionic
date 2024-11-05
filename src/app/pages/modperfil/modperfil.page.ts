@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { EmailValidator, ReactiveFormsModule, AbstractControl } from '@angular/forms';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
@@ -24,6 +24,37 @@ export class ModperfilPage implements OnInit {
   password: string = '';
   showPassword: boolean = false;
 
+  currentStep: number = 1; // Cambiar de paso según el flujo
+
+  phoneForm: FormGroup;
+  tokenForm: FormGroup;
+  verificationToken: string | null = null;
+  showTokenInput = false;
+
+  constructor(private router: Router, private toastController: ToastController, private fb: FormBuilder, private bd: ServicebdService, private storage: NativeStorage) {
+    this.miFormulario = this.fb.group({
+      name: ['', [Validators.minLength(3)]],
+      email: ['', [Validators.email, this.CorreoReal]],
+      phone: ['', [this.NumeroReal, Validators.pattern(/^\+56 9\d{8}$/)]],
+      password: ['', [Validators.minLength(6)]],
+    });
+    
+    this.miFormularioContrasenia = this.fb.group({
+      currentPassword: ['', [Validators.required]], 
+      password: ['', [Validators.minLength(6), this.ContraseñaRestrincciones]],
+      confirmPassword: ['', [Validators.minLength(6)]],
+    });
+
+    this.phoneForm = this.fb.group({
+      phone: ['', [this.NumeroReal, Validators.pattern(/^56\d{9}$/)]],
+
+    });
+    
+    this.tokenForm = this.fb.group({
+      token: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
+    });
+  }
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -33,23 +64,8 @@ export class ModperfilPage implements OnInit {
     }, 2000); 
   }
 
- 
 
-  constructor(private router:Router, private toastController: ToastController, private fb: FormBuilder, private bd: ServicebdService, private storage: NativeStorage) {
-    this.miFormulario = this.fb.group({
-      name: ['', [Validators.minLength(3)]],
-      email: ['', [Validators.email, this.CorreoReal]],
-      phone: ['', [this.NumeroReal]],
-      password: ['', [Validators.minLength(6)]],
-    });
-    this.miFormularioContrasenia = this.fb.group({
-      currentPassword: ['', [Validators.required]], 
-      password: ['', [Validators.minLength(6), this.ContraseñaRestrincciones]],
-      confirmPassword: ['', [Validators.minLength(6)]],
-    });
-   }
-
-   async ngOnInit() {
+  async ngOnInit() {
     this.usuario = this.bd.getUsuarioActual();
     if (this.usuario?.id !== undefined) {
       this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
@@ -60,7 +76,34 @@ export class ModperfilPage implements OnInit {
     this.cargarUsuario();
   }
 
-  cargarUsuario(){
+  async sendToken() {
+    if (this.phoneForm.valid) {
+      this.verificationToken = (Math.floor(1000 + Math.random() * 9000)).toString();
+      await LocalNotifications.schedule({
+        notifications: [{
+          id: 1,
+          title: "Token de verificación",
+          body: `Tu token es: ${this.verificationToken}`,
+        }]
+      });
+      await this.storage.setItem('verificationToken', this.verificationToken);
+      this.showTokenInput = true;
+      this.currentStep = 2; // Cambiar al formulario de token
+    }
+  }
+
+  async verifyToken() {
+    const storedToken = await this.storage.getItem('verificationToken');
+    if (this.tokenForm.value.token === storedToken) {
+      await this.storage.remove('verificationToken');
+      this.currentStep = 3; // Cambiar al formulario de cambio de contraseña
+      this.presentToast('bottom', 'Token verificado exitosamente');
+    } else {
+      this.presentToast('middle', 'El token es incorrecto');
+    }
+  }
+
+  cargarUsuario() {
     this.storage.getItem('usuario').then((data: Usuario) => {
       if(data) {
         this.usuario = data;
@@ -68,23 +111,12 @@ export class ModperfilPage implements OnInit {
           name: this.usuario.nombre,
           email: this.usuario.email,
           phone: this.usuario.telefono
-        })
+        });
         this.imagenper = this.usuario.imagen;
       }
     }).catch(error => {
       console.log('Error al recuperar usuario: ', JSON.stringify(error));
     });
-    this.storage.getItem('usuario').then(async (data: Usuario) => {
-      if (data) {
-        this.usuario = data;
-        try {
-          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); // Aquí puedes usar 0 o un ID predeterminado
-        } catch (error) {
-          console.log('Error al cargar la imagen de perfil:', error);
-        }
-      }
-    }).catch(error => {
-      console.log('Error al recuperar usuario: ', JSON.stringify(error));})
   }
 
   async onSubmit() {
@@ -132,6 +164,8 @@ export class ModperfilPage implements OnInit {
           await this.bd.actualizarUsuario(this.usuario);
           await this.storage.setItem('usuario', this.usuario);
           this.presentToast('bottom', 'Contraseña actualizada exitosamente');
+          this.storage.clear();
+          this.router.navigate(['/login']);
         } catch (error) {
           console.error('Error al actualizar la contraseña: ', error);
           this.presentToast('top', 'Error al actualizar la contraseña');
@@ -141,8 +175,8 @@ export class ModperfilPage implements OnInit {
       }
     }
   }
-  
-  CorreoReal(control: AbstractControl){
+
+  CorreoReal(control: AbstractControl) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (control.value && !emailPattern.test(control.value)){
       return {invalidEmail: true};
@@ -150,7 +184,7 @@ export class ModperfilPage implements OnInit {
     return null;
   }
 
-  NumeroReal(control: AbstractControl){
+  NumeroReal(control: AbstractControl) {
     const phonePattern = /^[0-9]+$/;
     if(control.value && !phonePattern.test(control.value)){
       return {invalidPhone: true};
@@ -158,19 +192,16 @@ export class ModperfilPage implements OnInit {
     return null;
   }
 
-  ContraseñaRestrincciones(control: AbstractControl){
+  ContraseñaRestrincciones(control: AbstractControl) {
     const contra: string = control.value || '';
-
     const hasUpperCase = /[A-Z]/.test(contra);
     const hasLowerCase = /[a-z]/.test(contra);
     const hasNumber = /\d/.test(contra);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(contra);
-
     const valid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
     if(!valid){
       return { RangoContrasenia: true }
     }
-
     return null;
   }
 
@@ -184,17 +215,14 @@ export class ModperfilPage implements OnInit {
       duration: 1500,
       position: position,
     });
-  
     await toast.present();
   }
 
-home(){
-    //crear logica de programación
+  home() {
     this.router.navigate(['/tabs/home']);
   }
 
-  perfil(){
-    //crear logica de programación
+  perfil() {
     this.router.navigate(['/tabs/perfil']);
   }
 
@@ -206,17 +234,15 @@ home(){
     });
   
     if (image.webPath) {
-      // Asigna la nueva imagen a la variable
       this.imagenper = image.webPath;
-      this.profileImage = image.webPath; // Actualiza la imagen de perfil también
+      this.profileImage = image.webPath;
     
       if (this.usuario && this.usuario.nombre) {
-        this.usuario.imagen = this.imagenper; // Guarda la imagen en el usuario
-        await this.bd.actualizarUsuario(this.usuario); // Actualiza en la base de datos
-        await this.storage.setItem('usuario', this.usuario); // Guarda en el almacenamiento
-        this.presentToast('top'); // Muestra el toast de éxito
+        this.usuario.imagen = this.imagenper; 
+        await this.bd.actualizarUsuario(this.usuario);
+        await this.storage.setItem('usuario', this.usuario);
+        this.presentToast('top');
       }
     }
   };
-
 }

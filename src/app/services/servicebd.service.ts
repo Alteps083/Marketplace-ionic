@@ -3,6 +3,7 @@ import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuario } from './usuario';
+import { Notificacion } from './notificacion';
 import { Producto } from './producto';
 import { Subject } from 'rxjs';
 import { JsonPipe } from '@angular/common';
@@ -46,6 +47,16 @@ export class ServicebdService {
     FOREIGN KEY (productoId) REFERENCES productos(id),
     FOREIGN KEY (usuarioId) REFERENCES usuario(id)
 )`;
+
+  tablaNotificaciones: string = `
+      CREATE TABLE IF NOT EXISTS notificaciones (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        imagen TEXT,
+        nombreUsuario TEXT,
+        nombreProducto TEXT,
+        fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
 
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
@@ -157,6 +168,7 @@ export class ServicebdService {
         await this.database.executeSql(this.tablaProductos, []);
         await this.database.executeSql(this.tablaReclamos, []);
         await this.database.executeSql(this.tablaComentarios, []);
+        await this.database.executeSql(this.tablaNotificaciones, []);
         await this.actualizarTablaUsuario();
         await this.asignarIdAUsuariosExistentes();  
         
@@ -656,7 +668,53 @@ obtenerProductos(): Promise<Producto[]> {
   });
 }
 
+async getNotifications(): Promise<Notificacion[]> {
+  try {
+    const res = await this.database?.executeSql('SELECT * FROM notificaciones', []);
+    const notifications: Notificacion[] = [];
+    for (let i = 0; i < (res?.rows.length || 0); i++) {
+      const row = res?.rows.item(i);
+      notifications.push({
+        id: row.id,
+        imagen: row.imagen,
+        nombreUsuario: row.nombreUsuario,
+        nombreProducto: row.nombreProducto,
+        fecha: row.date
+      });
+    }
+    return notifications;
+  } catch (error) {
+    console.error('Error al obtener notificaciones:', error);
+    return [];
+  }
 }
+
+async addNotification(notificacion: Notificacion) {
+  try {
+    await this.database?.executeSql(
+      'INSERT INTO notificaciones (imagen, nombreUsuario, nombreProducto, fecha) VALUES (?, ?, ?, ?)',
+      [
+        notificacion.imagen || '',             // Usa una cadena vacía si no hay imagen
+        notificacion.nombreUsuario,
+        notificacion.nombreProducto,
+        new Date().toISOString()               // Fecha actual en formato ISO
+      ]
+    );
+  } catch (error) {
+    console.error('Error al agregar notificación:', error);
+  }
+}
+
+async deleteNotification(id: number) {
+  try {
+    await this.database?.executeSql('DELETE FROM notificaciones WHERE id = ?', [id]);
+  } catch (error) {
+    console.error('Error al eliminar notificación:', error);
+  }
+}
+
+}
+
 
 
 

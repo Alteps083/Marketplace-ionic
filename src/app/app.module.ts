@@ -22,7 +22,7 @@ import { RatingService } from './services/rating.service';
 @NgModule({
   declarations: [AppComponent, ImageModalComponent, PantallaCargaComponent],
   imports: [
-    BrowserModule, 
+    BrowserModule,
     IonicModule.forRoot(), 
     AppRoutingModule,
     ReactiveFormsModule,
@@ -34,7 +34,7 @@ import { RatingService } from './services/rating.service';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     AnimationController, 
-    NativeStorage, 
+    NativeStorage,
     provideFirestore(() => getFirestore()),
     SQLite,
     ServicebdService,

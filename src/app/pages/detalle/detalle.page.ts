@@ -22,6 +22,21 @@ export class DetallePage implements OnInit {
     review: ''
   };
 
+  slideOpts = {
+    initialSlide: 0,
+    speed: 400,
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  };
+  
+  
+
   currentImageIndex: number = 0;
 
   profileImage: string | null = null;
@@ -124,7 +139,7 @@ export class DetallePage implements OnInit {
       this.currentImageIndex = this.producto.imagenes.length - 1; // Volver a la última imagen si se llega al principio
     }
   }
-  
+
 
   async cargarComentarios() {
     if (this.producto) { 

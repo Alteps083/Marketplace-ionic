@@ -85,10 +85,11 @@ export class AgregarPage implements OnInit {
         const notificacion: Notificacion = {
           imagen: this.usuario.imagen, 
           nombreUsuario: this.usuario.nombre, 
-          nombreProducto: producto.titulo
+          nombreProducto: producto.titulo,
+          fecha: new Date().toISOString()  // Añade la fecha actual
         };
-        
-        this.notificationService.addNotification(notificacion);
+
+        await this.notificationService.addNotification(notificacion);
         this.router.navigate(['tabs/home']);
         console.log('Datos del producto: ', producto);
         this.imagePreviews = [];

@@ -54,19 +54,20 @@ ion-content {
     background-color: var(--ion-color-tertiary);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; 
+    justify-content: center; /* Cambiar a center para centrar verticalmente */
     align-items: center; 
     padding: 20px; 
     width: 100%; 
-    max-width: 400px; 
+    max-width: 90%; /* Cambiar a 90% para adaptarse mejor a la pantalla */
+    margin: auto; /* Centrar horizontalmente */
     flex-grow: 1;
 }
 
-.editar-perfil form{
-    width: 100%;
+.editar-perfil form {
+    width: 100%; /* Mantener el ancho completo del contenedor */
     display: flex;           
     flex-direction: column;
-    margin: 70px;
+    margin: 0; /* Eliminar márgenes para alinear mejor */
 }
 
 .container {
@@ -89,6 +90,7 @@ ion-content {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-bottom: 20px; /* Espacio adicional debajo del avatar */
 }
 
 ion-fab-button {
@@ -132,4 +134,10 @@ ion-item {
     border-radius: 50%; /* Cambiado a un valor menor para un efecto menos redondeado */
     object-fit: cover;
     border: 2px solid #fff; 
+}
+
+.titulo-changePasword{
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 25px;
 }

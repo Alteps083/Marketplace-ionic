@@ -25,14 +25,14 @@
     </ion-refresher-content>
   </ion-refresher>
 
-    <div class="editar-perfil">
-      <div class="contenedor-general">
-        <div class="container-img">
-          <ion-avatar class="avatar">
-            <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
-          </ion-avatar>
-          <ion-button (click)="takePicture()">Cambiar</ion-button>
-        </div>
+  <div class="editar-perfil">
+    <div class="contenedor-general">
+      <div class="container-img">
+        <ion-avatar class="avatar">
+          <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
+        </ion-avatar>
+        <ion-button (click)="takePicture()">Cambiar</ion-button>
+      </div>
 
       <form [formGroup]="miFormulario" (ngSubmit)="onSubmit()">
         <!-- Datos del perfil -->
@@ -64,33 +64,62 @@
           <ion-button class="button-editar" expand="full" type="submit" [disabled]="!miFormulario.dirty || miFormulario.invalid">Guardar Cambios</ion-button>
         </div>
       </form>
-      <h2>Modificar Contraseña</h2>
-      <form [formGroup]="miFormularioContrasenia" (ngSubmit)="onChangePassword()">
-        <ion-item>
-          <ion-icon name="lock-open-outline" slot="start"></ion-icon>
-          <ion-input placeholder="Contraseña Actual" formControlName="currentPassword" type="password"></ion-input>
-        </ion-item>
-        <div *ngIf="miFormularioContrasenia.get('currentPassword')?.invalid && miFormularioContrasenia.get('currentPassword')?.touched">
-          <ion-text color="danger" *ngIf="miFormularioContrasenia.get('currentPassword')?.errors?.['required']">La contraseña actual es requerida</ion-text>
-        </div>
-        <ion-item>
-          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-          <ion-input placeholder="Nueva Contraseña" formControlName="password" type="password"></ion-input>
-        </ion-item>
-        <div *ngIf="miFormularioContrasenia.get('password')?.invalid && miFormularioContrasenia.get('password')?.touched">
-          <ion-text color="danger" *ngIf="miFormularioContrasenia.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</ion-text>
-        </div>
-        <ion-text color="danger" *ngIf="miFormularioContrasenia.get('password')?.errors?.['RangoContrasenia']">
-          La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.
-        </ion-text>
-        <ion-item>
-          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-          <ion-input placeholder="Confirmar Contraseña" formControlName="confirmPassword" type="password"></ion-input>
-        </ion-item>
-        <div class="botones">
-          <ion-button class="button-editar" expand="full" (click)="onChangePassword()" [disabled]="miFormularioContrasenia.invalid">Confirmar Cambios de Contraseña</ion-button>
-        </div>
-      </form>
+      <h2 class="titulo-changePasword">Formulario para Cambiar Contraseña!!</h2>
+      <div *ngIf="currentStep === 1">
+        <form [formGroup]="phoneForm" (ngSubmit)="sendToken()">
+          <ion-item>
+            <ion-label position="floating">Número de celular (569XXXXXXXX)</ion-label>
+            <ion-input type="text" formControlName="phone"></ion-input>
+          </ion-item>
+          <div *ngIf="phoneForm.invalid && phoneForm.touched">
+            <p *ngIf="phoneForm.get('phone')?.errors?.['required']">El número de celular es requerido</p>
+            <p *ngIf="phoneForm.get('phone')?.errors?.['pattern']">El formato del número es incorrecto</p>
+          </div>
+          <ion-button expand="full" type="submit" [disabled]="phoneForm.invalid">Enviar Token</ion-button>
+        </form>
+      </div>
+
+      <div *ngIf="currentStep === 2">
+        <form [formGroup]="tokenForm" (ngSubmit)="verifyToken()">
+          <ion-item>
+            <ion-label position="floating">Token de verificación</ion-label>
+            <ion-input type="text" formControlName="token"></ion-input>
+          </ion-item>
+          <div *ngIf="tokenForm.invalid && tokenForm.touched">
+            <p *ngIf="tokenForm.get('token')?.errors?.['required']">El token es requerido</p>
+            <p *ngIf="tokenForm.get('token')?.errors?.['minlength']">El token debe tener 4 caracteres</p>
+            <p *ngIf="tokenForm.get('token')?.errors?.['maxlength']">El token no puede tener más de 4 caracteres</p>
+          </div>
+          <ion-button expand="full" type="submit" [disabled]="tokenForm.invalid">Verificar Token</ion-button>
+        </form>
+      </div>
+
+      <div *ngIf="currentStep === 3">
+        <form [formGroup]="miFormularioContrasenia" (ngSubmit)="onChangePassword()">
+          <ion-item>
+            <ion-label position="floating">Contraseña Actual</ion-label>
+            <ion-input type="password" formControlName="currentPassword" [type]="showPassword ? 'text' : 'password'"></ion-input>
+            <ion-buttons slot="end">
+              <ion-button (click)="togglePasswordVisibility()">
+                <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Nueva Contraseña</ion-label>
+            <ion-input type="password" formControlName="password" [type]="showPassword ? 'text' : 'password'"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Confirmar Nueva Contraseña</ion-label>
+            <ion-input type="password" formControlName="confirmPassword" [type]="showPassword ? 'text' : 'password'"></ion-input>
+          </ion-item>
+          <div *ngIf="miFormularioContrasenia.invalid && miFormularioContrasenia.touched">
+            <p *ngIf="miFormularioContrasenia.get('password')?.errors?.['minlength']">La nueva contraseña debe tener al menos 6 caracteres</p>
+            <p *ngIf="miFormularioContrasenia.get('confirmPassword')?.errors?.['minlength']">La confirmación de la contraseña debe tener al menos 6 caracteres</p>
+          </div>
+          <ion-button expand="full" type="submit" [disabled]="miFormularioContrasenia.invalid">Cambiar Contraseña</ion-button>
+        </form>
+      </div>
     </div>
   </div>
 </ion-content>

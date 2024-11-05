@@ -22,28 +22,38 @@
     <img src="/../../assets/img/servicio-cliente.webp" alt="">
   </div>
 
-  <form (submit)="enviarReclamo()">
+  <form [formGroup]="reclamoForm" (ngSubmit)="enviarReclamo()">
     <ion-item>
       <ion-label position="floating">Correo electrónico</ion-label>
-      <ion-input type="email" [(ngModel)]="reclamo.email" name="email" required></ion-input>
+      <ion-input type="email" formControlName="email"></ion-input>
     </ion-item>
+    <div *ngIf="reclamoForm.get('email')?.invalid && reclamoForm.get('email')?.touched" class="error-message">
+      <ion-text color="danger" *ngIf="reclamoForm.get('email')?.hasError('required')">El correo es requerido.</ion-text>
+      <ion-text color="danger" *ngIf="reclamoForm.get('email')?.hasError('email')">Formato de correo no válido.</ion-text>
+    </div>
 
     <ion-item>
       <ion-label>Tipo de Problema</ion-label>
-      <ion-select [(ngModel)]="reclamo.tipoProblema" name="tipoProblema" placeholder="Selecciona una opción" required>
+      <ion-select formControlName="tipoProblema" placeholder="Selecciona una opción">
         <ion-select-option value="aplicacion">Problemas con la aplicación</ion-select-option>
         <ion-select-option value="producto">Problemas con un producto</ion-select-option>
         <ion-select-option value="usuario">Problemas con otro usuario</ion-select-option>
         <ion-select-option value="otro">Otro</ion-select-option>
       </ion-select>
     </ion-item>
+    <div *ngIf="reclamoForm.get('tipoProblema')?.invalid && reclamoForm.get('tipoProblema')?.touched" class="error-message">
+      <ion-text color="danger">Selecciona un tipo de problema.</ion-text>
+    </div>
 
     <ion-item>
       <ion-label position="floating">Descripción del Problema</ion-label>
-      <ion-textarea [(ngModel)]="reclamo.descripcion" name="descripcion" required></ion-textarea>
+      <ion-textarea formControlName="descripcion"></ion-textarea>
     </ion-item>
+    <div *ngIf="reclamoForm.get('descripcion')?.invalid && reclamoForm.get('descripcion')?.touched" class="error-message">
+      <ion-text color="danger" *ngIf="reclamoForm.get('descripcion')?.hasError('required')">La descripción es requerida.</ion-text>
+      <ion-text color="danger" *ngIf="reclamoForm.get('descripcion')?.hasError('maxlength')">Máximo 100 caracteres.</ion-text>
+    </div>
 
-    <ion-button expand="full" type="submit">Enviar Reclamo</ion-button>
+    <ion-button expand="full" type="submit" [disabled]="reclamoForm.invalid">Enviar Reclamo</ion-button>
   </form>
-
 </ion-content>

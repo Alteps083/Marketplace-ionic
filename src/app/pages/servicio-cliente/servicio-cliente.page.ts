@@ -4,6 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { Usuario } from 'src/app/services/usuario';
 import { Router } from '@angular/router';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -19,11 +20,36 @@ export class ServicioClientePage implements OnInit {
     descripcion: ''
   };
 
+  reclamoForm: FormGroup;
+
+
   usuario: Usuario | null = null;
 
   profileImage: string | null = null;
 
-  constructor(private bd: ServicebdService, private alertCtrl: AlertController, private router:Router, private storage: NativeStorage) { }
+  constructor(private bd: ServicebdService, private alertCtrl: AlertController, private router:Router, private storage: NativeStorage, private fb: FormBuilder) { 
+    this.reclamoForm = this.fb.group({
+      email: [
+        '', 
+        [
+          Validators.required, 
+          Validators.email
+        ]
+      ],
+      tipoProblema: [
+        '', 
+        Validators.required
+      ],
+      descripcion: [
+        '', 
+        [
+          Validators.required, 
+          Validators.maxLength(100)
+        ]
+      ]
+    });
+  }
+
 
   async ngOnInit() {
     this.usuario = this.bd.getUsuarioActual();
@@ -41,7 +67,7 @@ export class ServicioClientePage implements OnInit {
       if (data) {
         this.usuario = data;
         try {
-          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); // Aquí puedes usar 0 o un ID predeterminado
+          this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0); // ID predeterminado
         } catch (error) {
           console.log('Error al cargar la imagen de perfil:', error);
         }
@@ -52,12 +78,11 @@ export class ServicioClientePage implements OnInit {
   }
 
   async enviarReclamo() {
-    if (this.reclamo.email && this.reclamo.tipoProblema && this.reclamo.descripcion) {
+    if (this.reclamoForm.valid) {
+      const { email, tipoProblema, descripcion } = this.reclamoForm.value;
       try {
-        // Guardar en la base de datos
-        await this.bd.agregarReclamo(this.reclamo.email, this.reclamo.tipoProblema, this.reclamo.descripcion);
+        await this.bd.agregarReclamo(email, tipoProblema, descripcion);
 
-        // Mostrar alerta de éxito
         const alert = await this.alertCtrl.create({
           header: 'Reclamo enviado',
           message: 'Tu reclamo ha sido enviado exitosamente.',
@@ -65,10 +90,8 @@ export class ServicioClientePage implements OnInit {
         });
         await alert.present();
 
-        // Limpiar el formulario
-        this.reclamo = { email: this.reclamo.email, tipoProblema: '', descripcion: '' }; // Conservar el email y limpiar los otros campos
+        this.reclamoForm.reset({ email });
       } catch (e) {
-        // Mostrar alerta de error en caso de fallo al guardar el reclamo
         const alert = await this.alertCtrl.create({
           header: 'Error',
           message: 'Hubo un error al enviar el reclamo. Inténtalo de nuevo.',
@@ -77,15 +100,15 @@ export class ServicioClientePage implements OnInit {
         await alert.present();
       }
     } else {
-      // Mostrar alerta si faltan campos por completar
       const alert = await this.alertCtrl.create({
         header: 'Error',
-        message: 'Por favor, completa todos los campos.',
+        message: 'Por favor, completa todos los campos correctamente.',
         buttons: ['OK']
       });
       await alert.present();
     }
   }
+
 
   perfil(){
     this.router.navigate(['tabs/perfil'])
