@@ -252,7 +252,7 @@ export class ServicebdService {
           // Si no está baneado, procede con el inicio de sesión
           this.setUsuarioActual(usuario);
           await this.storage.setItem('usuario_actual', { 
-            id: usuario.idusuario,
+            id: usuario.id,
             nombre: usuario.nombre,
             email: usuario.email,
             telefono: usuario.telefono,

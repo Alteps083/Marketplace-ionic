@@ -41,10 +41,9 @@ export class AppComponent {
   }
 
   async initializeApp() {
-    await this.bd.crearConexion();
-    await this.bd.verificarYAgregarColumnaEstado();
     await this.bd.cargarUsuarioActual();
     await this.bd.cargarUsuarios();
+    await this.bd.verificarYAgregarColumnaEstado();
     const loading = await this.cargarPagina.create({
       component: PantallaCargaComponent, 
       componentProps: {
@@ -104,6 +103,7 @@ export class AppComponent {
       });
     });
   }
+
 
   async cerrarSesion() {
     try {
