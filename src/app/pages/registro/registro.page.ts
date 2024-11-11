@@ -82,7 +82,8 @@ export class RegistroPage implements OnInit {
       contrasenia: contrasenia,
       telefono: telefono,
       fecha_registro: new Date().toISOString(), 
-      es_admin: false 
+      es_admin: false,
+      estado: 0
     };
 
     this.serviceBd.dbReady().subscribe(isReady => {

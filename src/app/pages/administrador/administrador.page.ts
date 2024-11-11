@@ -130,8 +130,6 @@ export class AdministradorPage {
   eliminarusuario(id: number) {
     this.bd.eliminarusuario(id).then(() => this.cargarDatos());
   }
-
-
   
   editarUsuario(usuario: Usuario) {
     // Redirigir a la página de edición del usuario
@@ -236,6 +234,23 @@ export class AdministradorPage {
     await alert.present();
   }
 
+  //ban
+  async cargarUsuarios() {
+    this.bd.mostrarUsuarios.subscribe(usuarios => {
+      this.usuarios = usuarios;
+    });
+  }
+
+  async banearUsuario(usuario: Usuario) {
+    if (usuario.id !== undefined) { // Verificación para asegurar que id no sea undefined
+      const nuevoEstado = usuario.estado === 1 ? 0 : 1;
+      await this.bd.actualizarEstadoUsuario(usuario.id, nuevoEstado);
+      usuario.estado = nuevoEstado;
+    } else {
+      console.error("El ID del usuario es indefinido.");
+    }
+  }
+  
   
 }
 

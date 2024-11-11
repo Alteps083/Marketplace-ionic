@@ -7,4 +7,5 @@ export class Usuario {
     fecha_registro! : string;
     es_admin! : boolean;
     imagen? : string;
+    estado: number = 0;
 }

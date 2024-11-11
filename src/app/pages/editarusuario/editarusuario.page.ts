@@ -20,7 +20,8 @@ export class EditarusuarioPage {
     telefono: 0,
     fecha_registro: '',
     es_admin: false,
-    imagen: ''
+    imagen: '',
+    estado: 0
   };
 
   constructor(

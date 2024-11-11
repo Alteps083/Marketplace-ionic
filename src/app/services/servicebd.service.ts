@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,10 +29,12 @@ export class ServicebdService {
       telefono TEXT NOT NULL,
       fecha_registro TEXT NOT NULL,
       es_admin BOOLEAN DEFAULT 0, 
-      imagen TEXT
+      imagen TEXT,
+      estado INTEGER DEFAULT 0 -- 0 = Activo, 1 = Baneado
     )`;
     
   listaUsuarios = new BehaviorSubject<Usuario[]>([]);
+  mostrarUsuarios = this.listaUsuarios.asObservable();
 
   tablaProductos: string = `CREATE TABLE IF NOT EXISTS productos(id INTEGER PRIMARY KEY AUTOINCREMENT,id_vendedor INTEGER, nombre_producto TEXT NOT NULL, descripcion TEXT, categoria TEXT, estado TEXT, 
     precio REAL NOT NULL, imagenes TEXT)`;
@@ -88,7 +91,6 @@ export class ServicebdService {
 
   fetchUsuarios(): Observable<Usuario[]> {
     return this.listaUsuarios.asObservable()
-    
   };
  
   fetchProductos(): Observable<Producto[]>{
@@ -149,12 +151,17 @@ export class ServicebdService {
         name: 'bdusuarios.bd',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        this.database = db; 
-        this.crearTablas().then(() => {
-          this.cargarUsuarios(); 
-          this.cargarProductos();
-          this.crearUsuarioAdminPorDefecto();
-          this.isDBReady.next(true);
+        this.database = db;
+        
+        // Llamar a la función para verificar y agregar la columna 'estado' si es necesario
+        this.verificarYAgregarColumnaEstado().then(() => {
+          // Crear tablas y cargar datos solo después de que se haya verificado/agregado la columna
+          this.crearTablas().then(() => {
+            this.cargarUsuarios(); 
+            this.cargarProductos();
+            this.crearUsuarioAdminPorDefecto();
+            this.isDBReady.next(true);
+          });
         });
       }).catch(e => {
         this.presentAlert('Error al crear la base de datos', JSON.stringify(e));
@@ -231,19 +238,26 @@ export class ServicebdService {
     async loginUsuario(nombre: string, contrasenia: string): Promise<boolean> {
       const sql = `SELECT * FROM usuario WHERE nombre = ? AND contrasenia = ?`;
       const params = [nombre, contrasenia];
+      
       try {
         const result = await this.database.executeSql(sql, params);
         if (result.rows.length > 0) {
           const usuario = result.rows.item(0);
+    
+          if (usuario.estado === 1) { // Si el estado es 1, el usuario está baneado
+            this.presentAlert('Acceso Denegado', 'Su cuenta está baneada.');
+            return false;
+          }
+    
+          // Si no está baneado, procede con el inicio de sesión
           this.setUsuarioActual(usuario);
-
           await this.storage.setItem('usuario_actual', { 
-            id: usuario.id, 
-            nombre: usuario.nombre, 
-            email: usuario.email, 
-            telefono: usuario.telefono, 
-            es_admin: usuario.es_admin, 
-            imagen: usuario.imagen 
+            id: usuario.idusuario,
+            nombre: usuario.nombre,
+            email: usuario.email,
+            telefono: usuario.telefono,
+            es_admin: usuario.es_admin,
+            imagen: usuario.imagen
           });
     
           return true;
@@ -463,7 +477,8 @@ async obtenerUsuarioPorId(id: number): Promise<Usuario | null> {
           telefono: row.telefono,
           fecha_registro: row.fecha_registro,
           es_admin: row.es_admin,
-          imagen: row.imagen
+          imagen: row.imagen,
+          estado: 0
         };
         return usuario;
       }
@@ -644,7 +659,8 @@ async crearUsuarioAdminPorDefecto() {
         telefono: 123456789,
         fecha_registro: new Date().toISOString(),
         es_admin: true,
-        imagen: '' 
+        imagen: '',
+        estado: 0
       };
       await this.registrarUsuario(usuarioAdmin);
       this.presentAlert('Éxito', 'Usuario administrador por defecto creado.');
@@ -712,9 +728,38 @@ async deleteNotification(id: number) {
     console.error('Error al eliminar notificación:', error);
   }
 }
+//funcion ban
+async actualizarEstadoUsuario(id: number, nuevoEstado: number): Promise<void> {
+  const query = `UPDATE usuario SET estado = ? WHERE id = ?`;
+  await this.database.executeSql(query, [nuevoEstado, id]);
+}
 
+async verificarYAgregarColumnaEstado() {
+  try {
+    const resultado = await this.database.executeSql("PRAGMA table_info(usuario);", []);
+    const columnas = [];
+    
+    for (let i = 0; i < resultado.rows.length; i++) {
+      columnas.push(resultado.rows.item(i).name);
+    }
+
+    if (!columnas.includes('estado')) {
+      console.log("La columna 'estado' no existe. Agregando columna...");
+      await this.database.executeSql("ALTER TABLE usuario ADD COLUMN estado INTEGER DEFAULT 0;", []);
+      console.log("Columna 'estado' agregada correctamente.");
+
+      // Inicializar el valor de estado en todos los usuarios
+      await this.database.executeSql("UPDATE usuario SET estado = 0;", []);
+      console.log("Estado inicializado a 0 para todos los usuarios.");
+    } else {
+      console.log("La columna 'estado' ya existe.");
+    }
+  } catch (error) {
+    console.error("Error al verificar o agregar la columna 'estado':", error);
+  }
 }
 
 
 
 
+}

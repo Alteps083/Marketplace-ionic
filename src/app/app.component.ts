@@ -41,6 +41,8 @@ export class AppComponent {
   }
 
   async initializeApp() {
+    await this.bd.crearConexion();
+    await this.bd.verificarYAgregarColumnaEstado();
     await this.bd.cargarUsuarioActual();
     await this.bd.cargarUsuarios();
     const loading = await this.cargarPagina.create({

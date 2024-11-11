@@ -28,7 +28,9 @@
           <p>Email: {{ usuario.email }}</p>
           <p>Teléfono: {{ usuario.telefono }}</p>
         </ion-label>
-        <ion-button color="primary" (click)="editarUsuario(usuario)">Editar</ion-button>
+        <ion-button color="danger" (click)="banearUsuario(usuario)">
+          {{ usuario.estado === 1 ? 'Desbanear' : 'Banear' }}
+        </ion-button>
         <ion-button (click)="eliminarusuario(usuario.id!)">Eliminar</ion-button>
       </ion-item>
     </ion-list>
