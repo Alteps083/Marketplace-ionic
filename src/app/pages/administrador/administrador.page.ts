@@ -111,20 +111,22 @@ export class AdministradorPage {
 
   cargarDatos() {
     this.bd.fetchUsuarios().subscribe((usuarios: Usuario[]) => {
-      this.usuarios = usuarios;
-      this.usuariosFiltrados = usuarios; // Asegurarse de que usuariosFiltrados tenga los datos iniciales
+      // Filtrar solo los usuarios normales
+      this.usuarios = usuarios.filter(usuario => usuario.es_admin === false);
+      this.usuariosFiltrados = this.usuarios; // Asegurarse de que usuariosFiltrados tenga los datos iniciales
     });
-
+  
     this.bd.fetchProductos().subscribe((productos: Producto[]) => {
       this.productos = productos;
       this.productosFiltrados = productos; // Asegurarse de que productosFiltrados tenga los datos iniciales
     });
-
+  
     this.bd.listarReclamos.subscribe(reclamos => {
       this.reclamos = reclamos;
       this.reclamosFiltrados = reclamos;  // Inicializa los filtrados
     });
   }
+  
 
 
   eliminarusuario(id: number) {
@@ -157,8 +159,11 @@ export class AdministradorPage {
     this.mostrarUsuarios = true;
     this.mostrarProductos = false;
     this.mostrarReclamos = false;
-    this.usuariosFiltrados = this.usuarios; // Reinicia la lista filtrada al mostrar la tabla
+  
+    // Filtrar usuarios normales para mostrarlos en la tabla
+    this.usuariosFiltrados = this.usuarios.filter(usuario => usuario.es_admin === 0);
   }
+  
 
   mostrarTablaProductos() {
     this.mostrarUsuarios = false;

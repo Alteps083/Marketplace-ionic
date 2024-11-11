@@ -43,3 +43,5 @@ Markethub v2.5
 
 MarketHub v2.6
 - administrador eliminacion del modificar usuario e implementacion de banear usuario sencillo
+- se quito el administrador de la lista de los usuarios
+- se mejoro el aspecto de la pagina administrador pero la lista de producto no se ve bien

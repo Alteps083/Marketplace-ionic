@@ -11,8 +11,12 @@
   </ion-toolbar>
   <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="filtrarItems($event)" placeholder="Buscar..."></ion-searchbar>
 </ion-header>
+
 <ion-content>
+  <div class="home-page"></div>
+  <div class="fond-admi">
   <!-- Botones para seleccionar qué tabla mostrar -->
+   <h2>Selecciona la lista</h2>
   <ion-button (click)="mostrarTablaUsuarios()">Mostrar Usuarios</ion-button>
   <ion-button (click)="mostrarTablaProductos()">Mostrar Productos</ion-button>
   <ion-button (click)="mostrarTablaReclamos()">Mostrar Reclamos</ion-button>
@@ -28,10 +32,12 @@
           <p>Email: {{ usuario.email }}</p>
           <p>Teléfono: {{ usuario.telefono }}</p>
         </ion-label>
+        <div class="botones">
         <ion-button color="danger" (click)="banearUsuario(usuario)">
           {{ usuario.estado === 1 ? 'Desbanear' : 'Banear' }}
         </ion-button>
         <ion-button (click)="eliminarusuario(usuario.id!)">Eliminar</ion-button>
+      </div>
       </ion-item>
     </ion-list>
   </div>
@@ -46,8 +52,10 @@
           <p>{{ producto.descripcion }}</p>
           <p>Precio: {{ producto.precio | currency }}</p>
         </ion-label>
+        <div class="botones">
         <ion-button color="primary" (click)="editarProducto(producto)">Editar</ion-button>
         <ion-button color="danger" (click)="eliminarProducto(producto.id)">Eliminar</ion-button>
+      </div>
       </ion-item>
     </ion-list>
   </div>
@@ -62,8 +70,11 @@
           <p>Tipo: {{ reclamo.tipoProblema }}</p>
           <p>Descripción: {{ reclamo.descripcion }}</p>
         </ion-label>
+        <div class="botones">
         <ion-button color="danger" (click)="eliminarReclamo(reclamo.id)">Eliminar</ion-button>
+      </div>
       </ion-item>
     </ion-list>
   </div>
+</div>
 </ion-content>
