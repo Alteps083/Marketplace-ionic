@@ -1,11 +1,48 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditarusuarioPage } from './editarusuario.page';
+import { IonicModule } from '@ionic/angular';
+import { ServicebdService } from 'src/app/services/servicebd.service';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { FormsModule } from '@angular/forms';  // Importa FormsModule
+
+// Mock de SQLite para pruebas
+class SQLiteMock {
+  create() {
+    return Promise.resolve({
+      executeSql: () => Promise.resolve(),
+      transaction: () => Promise.resolve(),
+      close: () => Promise.resolve(),
+    });
+  }
+}
+
+class NativeStorageMock {
+  getItem() {
+    return Promise.resolve();
+  }
+  setItem() {
+    return Promise.resolve();
+  }
+  remove() {
+    return Promise.resolve();
+  }
+}
 
 describe('EditarusuarioPage', () => {
   let component: EditarusuarioPage;
   let fixture: ComponentFixture<EditarusuarioPage>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [EditarusuarioPage],
+      imports: [IonicModule.forRoot(), FormsModule],  // Asegúrate de incluir FormsModule
+      providers: [
+        ServicebdService,
+        { provide: SQLite, useClass: SQLiteMock }, // Mock de SQLite
+        { provide: NativeStorage, useClass: NativeStorageMock },
+      ],
+    }).compileComponents();
     fixture = TestBed.createComponent(EditarusuarioPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
