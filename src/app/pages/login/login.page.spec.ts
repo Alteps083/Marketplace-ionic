@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
-
+import { By } from '@angular/platform-browser';
 
 // Mock de SQLite para pruebas
 class SQLiteMock {
@@ -50,5 +50,16 @@ describe('LoginPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('Verifica que los mensajes de error aparezcan cuando los campos no cumplen con las validaciones.', () => {
+    const nombreControl = component.miFormulario.controls['nombre'];
+    nombreControl.setValue('');
+    nombreControl.markAsTouched();
+
+    fixture.detectChanges(); 
+  
+    const errorElement = fixture.debugElement.query(By.css('ion-text[color="danger"]')).nativeElement;
+    expect(errorElement.textContent).toContain('Debe Ingresar el Nombre');
   });
 });

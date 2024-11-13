@@ -161,6 +161,7 @@ export class DetallePage implements OnInit {
     this.nuevoComentario = ''; 
     this.cargarComentarios(); 
   }
+  
   perfil() {
     this.router.navigate(['/tabs/perfil']);
   }

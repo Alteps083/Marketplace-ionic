@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { DetallePage } from './detalle.page';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs'; // Para crear un observable de prueba
-import { IonicModule } from '@ionic/angular'; // Importar IonicModule
+import { of } from 'rxjs'; 
+import { IonicModule } from '@ionic/angular'; 
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
-import { HttpClientTestingModule } from '@angular/common/http/testing'; // Si usas HttpClient
+import { HttpClientTestingModule } from '@angular/common/http/testing'; 
+import { ComponentFixture } from '@angular/core/testing'; 
 
 
 class SQLiteMock {
@@ -32,11 +33,12 @@ class NativeStorageMock {
 
 describe('DetallePage', () => {
   let component: DetallePage;
+  let fixture: ComponentFixture<DetallePage>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [DetallePage],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule], // Agregar IonicModule
+      imports: [IonicModule.forRoot(), HttpClientTestingModule], 
       providers: [
         { provide: SQLite, useClass: SQLiteMock },
         { provide: NativeStorage, useClass: NativeStorageMock },
@@ -46,19 +48,35 @@ describe('DetallePage', () => {
             snapshot: { 
               paramMap: { get: () => 'mock-id' } 
             },
-            params: of({ id: 'mock-id' })  // Simula parámetros de la ruta
+            params: of({ id: 'mock-id' })  
           }
         }
       ]
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(DetallePage);
+    fixture = TestBed.createComponent(DetallePage);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
-
+    
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  // Agrega más pruebas si es necesario
+  it('debe deshabilitar el botón "Publicar" cuando "nuevoComentario" esté vacío o contenga solo espacios', () => {
+    component.nuevoComentario = '';  
+    fixture.detectChanges(); 
+    let button = fixture.nativeElement.querySelector('ion-button');
+    expect(button.disabled).toBeTrue(); 
+
+    component.nuevoComentario = '     ';  
+    fixture.detectChanges();
+    button = fixture.nativeElement.querySelector('ion-button');
+    expect(button.disabled).toBeTrue(); 
+  
+    component.nuevoComentario = 'Comentario válido';  
+    fixture.detectChanges();
+    button = fixture.nativeElement.querySelector('ion-button');
+    expect(button.disabled).toBeFalse(); 
+  });
 });

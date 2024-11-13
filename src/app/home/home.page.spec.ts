@@ -40,7 +40,7 @@ describe('HomePage', () => {
       imports: [IonicModule.forRoot()],
       providers: [
         ServicebdService,
-        { provide: SQLite, useClass: SQLiteMock }, // Mock de SQLite
+        { provide: SQLite, useClass: SQLiteMock }, 
         { provide: NativeStorage, useClass: NativeStorageMock },
       ],
     }).compileComponents();
