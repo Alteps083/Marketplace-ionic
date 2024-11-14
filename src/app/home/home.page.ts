@@ -31,6 +31,8 @@ export class HomePage implements OnInit{
 
   idsUsuarios: number[] = [];
 
+  images: string[] = [];
+
 async ngOnInit() {
   await this.cargarUsuario();
   await this.obtenerUsuarioActual();
@@ -155,17 +157,18 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
   swiperRef: ElementRef | undefined;
   swiper?: Swiper;
 
-  images = [
-    'https://images.unsplash.com/photo-1580927752452-89d86da3fa0a',
-    'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqFu_E_Xv8alQM7C0qNuVLHFjUKFCAfL-XNw&s',
-    'https://tse3.mm.bing.net/th?id=OIG2.Z3Po8YdlRXB9P8cp9V_l&w=270&h=270&c=6&r=0&o=5&pid=ImgGn',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2-yVmglcofj30YGFBUqhMEpWsxEzrw4gXiw&s',
-  ];
-
-
   constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {
      this.cargarUsuario();
+  }
+
+
+  async ionViewDidEnter() {
+    this.images = await this.obtenerImagenes();
+  }
+
+  async obtenerImagenes(): Promise<string[]> {
+    const imagenes = await this.bd.obtenerImagenes();
+    return imagenes.map((imagen) => imagen.url);
   }
 
   //modificado

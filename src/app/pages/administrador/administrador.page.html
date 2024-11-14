@@ -15,12 +15,30 @@
 <ion-content>
   <div class="home-page"></div>
   <div class="fond-admi">
+      <!-- Reload -->
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline">
+
+      <div class="honeycomb">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+    </ion-refresher-content>
+  </ion-refresher>
+  
     <!-- Botones para seleccionar qué tabla mostrar -->
     <h2>Selecciona la lista</h2>
     <ion-button (click)="mostrarTablaUsuarios()">Mostrar Usuarios</ion-button>
     <ion-button (click)="mostrarTablaProductos()">Mostrar Productos</ion-button>
     <ion-button (click)="mostrarTablaReclamos()">Mostrar Reclamos</ion-button>
     <ion-button (click)="mostrarTablaCategorias()">Mostrar Categorías</ion-button>
+    <ion-button (click)="mostrartablaCarrusel()">Mostrar Carrusel</ion-button>
 
     <!-- Tabla de Usuarios -->
     <div *ngIf="mostrarUsuarios">
@@ -95,5 +113,29 @@
         </ion-item>
       </ion-list>
     </div>
+
+          <!-- imagnes carrusel -->
+<!-- Carrusel: Solo visible si mostrarCarrusel es true -->
+<div *ngIf="mostrarCarrusel">
+  <h2>Imágenes Carrusel</h2>
+
+  <!-- Botón para seleccionar y guardar la imagen -->
+<ion-button (click)="selectFromGallery()">Seleccionar imagen para carrusel</ion-button>
+<!-- Vista previa de la imagen seleccionada -->
+<div *ngIf="imagenCarrusel">
+  <img [src]="imagenCarrusel" alt="Imagen del carrusel" />
+</div>
+<ion-button (click)="guardarImagenCarrusel()">Guardar imagen en carrusel</ion-button>
+
+  <!-- Lista de imágenes existentes en el carrusel -->
+  <ion-list>
+    <ion-item *ngFor="let imagen of imagenesCarrusel">
+      <ion-label>{{ imagen.id }}</ion-label>
+      <ion-button color="danger" (click)="eliminarImagen(imagen.id)">Eliminar</ion-button>
+    </ion-item>
+  </ion-list>
+</div>
+
+
   </div>
 </ion-content>

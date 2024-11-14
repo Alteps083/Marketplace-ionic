@@ -67,6 +67,11 @@ export class ServicebdService {
 );
 `;
 
+tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   url TEXT
+);`;
+
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
   listarReclamos = new BehaviorSubject<any[]>([]);
@@ -771,6 +776,7 @@ async openDatabase(): Promise<SQLiteObject> {
     location: 'default',
   });
   await db.executeSql(this.tablaCategorias, []); // Crea la tabla si no existe
+  await db.executeSql(this.tablaImagenesCarrusel, []);
   return db;
 }
   // Método para agregar una categoría
@@ -797,6 +803,46 @@ async openDatabase(): Promise<SQLiteObject> {
     }
     return categorias;
   }
+
+  // tabla carrusel
+
+// Método para agregar una imagen al carrusel
+async agregarImagen(imagenBase64: string) {
+  const query = 'INSERT INTO imagenes_carrusel (imagen) VALUES (?)';
+  try {
+    const db: SQLiteObject = await this.openDatabase();
+    await db.executeSql(query, [imagenBase64]);
+  } catch (error) {
+    console.error('Error al insertar la imagen en el carrusel:', error);
+  }
+}
+
+// Método para eliminar una imagen del carrusel
+async eliminarImagen(id: number): Promise<void> {
+  const db = await this.openDatabase();
+  const query = 'DELETE FROM imagenes_carrusel WHERE id = ?';
+  await db.executeSql(query, [id]);
+}
+
+// Método para obtener todas las imágenes del carrusel
+async obtenerImagenes(): Promise<any[]> {
+  const db = await this.openDatabase();
+  const result = await db.executeSql('SELECT * FROM imagenes_carrusel', []);
+  const imagenes = [];
+  for (let i = 0; i < result.rows.length; i++) {
+    imagenes.push(result.rows.item(i));
+  }
+  return imagenes;
+}
+
+insertarImagen(imagenBase64: string) {
+  const query = `INSERT INTO imagenes_carrusel (url) VALUES (?)`;
+  this.database.executeSql(query, [imagenBase64]).then(() => {
+     console.log('Imagen insertada correctamente');
+  }).catch(error => {
+     console.error('Error al insertar la imagen', error);
+  });
+}
 
 
 }

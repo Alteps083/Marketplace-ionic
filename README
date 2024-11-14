@@ -49,5 +49,6 @@ MarketHub v2.6
 MarketHub v2.6.2
 - solucion de los errores de pruebas unitarias
 
-MarketHub v4.2
+MarketHub v4.2.1
 - se agrego la tabla categorias y ya se puede agregar productos con la categoria creada
+- se agrego la funcion de agregar imagenes al carrousel o eliminar
