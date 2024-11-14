@@ -31,16 +31,9 @@
       <ion-item>
         <ion-label>Categoría</ion-label>
         <ion-select formControlName="categoria" required>
-          <ion-select-option value="Procesador">Procesador</ion-select-option>
-          <ion-select-option value="Pc">Pc</ion-select-option>
-          <ion-select-option value="Repuesto">Repuesto</ion-select-option>
-          <ion-select-option value="Laptop">Laptop</ion-select-option>
-          <ion-select-option value="Tarjeta-Grafica">Tarjeta Grafica</ion-select-option>
-          <ion-select-option value="Placa-base">Placa base</ion-select-option>
-          <ion-select-option value="Memoria-Ram">Memoria Ram</ion-select-option>
-          <ion-select-option value="Almacenamiento">Almacenamiento</ion-select-option>
-          <ion-select-option value="Fuentes de poder">PSU</ion-select-option>
-          <ion-select-option value="Refrigeracion">Refrigeracion</ion-select-option>
+          <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.nombre">
+            {{ categoria.nombre }}
+          </ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>

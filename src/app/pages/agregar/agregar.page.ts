@@ -20,6 +20,7 @@ export class AgregarPage implements OnInit {
   marginBottom: string = '200px';
   profileImage: string | null = null;
   usuario: Usuario | null = null;
+  categorias: any[] = [];
 
   constructor(
     private router: Router, 
@@ -102,6 +103,9 @@ export class AgregarPage implements OnInit {
 
   async ngOnInit() {
 
+    await this.cargarCategorias(); // Cargar las categorías desde la base de datos
+    await this.cargarUsuario();
+
     if (this.descripcion) {
       this.descripcion.markAsTouched();
     }
@@ -119,6 +123,10 @@ export class AgregarPage implements OnInit {
     Keyboard.addListener('keyboardWillHide', () => {
       this.marginBottom = '0px';
     });
+  }
+
+  async cargarCategorias() {
+    this.categorias = await this.bd.obtenerCategorias();
   }
 
   async takePicture() {

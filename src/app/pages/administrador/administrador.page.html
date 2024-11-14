@@ -15,66 +15,85 @@
 <ion-content>
   <div class="home-page"></div>
   <div class="fond-admi">
-  <!-- Botones para seleccionar qué tabla mostrar -->
-   <h2>Selecciona la lista</h2>
-  <ion-button (click)="mostrarTablaUsuarios()">Mostrar Usuarios</ion-button>
-  <ion-button (click)="mostrarTablaProductos()">Mostrar Productos</ion-button>
-  <ion-button (click)="mostrarTablaReclamos()">Mostrar Reclamos</ion-button>
+    <!-- Botones para seleccionar qué tabla mostrar -->
+    <h2>Selecciona la lista</h2>
+    <ion-button (click)="mostrarTablaUsuarios()">Mostrar Usuarios</ion-button>
+    <ion-button (click)="mostrarTablaProductos()">Mostrar Productos</ion-button>
+    <ion-button (click)="mostrarTablaReclamos()">Mostrar Reclamos</ion-button>
+    <ion-button (click)="mostrarTablaCategorias()">Mostrar Categorías</ion-button>
 
-  <!-- Tabla de Usuarios -->
-  <div *ngIf="mostrarUsuarios">
-    <h2>Lista de Usuarios</h2>
-    <ion-list>
-      <ion-item *ngFor="let usuario of usuariosFiltrados">
-        <ion-label>
-          <h2>{{ usuario.nombre }}</h2>
-          <p>(ID: {{ usuario.id }})</p>
-          <p>Email: {{ usuario.email }}</p>
-          <p>Teléfono: {{ usuario.telefono }}</p>
-        </ion-label>
-        <div class="botones">
-        <ion-button color="danger" (click)="banearUsuario(usuario)">
-          {{ usuario.estado === 1 ? 'Desbanear' : 'Banear' }}
-        </ion-button>
-        <ion-button (click)="eliminarusuario(usuario.id!)">Eliminar</ion-button>
-      </div>
-      </ion-item>
-    </ion-list>
-  </div>
+    <!-- Tabla de Usuarios -->
+    <div *ngIf="mostrarUsuarios">
+      <h2>Lista de Usuarios</h2>
+      <ion-list>
+        <ion-item *ngFor="let usuario of usuariosFiltrados">
+          <ion-label>
+            <h2>{{ usuario.nombre }}</h2>
+            <p>(ID: {{ usuario.id }})</p>
+            <p>Email: {{ usuario.email }}</p>
+            <p>Teléfono: {{ usuario.telefono }}</p>
+          </ion-label>
+          <div class="botones">
+            <ion-button color="danger" (click)="banearUsuario(usuario)">
+              {{ usuario.estado === 1 ? 'Desbanear' : 'Banear' }}
+            </ion-button>
+            <ion-button (click)="eliminarusuario(usuario.id!)">Eliminar</ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
+    </div>
 
-  <!-- Tabla de Productos -->
-  <div *ngIf="mostrarProductos">
-    <h2>Lista de Productos</h2>
-    <ion-list>
-      <ion-item *ngFor="let producto of productosFiltrados">
-        <ion-label>
-          <h2>{{ producto.nombre_producto }}</h2>
-          <p>{{ producto.descripcion }}</p>
-          <p>Precio: {{ producto.precio | currency }}</p>
-        </ion-label>
-        <div class="botones">
-        <ion-button color="primary" (click)="editarProducto(producto)">Editar</ion-button>
-        <ion-button color="danger" (click)="eliminarProducto(producto.id)">Eliminar</ion-button>
-      </div>
-      </ion-item>
-    </ion-list>
-  </div>
+    <!-- Tabla de Productos -->
+    <div *ngIf="mostrarProductos">
+      <h2>Lista de Productos</h2>
+      <ion-list>
+        <ion-item *ngFor="let producto of productosFiltrados">
+          <ion-label>
+            <h2>{{ producto.nombre_producto }}</h2>
+            <p>{{ producto.descripcion }}</p>
+            <p>Precio: {{ producto.precio | currency }}</p>
+          </ion-label>
+          <div class="botones">
+            <ion-button color="danger" (click)="eliminarProducto(producto.id)">Eliminar</ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
+    </div>
 
-  <!-- Tabla de Reclamos -->
-  <div *ngIf="mostrarReclamos">
-    <h2>Lista de Reclamos</h2>
-    <ion-list>
-      <ion-item *ngFor="let reclamo of reclamosFiltrados">
-        <ion-label>
-          <h2>{{ reclamo.email }}</h2>
-          <p>Tipo: {{ reclamo.tipoProblema }}</p>
-          <p>Descripción: {{ reclamo.descripcion }}</p>
-        </ion-label>
-        <div class="botones">
-        <ion-button color="danger" (click)="eliminarReclamo(reclamo.id)">Eliminar</ion-button>
-      </div>
+    <!-- Tabla de Reclamos -->
+    <div *ngIf="mostrarReclamos">
+      <h2>Lista de Reclamos</h2>
+      <ion-list>
+        <ion-item *ngFor="let reclamo of reclamosFiltrados">
+          <ion-label>
+            <h2>{{ reclamo.email }}</h2>
+            <p>Tipo: {{ reclamo.tipoProblema }}</p>
+            <p>Descripción: {{ reclamo.descripcion }}</p>
+          </ion-label>
+          <div class="botones">
+            <ion-button color="danger" (click)="eliminarReclamo(reclamo.id)">Eliminar</ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- Tabla de Categorías -->
+    <div *ngIf="mostrarCategorias">
+      <h2>Lista de Categorías</h2>
+      <!-- Formulario para agregar nueva categoría -->
+      <ion-item>
+        <ion-label position="floating">Nueva Categoría</ion-label>
+        <ion-input [(ngModel)]="nuevaCategoria"></ion-input>
       </ion-item>
-    </ion-list>
+      <ion-button expand="full" (click)="agregarCategoria()">Agregar Categoría</ion-button>
+    
+      <!-- Lista de categorías existentes -->
+      <ion-list>
+        <ion-item *ngFor="let categoria of categorias">
+          <ion-label>{{ categoria.nombre }}</ion-label>
+          <ion-button color="danger" (click)="eliminarCategoria(categoria.id)">Eliminar</ion-button>
+        </ion-item>
+      </ion-list>
+    </div>
   </div>
-</div>
 </ion-content>

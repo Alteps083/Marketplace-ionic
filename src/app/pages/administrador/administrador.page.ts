@@ -5,6 +5,8 @@ import { AlertController } from '@ionic/angular';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
 import { Producto } from 'src/app/services/producto';  // Importa Producto
+import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
+
 
 @Component({
   selector: 'app-administrador',
@@ -33,15 +35,17 @@ export class AdministradorPage {
   reclamosFiltrados: any[] = [];
   searchTerm: string = '';
 
-
-
+  nuevaCategoria: string = '';
+  categorias: any[] = [];
+  mostrarCategorias: boolean = false;
   
 
-  constructor(private router: Router, private bd: ServicebdService, private storage: NativeStorage, private alertController: AlertController) {}
+  constructor(private router: Router, private bd: ServicebdService, private storage: NativeStorage, private alertController: AlertController, private sqlite: SQLite) {}
 
   ionViewWillEnter() {
     this.cargarUsuario();
     this.bd.cargarUsuarios();
+    this.obtenerCategorias();
   }
 
   async ngOnInit() {
@@ -156,16 +160,16 @@ export class AdministradorPage {
 
   // Mostrar/Ocultar tablas
   mostrarTablaUsuarios() {
+    this.mostrarCategorias = false;
     this.mostrarUsuarios = true;
     this.mostrarProductos = false;
     this.mostrarReclamos = false;
-  
-    // Filtrar usuarios normales para mostrarlos en la tabla
     this.usuariosFiltrados = this.usuarios.filter(usuario => usuario.es_admin === 0);
   }
   
 
   mostrarTablaProductos() {
+    this.mostrarCategorias = false;
     this.mostrarUsuarios = false;
     this.mostrarProductos = true;
     this.mostrarReclamos = false;
@@ -173,10 +177,19 @@ export class AdministradorPage {
   }
 
   mostrarTablaReclamos() {
+    this.mostrarCategorias = false;
     this.mostrarUsuarios = false;
     this.mostrarProductos = false;
     this.mostrarReclamos = true;
     this.reclamosFiltrados = this.reclamos; // Reinicia la lista filtrada al mostrar la tabla
+  }
+
+  mostrarTablaCategorias(){
+    this.mostrarCategorias = true;
+    this.mostrarUsuarios = false;
+    this.mostrarProductos = false;
+    this.mostrarReclamos = false;
+    this.reclamosFiltrados = this.reclamos;
   }
 
   toggleSearchBar() {
@@ -256,7 +269,27 @@ export class AdministradorPage {
     }
   }
   
-  
+  // tabla categorias
+
+  // Método para agregar una nueva categoría
+  async agregarCategoria() {
+    if (this.nuevaCategoria.trim()) {
+      await this.bd.agregarCategoria(this.nuevaCategoria.trim());
+      this.nuevaCategoria = ''; // Limpiar el campo de entrada
+      this.obtenerCategorias(); // Actualizar la lista de categorías
+    }
+  }
+
+  // Método para obtener todas las categorías
+  async obtenerCategorias() {
+    this.categorias = await this.bd.obtenerCategorias();
+  }
+
+  // Método para eliminar una categoría
+  async eliminarCategoria(id: number) {
+    await this.bd.eliminarCategoria(id);
+    this.obtenerCategorias(); // Actualizar la lista después de eliminar
+  }
 }
 
 

@@ -61,6 +61,12 @@ export class ServicebdService {
       );
     `;
 
+    tablaCategorias: string = `CREATE TABLE IF NOT EXISTS categorias (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT NOT NULL
+);
+`;
+
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
   listarReclamos = new BehaviorSubject<any[]>([]);
@@ -758,8 +764,39 @@ async verificarYAgregarColumnaEstado() {
     console.error("Error al verificar o agregar la columna 'estado':", error);
   }
 }
+// tabla categorias
+async openDatabase(): Promise<SQLiteObject> {
+  const db = await this.sqlite.create({
+    name: 'mi_basedatos.db',
+    location: 'default',
+  });
+  await db.executeSql(this.tablaCategorias, []); // Crea la tabla si no existe
+  return db;
+}
+  // Método para agregar una categoría
+  async agregarCategoria(nombre: string): Promise<void> {
+    const db = await this.openDatabase();
+    const query = 'INSERT INTO categorias (nombre) VALUES (?)';
+    await db.executeSql(query, [nombre]);
+  }
 
+  // Método para eliminar una categoría
+  async eliminarCategoria(id_categoria: number): Promise<void> {
+    const db = await this.openDatabase();
+    const query = 'DELETE FROM categorias WHERE id_categoria = ?';
+    await db.executeSql(query, [id_categoria]);
+  }
 
+  // Método para obtener todas las categorías
+  async obtenerCategorias(): Promise<any[]> {
+    const db = await this.openDatabase();
+    const result = await db.executeSql('SELECT * FROM categorias', []);
+    const categorias = [];
+    for (let i = 0; i < result.rows.length; i++) {
+      categorias.push(result.rows.item(i));
+    }
+    return categorias;
+  }
 
 
 }
