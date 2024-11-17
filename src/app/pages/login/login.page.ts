@@ -115,6 +115,10 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/cambiarcontra']);
   }
 
+  olvidoContra(){
+    this.router.navigate(['/olvido-contrasenia'])
+  }
+
   regses(){
     this.router.navigate(['/registro']);
   }

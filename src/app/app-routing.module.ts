@@ -76,9 +76,21 @@ const routes: Routes = [
     loadChildren: () => import('./pages/busqueda/busqueda.module').then( m => m.BusquedaPageModule)
   },
   {
+    path: 'olvido-contrasenia',
+    loadChildren: () => import('./pages/olvido-contrasenia/olvido-contrasenia.module').then( m => m.OlvidoContraseniaPageModule)
+  },
+  {
+    path: 'reset-password',
+    loadChildren: () => import('./pages/reset-password/reset-password.module').then( m => m.ResetPasswordPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   },
+
+
+
+
  
 
 

@@ -6,7 +6,7 @@ ion-content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: 100vh;
+  height: 100%;
   padding-bottom: env(safe-area-inset-bottom);
   padding-top: 10px; /* Asegura que el contenido no se solape con el título */
   overflow-y: auto;
@@ -81,22 +81,22 @@ ion-item {
 }
 
 form {
-  position: fixed; 
-  top: 0; 
-  left: 0;
-  width: 100%; 
-  max-width: 500px; 
-  background-color: #313131;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin-top: 32px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
-  height: 100vh; 
-  z-index: 10; 
-}
+    position: relative; 
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    max-width: 500px; 
+    background-color: #313131;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 32px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    height: 100vh; 
+    z-index: 10; 
+  }
 
 ion-item {
   padding-top: 12px;
@@ -121,6 +121,8 @@ ion-textarea {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  overflow-y: auto; /* Habilitar scroll si es necesario */
+  max-height: 200px;
 }
 
 .image-upload-wrapper {

@@ -1,0 +1,90 @@
+
+.home-img{
+    background-image: url('../../../assets/img/background-1.jpeg'); 
+    background-size: cover;  
+    position: fixed;
+    background-position: center;
+    height: 100vh; 
+    width: 100%;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+}
+
+ion-content {
+    --keyboard-offset: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    height: 100vh;
+    overflow-y: auto; 
+    padding-bottom: 60px; 
+}
+
+.forgot-password-content {
+    display: flex;
+    margin: 0;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .submit-button {
+    margin-top: 20px;
+    background-color: #3880ff; /* Azul primario de Ionic */
+    color: #fff;
+  }
+
+  .reset-password-content {
+    padding: 20px;
+  }
+  
+  ion-item {
+    --inner-padding-start: 10px;
+    --inner-padding-end: 10px;
+    margin-bottom: 20px;
+  }
+  
+  ion-label {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  ion-item{
+    display: flex;
+    align-items: center;
+  }
+
+  ion-input {
+    align-items: center;
+}
+
+  
+  ion-text {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  .forgot-password-content ion-item{ 
+    --background: var(--ion-color-tertiary);
+    border-radius: 10px;
+    margin-top: 32px;
+}

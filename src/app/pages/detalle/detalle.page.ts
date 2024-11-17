@@ -22,21 +22,6 @@ export class DetallePage implements OnInit {
     review: ''
   };
 
-  slideOpts = {
-    initialSlide: 0,
-    speed: 400,
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-    },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  };
-  
-  
-
   currentImageIndex: number = 0;
 
   profileImage: string | null = null;
@@ -65,6 +50,7 @@ export class DetallePage implements OnInit {
   
 
   async ngOnInit() {
+    this.currentImageIndex = 0;
     this.usuario = this.bd.getUsuarioActual();
     if (this.usuario?.id !== undefined) {
       this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
@@ -124,19 +110,16 @@ export class DetallePage implements OnInit {
     }
   }
 
-  nextImage() {
-    if (this.producto && this.currentImageIndex < this.producto.imagenes.length - 1) {
-      this.currentImageIndex++;
-    } else {
-      this.currentImageIndex = 0; 
+  
+  previousImage() {
+    if (this.producto?.imagenes && this.currentImageIndex > 0) {
+      this.currentImageIndex--;
     }
   }
 
-  prevImage() {
-    if (this.producto?.imagenes && this.currentImageIndex > 0) {
-      this.currentImageIndex--;
-    } else if (this.producto?.imagenes) {
-      this.currentImageIndex = this.producto.imagenes.length - 1; // Volver a la última imagen si se llega al principio
+  nextImage() {
+    if (this.producto?.imagenes && this.currentImageIndex < this.producto.imagenes.length - 1) {
+      this.currentImageIndex++;
     }
   }
 

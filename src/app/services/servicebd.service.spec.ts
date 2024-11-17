@@ -4,9 +4,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing'; // Si us
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
-
-
-// Mock para SQLite
 class SQLiteMock {
   create(config: any) {
     return Promise.resolve({

@@ -16,7 +16,17 @@
 <ion-content>
   <ion-card>
     <div class="contenedor-imagen">
-      <img *ngIf="producto" alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[0]" (click)="producto.imagenes[0] ? presentImageModal(producto.imagenes[0]) : null" />
+      <div class="imagen-container">
+        <img *ngIf="producto" alt="{{ producto.nombre_producto }}" [src]="producto.imagenes[currentImageIndex]" (click)="presentImageModal(producto.imagenes[currentImageIndex])" />
+      </div>
+      <div class="image-navigation-buttons">
+        <ion-button (click)="previousImage()" class="nav-button">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="nextImage()" class="nav-button">
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
       <div class="degradado-inferior">
         <ion-card-title class="titulo-imagen">{{ producto?.nombre_producto || 'Sin título' }}</ion-card-title>
       </div>

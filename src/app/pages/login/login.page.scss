@@ -72,7 +72,9 @@ ion-item{
 
 .donothave-account{
     display: flex;
+    text-align: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .iniciarsesion ion-item{ 

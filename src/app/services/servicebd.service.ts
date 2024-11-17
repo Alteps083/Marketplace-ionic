@@ -254,13 +254,12 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
         const result = await this.database.executeSql(sql, params);
         if (result.rows.length > 0) {
           const usuario = result.rows.item(0);
-    
-          if (usuario.estado === 1) { // Si el estado es 1, el usuario está baneado
+
+          if (usuario.estado === 1) { 
             this.presentAlert('Acceso Denegado', 'Su cuenta está baneada.');
             return false;
           }
-    
-          // Si no está baneado, procede con el inicio de sesión
+
           this.setUsuarioActual(usuario);
           await this.storage.setItem('usuario_actual', { 
             id: usuario.id,
@@ -326,6 +325,16 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
         this.listaUsuarios.next(usuarios);
       } catch (e) {
       }
+    }
+
+    async obtenerUsuarioPorTelefono(telefono: string): Promise<any> {
+      const query = 'SELECT * FROM usuario WHERE telefono = ?';
+      const resultado = await this.database.executeSql(query, [telefono]);
+      
+      if (resultado.rows.length > 0) {
+        return resultado.rows.item(0); 
+      }
+      return null; 
     }
 
     async cargarUsuarioActual() {
@@ -446,6 +455,8 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
             return 'src/assets/img/nouser.png';
           }
         }
+
+
 
         async buscarProductosPorNombre(nombre: string): Promise<Producto[]> {
           const sql = 'SELECT * FROM productos WHERE nombre_producto LIKE ?';
@@ -578,7 +589,6 @@ setDatabase(db: SQLiteObject) {
           }
         }
 
-        // temporal, borrar despues de usar
         getUsuarios(): Promise<any[]> {
           return this.database.executeSql('SELECT * FROM usuario', [])
             .then((res) => {
@@ -592,9 +602,7 @@ setDatabase(db: SQLiteObject) {
               console.error("Error al obtener usuarios:", e);
               return [];
             });
-        }
-
-
+        } 
 
 async asignarIdAUsuariosExistentes() {
   const sqlSelect = 'SELECT * FROM usuario';
@@ -739,7 +747,7 @@ async deleteNotification(id: number) {
     console.error('Error al eliminar notificación:', error);
   }
 }
-//funcion ban
+
 async actualizarEstadoUsuario(id: number, nuevoEstado: number): Promise<void> {
   const query = `UPDATE usuario SET estado = ? WHERE id = ?`;
   await this.database.executeSql(query, [nuevoEstado, id]);
@@ -758,8 +766,6 @@ async verificarYAgregarColumnaEstado() {
       console.log("La columna 'estado' no existe. Agregando columna...");
       await this.database.executeSql("ALTER TABLE usuario ADD COLUMN estado INTEGER DEFAULT 0;", []);
       console.log("Columna 'estado' agregada correctamente.");
-
-      // Inicializar el valor de estado en todos los usuarios
       await this.database.executeSql("UPDATE usuario SET estado = 0;", []);
       console.log("Estado inicializado a 0 para todos los usuarios.");
     } else {
@@ -769,6 +775,7 @@ async verificarYAgregarColumnaEstado() {
     console.error("Error al verificar o agregar la columna 'estado':", error);
   }
 }
+
 // tabla categorias
 async openDatabase(): Promise<SQLiteObject> {
   const db = await this.sqlite.create({
@@ -779,6 +786,7 @@ async openDatabase(): Promise<SQLiteObject> {
   await db.executeSql(this.tablaImagenesCarrusel, []);
   return db;
 }
+
   // Método para agregar una categoría
   async agregarCategoria(nombre: string): Promise<void> {
     const db = await this.openDatabase();
@@ -804,9 +812,6 @@ async openDatabase(): Promise<SQLiteObject> {
     return categorias;
   }
 
-  // tabla carrusel
-
-// Método para agregar una imagen al carrusel
 async agregarImagen(imagenBase64: string) {
   const query = 'INSERT INTO imagenes_carrusel (imagen) VALUES (?)';
   try {
@@ -817,14 +822,12 @@ async agregarImagen(imagenBase64: string) {
   }
 }
 
-// Método para eliminar una imagen del carrusel
 async eliminarImagen(id: number): Promise<void> {
   const db = await this.openDatabase();
   const query = 'DELETE FROM imagenes_carrusel WHERE id = ?';
   await db.executeSql(query, [id]);
 }
 
-// Método para obtener todas las imágenes del carrusel
 async obtenerImagenes(): Promise<any[]> {
   const db = await this.openDatabase();
   const result = await db.executeSql('SELECT * FROM imagenes_carrusel', []);
@@ -843,6 +846,7 @@ insertarImagen(imagenBase64: string) {
      console.error('Error al insertar la imagen', error);
   });
 }
+
 
 
 }

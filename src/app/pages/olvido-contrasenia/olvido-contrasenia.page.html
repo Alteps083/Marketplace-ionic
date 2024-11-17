@@ -1,0 +1,19 @@
+<ion-content>
+  <div class="home-img">
+    <div class="forgot-password-content">
+      <h2>¿Olvidaste tu contraseña?</h2>
+      <p>Ingresa tu número de teléfono para recibir un código de recuperación.</p>
+      <form [formGroup]="recuperContra" (ngSubmit)="enviarToken()">
+        <ion-item>
+          <ion-label position="floating">Número de Teléfono</ion-label>
+          <ion-input type="tel" formControlName="telefono"></ion-input>
+        </ion-item>
+        <div *ngIf="recuperContra.get('telefono')?.invalid && recuperContra.get('telefono')?.touched">
+          <ion-text color="danger" *ngIf="recuperContra.get('telefono')?.errors?.['required']">Debe ingresar un número de teléfono</ion-text>
+          <ion-text color="danger" *ngIf="recuperContra.get('telefono')?.errors?.['pattern']">Debe ingresar un número válido (+56 9)</ion-text>
+        </div>
+        <ion-button expand="full" type="submit" [disabled]="recuperContra.invalid">Enviar Código</ion-button>
+      </form>
+    </div>
+  </div>
+</ion-content>
