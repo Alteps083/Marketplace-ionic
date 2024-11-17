@@ -73,7 +73,7 @@ export class AgregarPage implements OnInit {
       if (this.usuario) {
         const id_vendedor = this.usuario.id; 
 
-        await this.bd.agregarProducto(
+        const id_producto = await this.bd.agregarProducto(
           id_vendedor,
           producto.titulo,
           producto.descripcion,
@@ -84,6 +84,7 @@ export class AgregarPage implements OnInit {
         );
 
         const notificacion: Notificacion = {
+          id: id_producto!,
           imagen: this.usuario.imagen, 
           nombreUsuario: this.usuario.nombre, 
           nombreProducto: producto.titulo,

@@ -198,7 +198,6 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
     });
   }
 
-  
   actualizarRecientesYCategorias() {
     this.bd.fetchProductos().subscribe(productos => {
       this.productos = productos;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { AlertController } from '@ionic/angular';
 import { Producto } from 'src/app/services/producto';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
@@ -13,11 +14,11 @@ import { Usuario } from 'src/app/services/usuario';
 })
 export class MisProductosPage implements OnInit {
   profileImage: string | null = null;
-  publicaciones: Producto[] | null = null;
+  publicaciones: Producto[] = [];
   idusuario: number | null = null;
   usuario: Usuario | null = null;
 
-  constructor(private router:Router, private bd: ServicebdService, private storage: NativeStorage) { }
+  constructor(private router:Router, private bd: ServicebdService, private storage: NativeStorage, private alert: AlertController) { }
 
   async ngOnInit() {
     this.usuario = this.bd.getUsuarioActual();
@@ -30,6 +31,44 @@ export class MisProductosPage implements OnInit {
       this.profileImage = 'ruta/a/nouser.png'; 
     }
     this.cargarUsuario();
+  }
+
+  eliminarPublicacion(id: number) {
+    this.bd.eliminarProducto(id).then(() => {
+      this.publicaciones = this.publicaciones?.filter(p => p.id !== id);
+      console.log(`Publicación con ID ${id} eliminada.`);
+    }).catch(err => {
+      console.error('Error al eliminar:', err);
+    });
+  }
+
+  async confirmarEliminacion(producto: any) {
+    const alert = await this.alert.create({
+      header: 'Eliminar Publicación',
+      message: `
+        ${producto.nombre_producto}
+        ${producto.precio}
+        ${producto.estado}
+      `,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Eliminación cancelada');
+          },
+        },
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          handler: () => {
+            this.eliminarPublicacion(producto.id);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   cargarUsuario() {

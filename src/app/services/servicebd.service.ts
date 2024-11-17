@@ -54,6 +54,7 @@ export class ServicebdService {
   tablaNotificaciones: string = `
       CREATE TABLE IF NOT EXISTS notificaciones (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        productoId INTEGER,
         imagen TEXT,
         nombreUsuario TEXT,
         nombreProducto TEXT,
@@ -163,10 +164,7 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
         location: 'default'
       }).then((db: SQLiteObject) => {
         this.database = db;
-        
-        // Llamar a la función para verificar y agregar la columna 'estado' si es necesario
         this.verificarYAgregarColumnaEstado().then(() => {
-          // Crear tablas y cargar datos solo después de que se haya verificado/agregado la columna
           this.crearTablas().then(() => {
             this.cargarUsuarios(); 
             this.cargarProductos();
@@ -227,22 +225,27 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
       }
     }
 
-    async agregarProducto(idvendedor: number | undefined, nombre_producto: string, descripcion: string, categoria: string, estado: string, precio: number, imagenes: string[]) {
+    async agregarProducto(idvendedor: number | undefined,nombre_producto: string,descripcion: string,categoria: string,estado: string,precio: number,imagenes: string[]): Promise<number | null> {
       if (idvendedor === undefined) {
         this.presentAlert('Error', 'El id del vendedor no está definido');
-        return;
+        return null;
       }
-    
-      const query = `INSERT INTO productos (id_vendedor, nombre_producto, descripcion, categoria, estado, precio, imagenes) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    
+      const query = `
+        INSERT INTO productos (id_vendedor, nombre_producto, descripcion, categoria, estado, precio, imagenes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
       const imagenesJSON = JSON.stringify(imagenes);
-      const values = [idvendedor, nombre_producto, descripcion, categoria, estado, precio, imagenesJSON];  
+      const values = [idvendedor, nombre_producto, descripcion, categoria, estado, precio, imagenesJSON];
       try {
-        await this.database.executeSql(query, values);
-        this.cargarProductos(); 
+        const res: any = await this.database.executeSql(query, values); 
+        const productoId = res.insertId; 
+    
+        await this.cargarProductos();
+    
+        return productoId; 
       } catch (e) {
         this.presentAlert('Error al agregar producto', JSON.stringify(e));
+        return null;
       }
     }
 
@@ -847,6 +850,15 @@ insertarImagen(imagenBase64: string) {
   });
 }
 
+async eliminarTabla(): Promise<void> {
+  const sql = `DROP TABLE IF EXISTS notificaciones`;
+  try {
+    await this.database.executeSql(sql, []);
+    console.log(`Tabla 'notificaciones' eliminada correctamente.`);
+  } catch (error) {
+    console.error(`Error al eliminar la tabla 'notificaciones':`, error);
+  }
+}
 
 
 }

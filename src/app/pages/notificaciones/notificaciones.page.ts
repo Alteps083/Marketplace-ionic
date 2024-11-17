@@ -50,14 +50,14 @@ export class NotificacionesPage implements OnInit {
   eliminarNotificacion(id: number | undefined) {
     if (id !== undefined) {
       this.notificacion.deleteNotification(id);
-      this.notificacion.loadNotifications(); // Vuelve a cargar las notificaciones después de eliminar
+      this.notificacion.loadNotifications(); 
     } else {
       console.error('No se puede eliminar la notificación, el ID es undefined');
     }
   }
 
-  irAlProducto(notificacion: Notificacion) {
-    this.router.navigate(['/detalle', { id: notificacion.id }]); 
+  irAlBuscar() {
+    this.router.navigate(['/busqueda']); 
   }
 
   perfil(){

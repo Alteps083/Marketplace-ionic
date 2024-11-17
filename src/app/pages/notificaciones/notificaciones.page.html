@@ -18,12 +18,12 @@
   <div class="seccion-news">
     <h1>Nuevas</h1>
     <div class="notificaciones" *ngFor="let notificacion of notificaciones">
-      <div class="imagen-notificacion" (click)="irAlProducto(notificacion)">
+      <div class="imagen-notificacion" (click)="irAlBuscar()">
         <img class="avatar" [src]="notificacion.imagen" alt="User Icon"> 
         <small>{{ notificacion.nombreUsuario }}</small>
       </div>
       <div class="text">
-        Nueva notificación: {{ notificacion.nombreProducto }}
+        Se han agregado nuevos productos: {{ notificacion.nombreProducto }}
       </div>
       <ion-button (click)="eliminarNotificacion(notificacion.id)" fill="clear" color="danger">
         <ion-icon name="trash"></ion-icon>
