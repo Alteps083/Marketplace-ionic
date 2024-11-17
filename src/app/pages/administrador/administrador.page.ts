@@ -408,6 +408,10 @@ export class AdministradorPage {
     return this.database;
   }
 
+  irAVerPublicacion(id: number) {
+    this.router.navigate(['/detalle', id]);
+  }
+
 }
 
 

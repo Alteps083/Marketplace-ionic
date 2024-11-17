@@ -62,17 +62,17 @@
     </div>
 
     <!-- Tabla de Productos -->
-    <div *ngIf="mostrarProductos">
+    <div *ngIf="mostrarProductos" class="productos-container">
       <h2>Lista de Productos</h2>
       <ion-list>
-        <ion-item *ngFor="let producto of productosFiltrados">
+        <ion-item *ngFor="let producto of productosFiltrados" class="producto-item">
           <ion-label>
             <h2>{{ producto.nombre_producto }}</h2>
-            <p>{{ producto.descripcion }}</p>
             <p>Precio: {{ producto.precio | currency }}</p>
           </ion-label>
           <div class="botones">
             <ion-button color="danger" (click)="eliminarProducto(producto.id)">Eliminar</ion-button>
+            <ion-button (click)="irAVerPublicacion(producto.id)">Ir a ver Producto</ion-button>
           </div>
         </ion-item>
       </ion-list>
