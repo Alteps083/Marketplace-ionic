@@ -66,34 +66,30 @@
       </form>
       <h2 class="titulo-changePasword">Formulario para Cambiar Contraseña!!</h2>
       <div *ngIf="currentStep === 1">
-        <form [formGroup]="phoneForm" (ngSubmit)="sendToken()">
+        <form [formGroup]="emailForm" (ngSubmit)="sendToken()">
           <ion-item>
-            <ion-label position="floating">Número de celular (569XXXXXXXX)</ion-label>
-            <ion-input type="text" formControlName="phone"></ion-input>
+            <ion-label position="floating">Vuelve a Ingresar tu Correo</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
           </ion-item>
-          <div *ngIf="phoneForm.invalid && phoneForm.touched">
-            <p *ngIf="phoneForm.get('phone')?.errors?.['required']">El número de celular es requerido</p>
-            <p *ngIf="phoneForm.get('phone')?.errors?.['pattern']">El formato del número es incorrecto</p>
+          <div *ngIf="emailForm.get('email')?.invalid && emailForm.get('email')?.touched">
+            <p *ngIf="emailForm.get('email')?.hasError('required')" color="danger">El correo es requerido</p>
+            <p *ngIf="emailForm.get('email')?.hasError('email')" color="danger">El formato del correo es incorrecto</p>
           </div>
-          <ion-button expand="full" type="submit" [disabled]="phoneForm.invalid">Enviar Token</ion-button>
+          <ion-button expand="full" type="submit" [disabled]="!emailForm.valid">Enviar Token</ion-button>
         </form>
       </div>
-
       <div *ngIf="currentStep === 2">
         <form [formGroup]="tokenForm" (ngSubmit)="verifyToken()">
           <ion-item>
-            <ion-label position="floating">Token de verificación</ion-label>
+            <ion-label position="floating">Ingresa el Token</ion-label>
             <ion-input type="text" formControlName="token"></ion-input>
           </ion-item>
-          <div *ngIf="tokenForm.invalid && tokenForm.touched">
-            <p *ngIf="tokenForm.get('token')?.errors?.['required']">El token es requerido</p>
-            <p *ngIf="tokenForm.get('token')?.errors?.['minlength']">El token debe tener 4 caracteres</p>
-            <p *ngIf="tokenForm.get('token')?.errors?.['maxlength']">El token no puede tener más de 4 caracteres</p>
+          <div *ngIf="tokenForm.get('token')?.invalid && tokenForm.get('token')?.touched">
+            <p *ngIf="tokenForm.get('token')?.hasError('required')" color="danger">El token es requerido</p>
           </div>
-          <ion-button expand="full" type="submit" [disabled]="tokenForm.invalid">Verificar Token</ion-button>
+          <ion-button expand="full" type="submit" [disabled]="!tokenForm.valid">Verificar Token</ion-button>
         </form>
       </div>
-
       <div *ngIf="currentStep === 3">
         <form [formGroup]="miFormularioContrasenia" (ngSubmit)="onChangePassword()">
           <ion-item>

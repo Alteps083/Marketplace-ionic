@@ -26,8 +26,9 @@ export class ModperfilPage implements OnInit {
 
   currentStep: number = 1; // Cambiar de paso según el flujo
 
-  phoneForm: FormGroup;
   tokenForm: FormGroup;
+  emailForm: FormGroup;
+
   verificationToken: string | null = null;
   showTokenInput = false;
 
@@ -45,14 +46,14 @@ export class ModperfilPage implements OnInit {
       confirmPassword: ['', [Validators.minLength(6)]],
     });
 
-    this.phoneForm = this.fb.group({
-      phone: ['', [this.NumeroReal, Validators.pattern(/^56\d{9}$/)]],
+    this.emailForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email, this.CorreoReal]],
+    });
 
-    });
-    
     this.tokenForm = this.fb.group({
-      token: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
+      token: ['', Validators.required],
     });
+ 
   }
 
   handleRefresh(event: CustomEvent) {
@@ -71,32 +72,46 @@ export class ModperfilPage implements OnInit {
       this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario.id);
     } else {
       console.error('El ID del usuario no está definido.');
-      this.profileImage = 'ruta/a/nouser.png'; // Imagen predeterminada en caso de error
+      this.profileImage = 'ruta/a/nouser.png'; 
     }
     this.cargarUsuario();
   }
 
   async sendToken() {
-    if (this.phoneForm.valid) {
-      this.verificationToken = (Math.floor(1000 + Math.random() * 9000)).toString();
-      await LocalNotifications.schedule({
-        notifications: [{
-          id: 1,
-          title: "Token de verificación",
-          body: `Tu token es: ${this.verificationToken}`,
-        }]
-      });
-      await this.storage.setItem('verificationToken', this.verificationToken);
-      this.showTokenInput = true;
-      this.currentStep = 2; // Cambiar al formulario de token
+    if (this.emailForm.valid) {
+      const email = this.emailForm.value.email;
+      if (email === this.usuario?.email) {
+        this.verificationToken = (Math.floor(1000 + Math.random() * 9000)).toString();
+        console.log(`Token enviado: ${this.verificationToken}`);
+        await this.storage.setItem('verificationToken', this.verificationToken);
+        await LocalNotifications.requestPermissions();  
+        await LocalNotifications.schedule({
+          notifications: [
+            {
+              title: 'Token de Verificación',
+              body: `Tu token es: ${this.verificationToken}`,
+              id: Math.floor(Date.now() / 1000), 
+              schedule: { at: new Date(Date.now() + 1000) }, 
+              extra: null
+            }
+          ]
+        });
+        this.showTokenInput = true;
+        this.currentStep = 2; 
+        this.presentToast('bottom', 'Token enviado al correo');
+      } else {
+        this.presentToast('middle', 'El correo no coincide con el de la cuenta actual');
+      }
     }
   }
 
   async verifyToken() {
     const storedToken = await this.storage.getItem('verificationToken');
+
     if (this.tokenForm.value.token === storedToken) {
       await this.storage.remove('verificationToken');
-      this.currentStep = 3; // Cambiar al formulario de cambio de contraseña
+
+      this.currentStep = 3;
       this.presentToast('bottom', 'Token verificado exitosamente');
     } else {
       this.presentToast('middle', 'El token es incorrecto');
