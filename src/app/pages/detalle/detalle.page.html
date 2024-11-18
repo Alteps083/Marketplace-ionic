@@ -33,7 +33,7 @@
     </div>
     <ion-card-header>
       <ion-card-subtitle>Categoria: {{ producto?.categoria || 'Sin categoría' }}</ion-card-subtitle>
-      <ion-card-subtitle>Precio: ${{ producto?.precio || 0 }} CLP</ion-card-subtitle>
+      <ion-card-subtitle>Precio: ${{ producto?.precio?.toLocaleString('es-CL') || '0' }} CLP</ion-card-subtitle>
       <ion-card-subtitle>Estado: {{ producto?.estado || 'Sin estado' }}</ion-card-subtitle>
       <ion-card-subtitle>Descripcion de referencia:</ion-card-subtitle>
       <p>{{ producto?.descripcion || 'Sin descripción' }}</p>

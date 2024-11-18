@@ -92,8 +92,10 @@ ion-header {
 .imagen-notificacion img {
   width: 80px;
   height: 80px;
-  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%; 
   object-fit: cover;
+  overflow: hidden; 
 }
 
 .imagen-notificacion small {

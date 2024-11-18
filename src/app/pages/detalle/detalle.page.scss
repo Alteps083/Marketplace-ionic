@@ -18,12 +18,14 @@ ion-content {
     width: 100%;
     height: 450px; 
     overflow: hidden;
+    
 }
 
 .contenedor-imagen img{
     width: 100%;
     height: 100%;
     object-fit: cover;
+    min-height: 450px; 
 }
 
 .image-navigation-buttons {
