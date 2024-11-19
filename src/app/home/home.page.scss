@@ -124,6 +124,8 @@ ion-card {
   margin-bottom: 16px;
   height: auto;
   max-width: 160px; 
+  min-width: 160px; /* Asegura un tamaño mínimo */
+  min-height: 160px;
   display: flex;
   flex-direction: column;
 }

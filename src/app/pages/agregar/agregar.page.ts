@@ -94,6 +94,7 @@ export class AgregarPage implements OnInit {
         await this.notificationService.addNotification(notificacion);
         this.router.navigate(['tabs/home']);
         console.log('Datos del producto: ', producto);
+        this.miFormulario.reset();
         this.imagePreviews = [];
       } else {
         console.log('No se pudo obtener el id del vendedor');

@@ -130,12 +130,12 @@
   <!-- Lista de imágenes existentes en el carrusel -->
   <ion-list>
     <ion-item *ngFor="let imagen of imagenesCarrusel">
+      <img [src]="image" class="image-preview" />
       <ion-label>{{ imagen.id }}</ion-label>
       <ion-button color="danger" (click)="eliminarImagen(imagen.id)">Eliminar</ion-button>
     </ion-item>
   </ion-list>
 </div>
-
 
   </div>
 </ion-content>
