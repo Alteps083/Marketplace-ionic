@@ -15,6 +15,10 @@ import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 })
 export class ServicebdService {
 
+  usuarioSeleccionado: any;  
+  razonBan: string = '';      
+  duracionBan: number = 0;   
+
   public productosSubject = new BehaviorSubject<Producto[]>([]);
   public productos$ = this.productosSubject.asObservable();
 
@@ -72,6 +76,16 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    url TEXT
 );`;
+
+tablaban: string = `CREATE TABLE IF NOT EXISTS ban (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_usuario INTEGER,
+  razon TEXT NOT NULL,
+  duracion INTEGER NOT NULL,
+  fecha_expiracion TEXT NOT NULL,
+  FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+);
+`
 
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
@@ -178,21 +192,41 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
     });
   }
 
-    async crearTablas(){
-      try{
-        await this.database.executeSql(this.tablaUsuario, []);
-        await this.database.executeSql(this.tablaProductos, []);
-        await this.database.executeSql(this.tablaReclamos, []);
-        await this.database.executeSql(this.tablaComentarios, []);
-        await this.database.executeSql(this.tablaNotificaciones, []);
-        await this.actualizarTablaUsuario();
-        await this.asignarIdAUsuariosExistentes();  
-        
-      }catch(e){
-        this.presentAlert('Error al crear tablas', JSON.stringify(e))
-        console.log('Error al crear el administrador');
-      }
+  async crearTablas(){
+    try {
+      console.log("Creando tabla de usuarios...");
+      await this.database.executeSql(this.tablaUsuario, []);
+      console.log("Tabla de usuarios creada correctamente");
+  
+      console.log("Creando tabla de productos...");
+      await this.database.executeSql(this.tablaProductos, []);
+      console.log("Tabla de productos creada correctamente");
+  
+      console.log("Creando tabla de reclamos...");
+      await this.database.executeSql(this.tablaReclamos, []);
+      console.log("Tabla de reclamos creada correctamente");
+  
+      console.log("Creando tabla de comentarios...");
+      await this.database.executeSql(this.tablaComentarios, []);
+      console.log("Tabla de comentarios creada correctamente");
+  
+      console.log("Creando tabla de notificaciones...");
+      await this.database.executeSql(this.tablaNotificaciones, []);
+      console.log("Tabla de notificaciones creada correctamente");
+  
+      console.log("Creando tabla de ban...");
+      await this.database.executeSql(this.tablaban, []);
+      console.log("Tabla de ban creada correctamente");
+  
+      await this.actualizarTablaUsuario();
+      await this.asignarIdAUsuariosExistentes();
+  
+    } catch (e) {
+      console.error('Error al crear tablas:', e);
+      this.presentAlert('Error al crear tablas', JSON.stringify(e));
     }
+  }
+  
     async registrarUsuario(usuario: Usuario): Promise<boolean> {
       const query = `INSERT INTO usuario (nombre, email, contrasenia, telefono, fecha_registro, es_admin, imagen) VALUES (?, ?, ?, ?, datetime('now'), ?, ?)`;
       const params = [usuario.nombre, usuario.email, usuario.contrasenia, usuario.telefono, usuario.es_admin ? 1 : 0, usuario.imagen];
@@ -223,6 +257,12 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
         this.presentAlert('Error al verificar el correo', JSON.stringify(e));
         return false;
       }
+    }
+
+    async verificarTelefonoExistente(telefono: string): Promise<boolean> {
+      const query = 'SELECT COUNT(*) as count FROM usuario WHERE telefono = ?';
+      const result = await this.database.executeSql(query, [telefono]);
+      return result.rows.item(0).count > 0; 
     }
 
     async agregarProducto(idvendedor: number | undefined,nombre_producto: string,descripcion: string,categoria: string,estado: string,precio: number,imagenes: string[]): Promise<number | null> {
@@ -259,7 +299,7 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
           const usuario = result.rows.item(0);
 
           if (usuario.estado === 1) { 
-            this.presentAlert('Acceso Denegado', 'Su cuenta está baneada.');
+            this.presentAlert('Acceso Denegado', `Su cuenta está baneada por ${this.razonBan} hasta ${this.duracionBan}.`);
             return false;
           }
 
@@ -479,8 +519,8 @@ tablaImagenesCarrusel: string = `CREATE TABLE IF NOT EXISTS imagenes_carrusel (
           }
         }
 
-async obtenerIdUsuarioLogueado(): Promise<number | null> {
-  const usuarioId = await localStorage.getItem('idUsuario'); 
+async obtenerIdLogueado(): Promise<number | null> {
+  const usuarioId = await localStorage.getItem('id'); 
   return usuarioId ? parseInt(usuarioId, 10) : null;
 }
 
@@ -495,7 +535,7 @@ async obtenerUsuarioPorId(id: number): Promise<Usuario | null> {
         // Devuelve el primer usuario encontrado
         const row = resultado.rows.item(0);
         const usuario: Usuario = {
-          id: row.idusuario,
+          id: row.id,
           nombre: row.nombre,
           email: row.email,
           contrasenia: row.contrasenia,
@@ -857,6 +897,93 @@ async eliminarTabla(): Promise<void> {
     console.log(`Tabla 'notificaciones' eliminada correctamente.`);
   } catch (error) {
     console.error(`Error al eliminar la tabla 'notificaciones':`, error);
+  }
+}
+
+
+
+async verificarUsuarioBaneado(id: number) {
+  try {
+    console.log('Verificando si el usuario está baneado, id:', id);
+    const query = `
+      SELECT razon, fecha_expiracion 
+      FROM ban 
+      WHERE id_usuario = ? AND fecha_expiracion > ?
+    `;
+    const fechaActual = new Date().toISOString();
+    const result = await this.database.executeSql(query, [id, fechaActual]);
+
+    if (result.rows.length > 0) {
+      const ban = result.rows.item(0);
+      throw new Error(
+        `Tu cuenta está baneada. Razón: ${ban.razon}. Expira: ${new Date(ban.fecha_expiracion).toLocaleDateString()}`
+      );
+    } else {
+      console.log('El usuario no está baneado.');
+    }
+  } catch (error) {
+    console.error('Error al gestionar el baneo:', error);
+    throw new Error('Error al gestionar el baneo');
+  }
+}
+async obtenerUsuariosBan() {
+  const sql = 'SELECT * FROM ban'; // Usar 'baneos' en lugar de 'ban'
+  try {
+    const res = await this.database.executeSql(sql, []);
+    let ban: any[] = [];
+    for (let i = 0; i < res.rows.length; i++) {
+      ban.push(res.rows.item(i));
+    }
+    return ban;
+  } catch (e) {
+    console.error('Error al obtener baneos:', e);
+    return [];
+  }
+}
+
+async confirmarBaneo(usuarioSeleccionado: any, razonBan: string, duracionBan: number) {
+  if (usuarioSeleccionado && razonBan.trim() && duracionBan > 0) {
+    const fechaExpiracion = new Date();
+    fechaExpiracion.setDate(fechaExpiracion.getDate() + duracionBan);
+
+    try {
+      if (usuarioSeleccionado.estado === 1) {
+        await this.database.executeSql(
+          `DELETE FROM ban WHERE id_usuario = ?`,
+          [usuarioSeleccionado.id]
+        );
+        await this.database.executeSql(
+          `UPDATE usuario SET estado = 0 WHERE id = ?`,
+          [usuarioSeleccionado.id]
+        );
+        usuarioSeleccionado.estado = 0;
+
+        this.presentAlert('Éxito', 'Usuario desbaneado correctamente.');
+      } else {
+        const db = await this.crearConexion();
+        await this.database.executeSql(
+          `INSERT INTO ban (id_usuario, razon, duracion, fecha_expiracion) VALUES (?, ?, ?, ?)`,
+          [
+            usuarioSeleccionado.id,
+            razonBan.trim(),
+            duracionBan,
+            fechaExpiracion.toISOString(),
+          ]
+        );
+
+        await this.database.executeSql(
+          `UPDATE usuario SET estado = 1 WHERE id = ?`,
+          [usuarioSeleccionado.id]
+        );
+        usuarioSeleccionado.estado = 1;
+        this.presentAlert('Éxito', 'Usuario baneado correctamente.');
+      }
+    } catch (error) {
+      console.error('Error al intentar modificar el estado del usuario:', error);
+      this.presentAlert('Error', 'Hubo un problema al procesar el baneo.');
+    }
+  } else {
+    this.presentAlert('Error', 'Por favor complete todos los campos correctamente.');
   }
 }
 

@@ -40,26 +40,52 @@
     <ion-button (click)="mostrarTablaCategorias()">Mostrar Categorías</ion-button>
     <ion-button (click)="mostrartablaCarrusel()">Mostrar Carrusel</ion-button>
 
-    <!-- Tabla de Usuarios -->
-    <div *ngIf="mostrarUsuarios">
-      <h2>Lista de Usuarios</h2>
-      <ion-list>
-        <ion-item *ngFor="let usuario of usuariosFiltrados">
-          <ion-label>
-            <h2>{{ usuario.nombre }}</h2>
-            <p>(ID: {{ usuario.id }})</p>
-            <p>Email: {{ usuario.email }}</p>
-            <p>Teléfono: {{ usuario.telefono }}</p>
-          </ion-label>
-          <div class="botones">
-            <ion-button color="danger" (click)="banearUsuario(usuario)">
-              {{ usuario.estado === 1 ? 'Desbanear' : 'Banear' }}
-            </ion-button>
-            <ion-button (click)="eliminarusuario(usuario.id!)">Eliminar</ion-button>
-          </div>
-        </ion-item>
-      </ion-list>
-    </div>
+<!-- Tabla de Usuarios -->
+<div *ngIf="mostrarUsuarios">
+  <h2>Lista de Usuarios</h2>
+  <ion-list>
+    <ion-item *ngFor="let usuario of usuariosFiltrados">
+      <ion-label>
+        <h2>{{ usuario.nombre }}</h2>
+        <p>(ID: {{ usuario.id }})</p>
+        <p>Email: {{ usuario.email }}</p>
+        <p>Teléfono: {{ usuario.telefono }}</p>
+      </ion-label>
+      <div class="botones">
+        <ion-button color="danger" (click)="abrirModalBanear(usuario)">
+          {{ usuario.estado === 1 ? 'Desbanear' : 'Banear' }}
+        </ion-button>
+        <ion-button (click)="eliminarusuario(usuario.id!)">Eliminar</ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+</div>
+
+<!-- Modal para Banear Usuario -->
+<ion-modal [isOpen]="isBanModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Gestión de Baneo</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-item>
+        <ion-label>Razón del Baneo</ion-label>
+        <ion-textarea [(ngModel)]="razonBan"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label>Duración (días)</ion-label>
+        <ion-input type="number" [(ngModel)]="duracionBan"></ion-input>
+      </ion-item>
+      <ion-button expand="block" (click)="confirmarBaneo()">Confirmar</ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
 
     <!-- Tabla de Productos -->
     <div *ngIf="mostrarProductos" class="productos-container">
@@ -130,7 +156,7 @@
   <!-- Lista de imágenes existentes en el carrusel -->
   <ion-list>
     <ion-item *ngFor="let imagen of imagenesCarrusel">
-      <img [src]="image" class="image-preview" />
+      <img [src]="imagenCarrusel" class="image-preview" />
       <ion-label>{{ imagen.id }}</ion-label>
       <ion-button color="danger" (click)="eliminarImagen(imagen.id)">Eliminar</ion-button>
     </ion-item>

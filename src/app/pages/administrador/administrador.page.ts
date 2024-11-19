@@ -45,6 +45,11 @@ export class AdministradorPage {
   mostrarCarrusel: boolean = false;
   database!: SQLiteObject;
 
+  isBanModalOpen = false;
+  razonBan: string = '';
+  duracionBan: number = 0;
+  usuarioSeleccionado: any = null;
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -386,7 +391,6 @@ export class AdministradorPage {
     }
   }
 
-  // Método para insertar la imagen en la base de datos
   async insertarImagen(imagenBase64: string) {
     const db = await this.getDatabase();
     const query = `INSERT INTO imagenes_carrusel (url) VALUES (?)`;
@@ -397,7 +401,6 @@ export class AdministradorPage {
     });
   }
 
-  // Método para obtener la referencia a la base de datos
   async getDatabase() {
     if (!this.database) {
       this.database = await this.sqlite.create({
@@ -411,6 +414,28 @@ export class AdministradorPage {
   irAVerPublicacion(id: number) {
     this.router.navigate(['/detalle', id]);
   }
+
+  abrirModalBanear(usuario: any) {
+    this.usuarioSeleccionado = usuario;
+    this.isBanModalOpen = true;
+  }
+
+  async confirmarBaneo() {
+    if (this.usuarioSeleccionado && this.razonBan.trim() && this.duracionBan > 0) {
+      await this.bd.confirmarBaneo(this.usuarioSeleccionado, this.razonBan, this.duracionBan);
+      await this.cargarUsuarios();
+      this.cerrarModal();
+    } else {
+      this.presentAlert('Error', 'Por favor complete todos los campos correctamente.');
+    }
+  }
+
+  cerrarModal() {
+    this.isBanModalOpen = false;
+  }
+
+
+
 
 }
 

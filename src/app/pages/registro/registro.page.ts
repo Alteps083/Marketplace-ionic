@@ -63,7 +63,7 @@ export class RegistroPage implements OnInit {
     }
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.miFormulario.invalid) {
       console.log('Formulario inválido:', this.miFormulario.errors);
       return;
@@ -73,36 +73,54 @@ export class RegistroPage implements OnInit {
   
     const nombre = this.miFormulario.value.nombre;
     const email = this.miFormulario.value.email;
-    const telefono = this.miFormulario.value.phone.replace(/\s/g, '');;
+    const telefono = this.miFormulario.value.phone.replace(/\s/g, '');
     const contrasenia = this.miFormulario.value.password;
-
+  
     const nuevoUsuario: Usuario = {
       nombre: nombre,
       email: email,
       contrasenia: contrasenia,
       telefono: telefono,
-      fecha_registro: new Date().toISOString(), 
+      fecha_registro: new Date().toISOString(),
       es_admin: false,
       estado: 0
     };
-
-    this.serviceBd.dbReady().subscribe(isReady => {
-      if(isReady){
-        this.serviceBd.registrarUsuario(nuevoUsuario).then((registroExistoso) => {
-        if(registroExistoso){
-          this.presentToast('bottom', 'Usuario registrado Correctamente, Inicie sesion');
-          this.router.navigate(['/login']);
-        }else{
-          console.log('El correo ya existe :v');
-        }
-        }).catch(e => {
-          console.log('Error al registrar usuario: ', JSON.stringify(e));
-          this.presentToast('bottom', 'Error al registrar usuario.');
-        })
-      }else{
-        this.presentToast('bottom', 'La Base de Datos aun no esta lista >:c');
+  
+    try {
+      const correoExiste = await this.serviceBd.verificarCorreoExistente(email);
+      if (correoExiste) {
+        this.presentToast('bottom', 'El correo ya está registrado. Intente con otro.');
+        return;
       }
-    })
+
+      const telefonoExiste = await this.serviceBd.verificarTelefonoExistente(telefono);
+      if (telefonoExiste) {
+        this.presentToast('bottom', 'El número de teléfono ya está registrado. Intente con otro.');
+        return;
+      }
+  
+      this.serviceBd.dbReady().subscribe(async (isReady) => {
+        if (isReady) {
+          try {
+            const registroExitoso = await this.serviceBd.registrarUsuario(nuevoUsuario);
+            if (registroExitoso) {
+              this.presentToast('bottom', 'Usuario registrado correctamente. Inicie sesión.');
+              this.router.navigate(['/login']);
+            } else {
+              this.presentToast('bottom', 'Error al registrar usuario.');
+            }
+          } catch (e) {
+            console.log('Error al registrar usuario:', JSON.stringify(e));
+            this.presentToast('bottom', 'Error al registrar usuario.');
+          }
+        } else {
+          this.presentToast('bottom', 'La base de datos aún no está lista.');
+        }
+      });
+    } catch (error) {
+      console.error('Error al verificar correo:', error);
+      this.presentToast('bottom', 'Error al verificar correo.');
+    }
   }
 
   async presentToast(position: 'top' | 'middle' | 'bottom', message: string) {

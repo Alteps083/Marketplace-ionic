@@ -52,3 +52,7 @@ MarketHub v2.6.2
 MarketHub v4.2.1
 - se agrego la tabla categorias y ya se puede agregar productos con la categoria creada
 - se agrego la funcion de agregar imagenes al carrousel o eliminar
+
+MarketHub v4.2.8
+- mejoras visuales
+- implementacion del duracion y razon del ban (sin terminar)
