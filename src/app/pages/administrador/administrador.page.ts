@@ -49,6 +49,7 @@ export class AdministradorPage {
   razonBan: string = '';
   duracionBan: number = 0;
   usuarioSeleccionado: any = null;
+  baneos: any[] = [];
 
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
@@ -415,10 +416,10 @@ export class AdministradorPage {
     this.router.navigate(['/detalle', id]);
   }
 
-  abrirModalBanear(usuario: any) {
-    this.usuarioSeleccionado = usuario;
-    this.isBanModalOpen = true;
-  }
+  async abrirModalBanear(usuario: any) {
+      this.usuarioSeleccionado = usuario;
+      this.isBanModalOpen = true; 
+  }  
 
   async confirmarBaneo() {
     if (this.usuarioSeleccionado && this.razonBan.trim() && this.duracionBan > 0) {
@@ -434,9 +435,28 @@ export class AdministradorPage {
     this.isBanModalOpen = false;
   }
 
-
-
-
+  toggleBanStatus(usuario: any) {
+    if (usuario.estado === 1) {
+      // Si el usuario está baneado (estado === 1), desbanea directamente.
+      this.desbanearUsuario(usuario);
+    } else {
+      // Si el usuario no está baneado (estado === 0), abre la modal para banear.
+      this.abrirModalBanear(usuario);
+    }
+  }
+  
+  desbanearUsuario(usuario: any) {
+    // Cambiar el estado del usuario a 0 (no baneado).
+    usuario.estado = 0;
+    
+    // Actualizar el estado en la base de datos.
+    this.bd.actualizarEstadoUsuario(usuario.id, 0).then(() => {
+      // Recargar los datos o realizar cualquier acción necesaria.
+      this.cargarDatos();
+    }).catch(error => {
+      console.error('Error al desbanear al usuario:', error);
+    });
+  }
+  
 }
-
 

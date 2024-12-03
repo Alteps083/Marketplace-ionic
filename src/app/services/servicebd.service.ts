@@ -292,25 +292,49 @@ tablaban: string = `CREATE TABLE IF NOT EXISTS ban (
     async loginUsuario(nombre: string, contrasenia: string): Promise<boolean> {
       const sql = `SELECT * FROM usuario WHERE nombre = ? AND contrasenia = ?`;
       const params = [nombre, contrasenia];
-      
+    
       try {
         const result = await this.database.executeSql(sql, params);
+    
         if (result.rows.length > 0) {
           const usuario = result.rows.item(0);
-
-          if (usuario.estado === 1) { 
-            this.presentAlert('Acceso Denegado', `Su cuenta está baneada por ${this.razonBan} hasta ${this.duracionBan}.`);
+    
+          // Verificar si el usuario está baneado según el campo 'estado'
+          if (usuario.estado === 1) {
+            // Obtener detalles del baneo desde la tabla 'ban'
+            const sqlban = `
+              SELECT razon, fecha_expiracion 
+              FROM ban 
+              WHERE id_usuario = ? AND fecha_expiracion > datetime('now')
+            `;
+            const paramsban = [usuario.id];
+            const resultban = await this.database.executeSql(sqlban, paramsban);
+    
+            if (resultban.rows.length > 0) {
+              const baneo = resultban.rows.item(0);
+              this.presentAlert(
+                'Acceso Denegado',
+                `Su cuenta está baneada por: ${baneo.razon}. 
+                Este baneo expira en: ${baneo.fecha_expiracion}.`
+              );
+            } else {
+              this.presentAlert(
+                'Acceso Denegado',
+                'Su cuenta está marcada como baneada, pero no se encontraron detalles en la base de datos.'
+              );
+            }
             return false;
           }
-
+    
+          // Si no está baneado, continúa con el login
           this.setUsuarioActual(usuario);
-          await this.storage.setItem('usuario_actual', { 
+          await this.storage.setItem('usuario_actual', {
             id: usuario.id,
             nombre: usuario.nombre,
             email: usuario.email,
             telefono: usuario.telefono,
             es_admin: usuario.es_admin,
-            imagen: usuario.imagen
+            imagen: usuario.imagen,
           });
     
           return true;
@@ -323,6 +347,8 @@ tablaban: string = `CREATE TABLE IF NOT EXISTS ban (
         return false;
       }
     }
+    
+    
 
     async actualizarUsuario(usuario: Usuario){
       const sql = 'UPDATE usuario SET nombre = ?, email = ?, telefono = ?, contrasenia = ?, imagen = ? WHERE id = ?';
@@ -985,6 +1011,16 @@ async confirmarBaneo(usuarioSeleccionado: any, razonBan: string, duracionBan: nu
   } else {
     this.presentAlert('Error', 'Por favor complete todos los campos correctamente.');
   }
+}
+
+eliminarBaneo(id: number): Promise<void> {
+  return this.database.executeSql('DELETE FROM ban WHERE id = ?', [id])
+    .then(() => {
+      console.log('Baneo eliminado');
+    })
+    .catch(err => {
+      console.error('Error al eliminar baneo', err);
+    });
 }
 
 
