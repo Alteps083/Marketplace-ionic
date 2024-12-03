@@ -78,6 +78,11 @@ export class ServicioClientePage implements OnInit {
   }
 
   async enviarReclamo() {
+    console.log('Email:', this.reclamoForm.get('email')?.value);
+console.log('Tipo de problema:', this.reclamoForm.get('tipoProblema')?.value);
+console.log('Descripción:', this.reclamoForm.get('descripcion')?.value);
+
+    console.log('Datos del reclamo:', this.reclamoForm.value);
     if (this.reclamoForm.valid) {
       const { email, tipoProblema, descripcion } = this.reclamoForm.value;
       try {
@@ -88,6 +93,7 @@ export class ServicioClientePage implements OnInit {
           message: 'Tu reclamo ha sido enviado exitosamente.',
           buttons: ['OK']
         });
+        console.log('Reclamo agregado exitosamente');
         await alert.present();
 
         this.reclamoForm.reset({ email });
@@ -98,8 +104,10 @@ export class ServicioClientePage implements OnInit {
           buttons: ['OK']
         });
         await alert.present();
+        console.error('Error al agregar reclamo:', Error);
       }
     } else {
+      console.error('Formulario inválido:', this.reclamoForm.errors);
       const alert = await this.alertCtrl.create({
         header: 'Error',
         message: 'Por favor, completa todos los campos correctamente.',

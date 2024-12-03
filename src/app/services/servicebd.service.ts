@@ -85,7 +85,7 @@ tablaban: string = `CREATE TABLE IF NOT EXISTS ban (
   fecha_expiracion TEXT NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES usuario(id)
 );
-`
+`;
 
   listarProductos = new BehaviorSubject<Producto[]>([]);
 

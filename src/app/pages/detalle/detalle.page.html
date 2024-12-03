@@ -53,8 +53,8 @@
       </div>
       <ion-item>
         <ion-input [(ngModel)]="nuevoComentario" placeholder="Escribe tu comentario..."></ion-input>
-        <ion-button (click)="publicarComentario()" [disabled]="!nuevoComentario || nuevoComentario.trim().length === 0">Publicar</ion-button>
-      </ion-item>
+        <ion-button (click)="publicarComentario()" [disabled]="isPublicarDisabled()">Publicar</ion-button>
+      </ion-item>      
     </ion-card-content>
   </ion-card>
   <div>

@@ -143,8 +143,12 @@ export class DetallePage implements OnInit {
     await this.bd.agregarComentario(this.producto.id, usuarioId, this.nuevoComentario);
     this.nuevoComentario = ''; 
     this.cargarComentarios(); 
+    console.log(this.nuevoComentario);
   }
-  
+  isPublicarDisabled(): boolean {
+    return !this.nuevoComentario || this.nuevoComentario.trim().length === 0;
+  }  
+
   perfil() {
     this.router.navigate(['/tabs/perfil']);
   }

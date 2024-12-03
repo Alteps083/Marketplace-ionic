@@ -58,6 +58,6 @@
         <ion-text color="danger" *ngIf="reclamoForm.get('descripcion')?.hasError('maxlength')">Máximo 100 caracteres.</ion-text>
       </div>
     </div>
+    <ion-button class="btn-enviar" expand="full" type="submit" [disabled]="reclamoForm.invalid">Enviar Reclamo</ion-button>
   </form>
-  <ion-button class="btn-enviar" expand="full" type="submit" [disabled]="reclamoForm.invalid">Enviar Reclamo</ion-button>
 </ion-content>

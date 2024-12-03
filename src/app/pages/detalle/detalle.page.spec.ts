@@ -56,6 +56,7 @@ describe('DetallePage', () => {
 
     fixture = TestBed.createComponent(DetallePage);
     component = fixture.componentInstance;
+    
     fixture.detectChanges();
   });
     
@@ -63,20 +64,18 @@ describe('DetallePage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('debe deshabilitar el botón "Publicar" cuando "nuevoComentario" esté vacío o contenga solo espacios', () => {
-    component.nuevoComentario = '';  
-    fixture.detectChanges(); 
-    let button = fixture.nativeElement.querySelector('ion-button');
-    expect(button.disabled).toBeTrue(); 
+  it('debe deshabilitar el botón "Publicar" cuando "nuevoComentario" esté vacío', () => {
+    component.nuevoComentario = '';
+    expect(component.isPublicarDisabled()).toBeTrue();
+  });
 
-    component.nuevoComentario = '     ';  
-    fixture.detectChanges();
-    button = fixture.nativeElement.querySelector('ion-button');
-    expect(button.disabled).toBeTrue(); 
-  
-    component.nuevoComentario = 'Comentario válido';  
-    fixture.detectChanges();
-    button = fixture.nativeElement.querySelector('ion-button');
-    expect(button.disabled).toBeFalse(); 
+  it('debe deshabilitar el botón "Publicar" cuando "nuevoComentario" contenga solo espacios', () => {
+    component.nuevoComentario = '   ';
+    expect(component.isPublicarDisabled()).toBeTrue();
+  });
+
+  it('debe habilitar el botón "Publicar" cuando "nuevoComentario" tenga texto válido', () => {
+    component.nuevoComentario = 'Comentario válido';
+    expect(component.isPublicarDisabled()).toBeFalse();
   });
 });
