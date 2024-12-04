@@ -18,7 +18,6 @@ import { ServicebdService } from './services/servicebd.service';
 import { PantallaCargaComponent } from './components/pantalla-carga/pantalla-carga.component';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { RatingService } from './services/rating.service';
 @NgModule({
   declarations: [AppComponent, ImageModalComponent, PantallaCargaComponent],
   imports: [
@@ -38,7 +37,6 @@ import { RatingService } from './services/rating.service';
     provideFirestore(() => getFirestore()),
     SQLite,
     ServicebdService,
-    RatingService,
   ],
   bootstrap: [AppComponent],
 })

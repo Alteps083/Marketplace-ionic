@@ -88,7 +88,7 @@ export class AgregarPage implements OnInit {
           imagen: this.usuario.imagen, 
           nombreUsuario: this.usuario.nombre, 
           nombreProducto: producto.titulo,
-          fecha: new Date().toISOString()  // Añade la fecha actual
+          fecha: new Date().toISOString()  
         };
 
         await this.notificationService.addNotification(notificacion);
@@ -105,14 +105,12 @@ export class AgregarPage implements OnInit {
 
   async ngOnInit() {
 
-    await this.cargarCategorias(); // Cargar las categorías desde la base de datos
+    await this.cargarCategorias();
     await this.cargarUsuario();
 
     if (this.descripcion) {
       this.descripcion.markAsTouched();
     }
-    
-    await this.cargarUsuario(); 
     this.usuario = this.bd.getUsuarioActual();
     if (this.usuario) {
       this.profileImage = await this.bd.obtenerImagenUsuario(this.usuario?.id || 0);

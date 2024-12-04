@@ -87,6 +87,19 @@ tablaban: string = `CREATE TABLE IF NOT EXISTS ban (
 );
 `;
 
+tablaCalificaciones: string = `
+  CREATE TABLE IF NOT EXISTS calificaciones (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    productoId INTEGER,
+    usuarioId INTEGER,
+    puntuacion INTEGER NOT NULL, -- Puntuación numérica (1-5)
+    comentario TEXT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (productoId) REFERENCES productos(id),
+    FOREIGN KEY (usuarioId) REFERENCES usuario(id)
+  );
+`;
+
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
   listarReclamos = new BehaviorSubject<any[]>([]);
@@ -197,7 +210,9 @@ tablaban: string = `CREATE TABLE IF NOT EXISTS ban (
       console.log("Creando tabla de usuarios...");
       await this.database.executeSql(this.tablaUsuario, []);
       console.log("Tabla de usuarios creada correctamente");
-  
+      
+      await this.database.executeSql(this.tablaCalificaciones, []);
+
       console.log("Creando tabla de productos...");
       await this.database.executeSql(this.tablaProductos, []);
       console.log("Tabla de productos creada correctamente");
@@ -1021,6 +1036,42 @@ eliminarBaneo(id: number): Promise<void> {
     .catch(err => {
       console.error('Error al eliminar baneo', err);
     });
+}
+
+async agregarCalificacion(productoId: number, usuarioId: number, puntuacion: number, comentario: string) {
+  try {
+    const query = `INSERT INTO calificaciones (productoId, usuarioId, puntuacion, comentario) 
+                   VALUES (?, ?, ?, ?)`;
+    await this.database.executeSql(query, [productoId, usuarioId, puntuacion, comentario]);
+    console.log('Calificación agregada correctamente.');
+  } catch (error) {
+    console.error('Error al agregar calificación:', error);
+  }
+}
+
+async obtenerCalificaciones(productoId: number): Promise<any[]> {
+  const query = 'SELECT puntuacion, comentario FROM calificaciones WHERE productoId = ?';
+  const res = await this.database.executeSql(query, [productoId]);
+  let calificaciones = [];
+  for (let i = 0; i < res.rows.length; i++) {
+    calificaciones.push(res.rows.item(i));
+  }
+  return calificaciones;
+}
+
+async obtenerPromedioCalificaciones(productoId: number): Promise<number> {
+  try {
+    const query = `SELECT AVG(puntuacion) AS promedio FROM calificaciones WHERE productoId = ?`;
+    const result = await this.database.executeSql(query, [productoId]);
+    if (result.rows.length > 0) {
+      const promedio = result.rows.item(0).promedio;
+      return promedio ? parseFloat(promedio.toFixed(2)) : 0;
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error al obtener promedio de calificaciones:', error);
+    return 0;
+  }
 }
 
 

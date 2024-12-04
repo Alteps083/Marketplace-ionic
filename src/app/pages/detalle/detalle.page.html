@@ -34,6 +34,7 @@
     <ion-card-header>
       <ion-card-subtitle>Categoria: {{ producto?.categoria || 'Sin categoría' }}</ion-card-subtitle>
       <ion-card-subtitle>Precio: ${{ producto?.precio?.toLocaleString('es-CL') || '0' }} CLP</ion-card-subtitle>
+      <ion-card-subtitle>Precio en USD: ${{ precioEnUSD > 0 ? precioEnUSD.toFixed(2) : '0.00' }} USD</ion-card-subtitle>
       <ion-card-subtitle>Estado: {{ producto?.estado || 'Sin estado' }}</ion-card-subtitle>
       <ion-card-subtitle>Descripcion de referencia:</ion-card-subtitle>
       <p>{{ producto?.descripcion || 'Sin descripción' }}</p>
@@ -57,24 +58,28 @@
       </ion-item>      
     </ion-card-content>
   </ion-card>
-  <div>
-    <h3>Calificaciones</h3>
-    <ul>
-      <li *ngFor="let rating of ratings">
-        <strong>Calificación:</strong> {{ rating.score }} - <strong>Reseña:</strong> {{ rating.review }}
-      </li>
-    </ul>
-  </div>
-  <div class="rating-container">
-    <h3 class="rating-title">Publica tu calificación</h3>
-    
-    <label for="ratingSelect" class="rating-label">Selecciona una calificación:</label>
-    <select [(ngModel)]="userRating.score" id="ratingSelect" class="rating-select">
-        <option *ngFor="let score of [1, 2, 3, 4, 5]" [value]="score">{{ score }}</option>
-    </select>
-  
-    <textarea [(ngModel)]="userRating.review" id="reviewInput" class="rating-textarea" placeholder="Escribe tu reseña..."></textarea>
-    
-    <button (click)="submitRating()" class="rating-button">Publicar Calificación</button>
-  </div>
+  <ion-item class="calificacion-item">
+    <ion-label class="calificacion-label">Calificación</ion-label>
+    <ion-select [(ngModel)]="userRating.score" class="calificacion-select">
+      <ion-select-option value="1">1</ion-select-option>
+      <ion-select-option value="2">2</ion-select-option>
+      <ion-select-option value="3">3</ion-select-option>
+      <ion-select-option value="4">4</ion-select-option>
+      <ion-select-option value="5">5</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="comentario-item">
+    <ion-label *ngIf="!userRating.review" class="transparent-label">Comentario</ion-label>
+    <ion-input [(ngModel)]="userRating.review" class="transparent-input"></ion-input>
+  </ion-item>
+  <ion-button (click)="submitRating()" class="publicar-btn">Publicar Calificación</ion-button>
+  <ion-item class="promedio-calificacion-item">
+    <ion-label class="promedio-calificacion-label">Promedio de Calificaciónes: {{ promedioCalificaciones }}</ion-label>
+  </ion-item>
+  <ion-item *ngFor="let rating of ratings" class="rating-display-item">
+    <ion-label class="rating-display">
+      <strong>Calificación:</strong> {{ rating.puntuacion }}<br>
+      <strong>Comentario:</strong> {{ rating.comentario }}
+    </ion-label>
+  </ion-item>
 </ion-content>

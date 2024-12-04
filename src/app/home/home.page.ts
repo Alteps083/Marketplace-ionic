@@ -33,6 +33,12 @@ export class HomePage implements OnInit{
 
   images: string[] = [];
 
+  
+  constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {
+    this.cargarUsuario();
+ }
+
+
 async ngOnInit() {
   await this.cargarUsuario();
   await this.obtenerUsuarioActual();
@@ -86,17 +92,14 @@ async ngOnInit() {
     }
   }
 
-  // Actualizar los productos recientes y por categoría
   this.actualizarRecientesYCategorias();
 }
 
 async obtenerUsuarioActual() {
-  // Obtén el usuario actual desde la base de datos o servicio
-  this.usuario = await this.bd.obtenerUsuarioPorId(1); // Cambia por el ID correcto
+  this.usuario = await this.bd.obtenerUsuarioPorId(1); 
   if (this.usuario && this.usuario.imagen) {
     this.profileImage = this.usuario.imagen;
   } else {
-    // Si no tiene imagen, usa la imagen por defecto
     this.profileImage = '/assets/img/nouser.png';
   }
 }
@@ -108,13 +111,13 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
     const imagen = await this.storage.getItem(`imagen_${nombre}`);
     
     if (imagen && imagen.startsWith('http')) {
-      return imagen; // Retornar la URL de la imagen
+      return imagen; 
     } else {
-      return 'assets/img/nouser.png'; // Retornar imagen predeterminada
+      return 'assets/img/nouser.png'; 
     }
   } catch (error) {
     console.log('Error al obtener la imagen del usuario:', error);
-    return 'assets/img/nouser.png'; // En caso de error, devolver la imagen por defecto
+    return 'assets/img/nouser.png'; 
   }
 }
 
@@ -156,11 +159,6 @@ async obtenerImagenUsuario(nombre: string): Promise<string> {
   @ViewChild('swiper')
   swiperRef: ElementRef | undefined;
   swiper?: Swiper;
-
-  constructor(private router:Router, private bd: ServicebdService, private platform: Platform, private alertController: AlertController, private storage: NativeStorage) {
-     this.cargarUsuario();
-  }
-
 
   async ionViewDidEnter() {
     this.images = await this.obtenerImagenes();

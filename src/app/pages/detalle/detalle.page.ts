@@ -6,8 +6,8 @@ import { Producto } from 'src/app/services/producto';
 import { ActivatedRoute } from '@angular/router';
 import { ServicebdService } from 'src/app/services/servicebd.service';
 import { Usuario } from 'src/app/services/usuario';
-import { RatingService } from 'src/app/services/rating.service';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { MonedaServicioService } from 'src/app/services/moneda-servicio.service';
 @Component({
   selector: 'app-detalle',
   templateUrl: './detalle.page.html',
@@ -22,6 +22,10 @@ export class DetallePage implements OnInit {
     review: ''
   };
 
+  promedioCalificaciones: number = 0;
+
+  precioEnUSD: number = 0;
+
   currentImageIndex: number = 0;
 
   profileImage: string | null = null;
@@ -31,7 +35,7 @@ export class DetallePage implements OnInit {
   comentarios: any[] = [];
   nuevoComentario: string = '';
 
-  constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService, private ratingService: RatingService, private storage: NativeStorage) { 
+  constructor(private router:Router, private modelController: ModalController, private activeRouter: ActivatedRoute, private bd: ServicebdService, private storage: NativeStorage, private moneda: MonedaServicioService) { 
    }
 
    ionViewWillEnter() {
@@ -58,9 +62,15 @@ export class DetallePage implements OnInit {
       console.error('El ID del usuario no está definido.');
       this.profileImage = 'ruta/a/nouser.png'; 
     }
-    await this.cargarUsuario();
     const id = parseInt(this.activeRouter.snapshot.paramMap.get('id') || '0', 10); 
     await this.cargarProducto(id);
+    if (this.producto) {
+      await this.convertPriceToUSD();
+    }
+    if (this.producto) {
+      await this.obtenerPromedioCalificaciones();
+      await this.cargarCalificaciones();
+    }
     this.cargarComentarios();  
   }
 
@@ -95,7 +105,7 @@ export class DetallePage implements OnInit {
     const productoCargado = await this.bd.fetchProductoPorId(id);
     if (productoCargado) {
       this.producto = productoCargado;
-      await this.loadRatingsByProductId(this.producto.id);
+      await this.obtenerPromedioCalificaciones();
     } else {
       this.producto = {
         id: 0,
@@ -153,53 +163,58 @@ export class DetallePage implements OnInit {
     this.router.navigate(['/tabs/perfil']);
   }
 
-  fetchRatings() {
-    this.ratingService.getRatings().subscribe(data => {
-      this.ratings = data;
-    });
+  async convertPriceToUSD() { 
+    if (this.producto) {
+      console.log('Precio del producto:', this.producto.precio); 
+      try {
+        const exchangeRate = await this.moneda.getExchangeRate('CLP', 'USD');
+        console.log('Tasa de cambio CLP a USD:', exchangeRate); 
+        this.precioEnUSD = this.producto.precio * exchangeRate;
+        console.log('Precio en USD calculado:', this.precioEnUSD); 
+      } catch (error) {
+        console.error('Error al calcular el precio en USD:', error);
+        this.precioEnUSD = 0;  
+      }
+    } else {
+      console.error('Producto es null o no está definido');
+    }
   }
 
-  loadRatings() {
-    this.ratingService.getRatings().subscribe(
-      (data) => {
-        console.log('Calificaciones obtenidas:', data); 
-        this.ratings = data; 
-      },
-      (error) => {
-        console.error('Error al obtener calificaciones:', error);
-      }
-    );
+  async obtenerPromedioCalificaciones() {
+    if (this.producto) {
+      this.promedioCalificaciones = await this.bd.obtenerPromedioCalificaciones(this.producto.id);
+      console.log('Promedio de calificaciones:', this.promedioCalificaciones);
+    }
   }
 
-  loadRatingsByProductId(productId: number) {
-    this.ratingService.getRatingsByProductId(productId).subscribe(
-      (data) => {
-        console.log('Calificaciones obtenidas para el producto:', data); 
-        this.ratings = data; 
-      },
-      (error) => {
-        console.error('Error al obtener calificaciones:', error);
-      }
-    );
+  async agregarCalificacion(puntuacion: number, comentario: string) {
+    const usuarioActual = await this.bd.getUsuarioActual();
+    if (!this.producto || !usuarioActual || usuarioActual.id === undefined) return;
+    const usuarioId = usuarioActual.id;
+    await this.bd.agregarCalificacion(this.producto.id, usuarioId, puntuacion, comentario);
+    await this.obtenerPromedioCalificaciones();  
+  }
+
+  async cargarCalificaciones() {
+    if (this.producto) {
+      this.ratings = await this.bd.obtenerCalificaciones(this.producto.id); 
+    }
   }
 
   submitRating() {
     const ratingToSend = {
-      productId: this.producto!.id,
-      score: Number(this.userRating.score), 
-      review: this.userRating.review
+      productId: this.producto!.id,  
+      score: Number(this.userRating.score),  
+      review: this.userRating.review 
     };
-  
-    console.log('Intentando enviar calificación:', JSON.stringify(ratingToSend));
-    
-    this.ratingService.postRating(ratingToSend).subscribe(
-      response => {
-        console.log('Calificación enviada con éxito:', JSON.stringify(response));
-      },
-      error => {
-        console.error('Error al enviar la calificación:', JSON.stringify(error));
-      }
-    );
+    this.bd.agregarCalificacion(ratingToSend.productId, this.producto!.id_vendedor, ratingToSend.score, ratingToSend.review)
+      .then(() => {
+        this.obtenerPromedioCalificaciones();
+        this.cargarCalificaciones();
+        console.log('Calificación agregada con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al agregar calificación:', error);
+      });
   }
-
 }
