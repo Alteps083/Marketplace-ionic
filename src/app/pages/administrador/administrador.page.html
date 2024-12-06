@@ -97,12 +97,32 @@
             <p>Precio: {{ producto.precio | currency }}</p>
           </ion-label>
           <div class="botones">
-            <ion-button color="danger" (click)="eliminarProducto(producto.id)">Eliminar</ion-button>
+            <ion-button color="danger" (click)="abrirModalEliminar(producto)">Eliminar</ion-button>
             <ion-button (click)="irAVerPublicacion(producto.id)">Ir a ver Producto</ion-button>
           </div>
         </ion-item>
       </ion-list>
     </div>
+
+    <ion-modal [isOpen]="isDeleteModalOpen">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Justificar Eliminación</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-item>
+            <ion-label>Razón</ion-label>
+            <ion-textarea [(ngModel)]="razonEliminacion"></ion-textarea>
+          </ion-item>
+          <ion-button expand="block" color="danger" (click)="confirmarEliminacion()">Confirmar Eliminación</ion-button>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
 
     <!-- Tabla de Reclamos -->
     <div *ngIf="mostrarReclamos">

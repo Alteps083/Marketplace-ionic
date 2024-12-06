@@ -100,6 +100,16 @@ tablaCalificaciones: string = `
   );
 `;
 
+tablaeliminacion: string = `
+CREATE TABLE IF NOT EXISTS razones_eliminacion (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  producto_id INTEGER NOT NULL,
+  razon TEXT NOT NULL,
+  fecha TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+`;
+
   listarProductos = new BehaviorSubject<Producto[]>([]);
 
   listarReclamos = new BehaviorSubject<any[]>([]);
@@ -1074,5 +1084,14 @@ async obtenerPromedioCalificaciones(productoId: number): Promise<number> {
   }
 }
 
+getDatabase(): SQLiteObject | null {
+  return this.database;
+}
+
+async registrarRazonEliminacion(productoId: number, razon: string): Promise<void> {
+  const query = `INSERT INTO razones_eliminacion (producto_id, razon) VALUES (?, ?)`;
+  const db = await this.getDatabase();
+  await this.database.executeSql(query, [productoId, razon]);
+} 
 
 }

@@ -51,6 +51,10 @@ export class AdministradorPage {
   usuarioSeleccionado: any = null;
   baneos: any[] = [];
 
+  isDeleteModalOpen = false;
+  razonEliminacion = '';
+  productoSeleccionado: Producto | null = null;
+
   handleRefresh(event: CustomEvent) {
     setTimeout(() => {
       const refresher = event.target as HTMLIonRefresherElement;
@@ -433,6 +437,7 @@ export class AdministradorPage {
 
   cerrarModal() {
     this.isBanModalOpen = false;
+    this.isDeleteModalOpen = false;
   }
 
   toggleBanStatus(usuario: any) {
@@ -458,5 +463,22 @@ export class AdministradorPage {
     });
   }
   
+  abrirModalEliminar(producto: Producto) {
+    this.productoSeleccionado = producto;
+    this.razonEliminacion = '';
+    this.isDeleteModalOpen = true;
+  }
+  
+  async confirmarEliminacion() {
+    if (this.productoSeleccionado && this.razonEliminacion.trim()) {
+      await this.bd.registrarRazonEliminacion(this.productoSeleccionado.id, this.razonEliminacion.trim());
+      await this.bd.eliminarProducto(this.productoSeleccionado.id);
+      this.cargarDatos();
+      this.cerrarModal();
+    } else {
+      this.presentAlert('Error', 'Debes proporcionar una razón para eliminar el producto.');
+    }
+  }
+
 }
 
