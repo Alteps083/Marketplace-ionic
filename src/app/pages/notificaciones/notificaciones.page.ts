@@ -123,4 +123,17 @@ export class NotificacionesPage implements OnInit {
         this.isListaVisible = !this.isListaVisible; // Alterna entre true y false
       }
       
+      eliminarRazonEliminacion(id: number | undefined) {
+        if (id !== undefined) {
+          this.bd.eliminarRazonEliminacion(id).then(() => {
+            this.cargarRazonesEliminacion(); // Recarga las razones después de eliminar
+            console.log(`Razón con ID ${id} eliminada.`);
+          }).catch(error => {
+            console.error('Error al eliminar la razón de eliminación:', error);
+          });
+        } else {
+          console.error('No se puede eliminar la razón, el ID es undefined');
+        }
+      }
+      
 }

@@ -1111,4 +1111,10 @@ async registrarRazonEliminacion(productoId: number, razon: string): Promise<void
     return []; // Retorna un array vacío si no hay datos
   }
   
+  async eliminarRazonEliminacion(id: number): Promise<void> {
+    const query = 'DELETE FROM razones_eliminacion WHERE id = ?';
+    const db = await this.getDatabase();
+    await this.database.executeSql(query, [id]);
+  }  
+
 }

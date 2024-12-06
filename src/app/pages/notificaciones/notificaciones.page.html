@@ -19,20 +19,27 @@
     <ion-button expand="full" (click)="toggleListaRazones()">
       {{ isListaVisible ? 'Dejar de Ver Razones de Eliminación' : 'Ver Razones de Eliminación' }}
     </ion-button>
-    <ion-list *ngIf="isListaVisible">
-      <ion-item *ngFor="let razon of razonesEliminacion">
-        <ion-label>
-          <h2>Producto ID: {{ razon.producto_id }}</h2>
-          <p>Razón: {{ razon.razon }}</p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+
+    <div *ngIf="isListaVisible">
+      <div *ngFor="let razon of razonesEliminacion" class="notificaciones">
+        <div class="text">
+          <h3>Producto ID: {{ razon.producto_id }}</h3>
+        </div>
+        <div class="text">
+          <p>Razón de eliminación: {{ razon.razon }}</p>
+        </div>
+        <ion-button (click)="eliminarRazonEliminacion(razon.id)" fill="clear" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </div>
+    </div>    
     <p *ngIf="razonesEliminacion.length === 0">No hay razones de eliminación registradas.</p>
-    
+
+
     <h1>Nuevas</h1>
     <div class="notificaciones" *ngFor="let notificacion of notificaciones">
       <div class="imagen-notificacion" (click)="irAlBuscar()">
-        <img class="avatar" [src]="notificacion.imagen" alt="User Icon"> 
+        <img class="avatar" [src]="notificacion.imagen || 'assets/img/nouser.png'" alt="User Icon"> 
         <small>{{ notificacion.nombreUsuario }}</small>
       </div>
       <div class="text">
