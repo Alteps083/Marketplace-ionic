@@ -16,6 +16,19 @@
 <ion-content [fullscreen]="true">
   <div class="home-page"></div>
   <div class="seccion-news">
+    <ion-button expand="full" (click)="toggleListaRazones()">
+      {{ isListaVisible ? 'Dejar de Ver Razones de Eliminación' : 'Ver Razones de Eliminación' }}
+    </ion-button>
+    <ion-list *ngIf="isListaVisible">
+      <ion-item *ngFor="let razon of razonesEliminacion">
+        <ion-label>
+          <h2>Producto ID: {{ razon.producto_id }}</h2>
+          <p>Razón: {{ razon.razon }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <p *ngIf="razonesEliminacion.length === 0">No hay razones de eliminación registradas.</p>
+    
     <h1>Nuevas</h1>
     <div class="notificaciones" *ngFor="let notificacion of notificaciones">
       <div class="imagen-notificacion" (click)="irAlBuscar()">

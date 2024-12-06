@@ -8,6 +8,8 @@ import { Producto } from './producto';
 import { Subject } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { RazonEliminacion } from 'src/app/services/RazonEliminacion'; // Ajusta la ruta según la ubicación real del archivo
+
 
 
 @Injectable({
@@ -1094,4 +1096,19 @@ async registrarRazonEliminacion(productoId: number, razon: string): Promise<void
   await this.database.executeSql(query, [productoId, razon]);
 } 
 
+  // Método para obtener las razones de eliminación
+  async obtenerRazonesEliminacion(): Promise<RazonEliminacion[]> {
+    const query = 'SELECT * FROM razones_eliminacion';
+    const result = await this.database.executeSql(query, []);
+    
+    if (result && result.rows.length > 0) {
+      const razones: RazonEliminacion[] = [];
+      for (let i = 0; i < result.rows.length; i++) {
+        razones.push(result.rows.item(i)); // Asegúrate de usar rows.item()
+      }
+      return razones;
+    }
+    return []; // Retorna un array vacío si no hay datos
+  }
+  
 }
