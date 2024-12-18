@@ -245,6 +245,10 @@ CREATE TABLE IF NOT EXISTS razones_eliminacion (
       await this.database.executeSql(this.tablaban, []);
       console.log("Tabla de ban creada correctamente");
   
+      console.log("Creando tabla de razon_eliminar...");
+      await this.database.executeSql(this.tablaeliminacion, []);
+      console.log("Tabla de razón eliminar creada correctamente");
+
       await this.actualizarTablaUsuario();
       await this.asignarIdAUsuariosExistentes();
   
