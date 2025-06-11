@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { environmentApiKeyGoogle } from 'src/environments/environment';
 
 declare var google: any;
 
@@ -45,7 +46,7 @@ export class MapmodalComponent implements AfterViewInit {
         resolve();
       } else {
         const script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBLUHfynKkzKEGxZ4GeZgem9gxmCtz-iUw&libraries=places&v=weekly';
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${environmentApiKeyGoogle.GOOGLE_MAPS_API_KEY}&libraries=places&v=weekly`;
         script.async = true;
         script.defer = true;
 

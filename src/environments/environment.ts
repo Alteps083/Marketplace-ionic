@@ -15,6 +15,11 @@ export const environment = {
   }
 };
 
+
+export const environmentApiKeyGoogle = {
+  production: false,
+  GOOGLE_MAPS_API_KEY: 'AIzaSyBLUHfynKkzKEGxZ4GeZgem9gxmCtz-iUw'
+};
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

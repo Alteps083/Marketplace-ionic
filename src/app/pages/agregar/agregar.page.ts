@@ -12,6 +12,7 @@ import { Notificacion } from 'src/app/services/notificacion';
 import { Geolocation, PermissionStatus } from '@capacitor/geolocation';
 import { HttpClient } from '@angular/common/http';
 import { MapmodalComponent } from 'src/app/components/mapmodal/mapmodal.component';
+import { environmentApiKeyGoogle } from 'src/environments/environment';
 
 declare var google: any;
 
@@ -209,7 +210,7 @@ export class AgregarPage implements OnInit {
   }
 
   geocodificar(lat: number, lng: number) {
-    const apiKey = 'AIzaSyBLUHfynKkzKEGxZ4GeZgem9gxmCtz-iUw';
+    const apiKey = environmentApiKeyGoogle.GOOGLE_MAPS_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
 
     this.http.get<any>(url).subscribe((respuesta) => {
@@ -316,7 +317,7 @@ export class AgregarPage implements OnInit {
     if (!document.querySelector('#google-maps-script')) {
       const script = document.createElement('script');
       script.id = 'google-maps-script';
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBLUHfynKkzKEGxZ4GeZgem9gxmCtz-iUw';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environmentApiKeyGoogle.GOOGLE_MAPS_API_KEY}&libraries=places&v=weekly`;
       script.async = true;
       script.defer = true;
       script.onload = () => {
