@@ -18,8 +18,10 @@ import { ServicebdService } from './services/servicebd.service';
 import { PantallaCargaComponent } from './components/pantalla-carga/pantalla-carga.component';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { MapmodalComponent } from './components/mapmodal/mapmodal.component';
+
 @NgModule({
-  declarations: [AppComponent, ImageModalComponent, PantallaCargaComponent],
+  declarations: [AppComponent, ImageModalComponent, PantallaCargaComponent, MapmodalComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(), 

@@ -7,4 +7,5 @@ export class Producto {
     estado!: string;
     precio!: number;
     imagenes!: string[];
+    ubicacion?: string;
 }

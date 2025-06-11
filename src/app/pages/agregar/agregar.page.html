@@ -5,9 +5,10 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title class="titulo">Agregar</ion-title>
-    <ion-buttons slot="end" (click)="perfil()"> 
-      <ion-avatar >
-        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
+    <ion-buttons slot="end" (click)="perfil()">
+      <ion-avatar>
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil"
+          (error)="profileImage = 'assets/img/nouser.png'" />
       </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
@@ -23,11 +24,11 @@
       <ion-item>
         <ion-label position="floating">Título del Producto</ion-label>
         <ion-input type="text" formControlName="titulo" required></ion-input>
-      </ion-item>      
+      </ion-item>
       <ion-item>
         <ion-label position="floating">Precio</ion-label>
         <ion-input type="number" formControlName="precio" required></ion-input>
-      </ion-item>      
+      </ion-item>
       <ion-item>
         <ion-label>Categoría</ion-label>
         <ion-select formControlName="categoria" required>
@@ -46,9 +47,7 @@
       </ion-item>
       <ion-item>
         <ion-label>Descripción</ion-label>
-        <ion-textarea 
-          formControlName="descripcion" 
-          (ionInput)="onDescriptionChange($event)">
+        <ion-textarea formControlName="descripcion" (ionInput)="onDescriptionChange($event)">
         </ion-textarea>
       </ion-item>
       <div *ngIf="descripcion?.touched || descripcion?.dirty">
@@ -57,6 +56,29 @@
         </ion-text>
         <p>{{ descripcion?.value?.length || 0 }}/50</p>
       </div>
+      <ion-item>
+        <ion-label>Ubicación</ion-label>
+        <ion-select formControlName="ubicacionMetodo" (ionChange)="cambiarMetodo($event.detail.value)">
+          <ion-select-option value="auto">Automática</ion-select-option>
+          <ion-select-option value="manual">Manual</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-button *ngIf="ubicacionMetodo === 'auto'" (click)="obtenerUbicacionAuto()">
+        Obtener Ubicación
+      </ion-button>
+      <div *ngIf="mostrarMapa" id="map" style="width: 100%; height: 300px; margin-top: 10px;"></div>
+      <ion-item *ngIf="ciudad">
+        <ion-label>Ciudad: {{ ciudad }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="comuna">
+        <ion-label>Comuna: {{ comuna }}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="calle">
+        <ion-label>Calle: {{ calle }}</ion-label>
+      </ion-item>
+      <ion-button *ngIf="ubicacionMetodo === 'manual'" (click)="abrirMapaManual()">
+        Abrir Mapa
+      </ion-button>
       <div class="image-upload-container">
         <div class="image-upload-wrapper" *ngFor="let image of imagePreviews">
           <img [src]="image" class="image-preview" />
@@ -69,7 +91,7 @@
           <ion-icon name="image"></ion-icon>
           <span>Seleccionar de la galería</span>
         </div>
-      </div>     
+      </div>
       <ion-button expand="full" type="submit" [disabled]="miFormulario.invalid">
         Agregar Producto
       </ion-button>

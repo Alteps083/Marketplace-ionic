@@ -14,6 +14,7 @@ export class BusquedaPage implements OnInit {
 
   productosFiltrados: Producto[] = [];
   productos: Producto[] = [];
+  filtroSeleccionado: string = 'nombre';
   searchTerm: string = '';
   profileImage: string | null = null;
   usuario: Usuario | null = null;
@@ -42,28 +43,34 @@ export class BusquedaPage implements OnInit {
 
   cargarProductos() {
     this.bd.fetchProductos().subscribe(productos => {
-      this.productos = productos; 
+      this.productos = productos;
       this.productosFiltrados = [...productos];
-      console.log('Productos cargados: ', this.productos); 
+      console.log('Productos cargados: ', this.productos);
     }, error => {
       console.error('Error al cargar productos', error);
     });
   }
 
-  async filtrarProductos(event: any) {
-    const searchValue = event.target.value;
+  filtrarProductos(event: any) {
+    const searchValue = event.target.value.toLowerCase();
+
     if (searchValue && searchValue.trim() !== '') {
-      this.productosFiltrados = await this.bd.buscarProductosPorNombre(searchValue);
+      this.productosFiltrados = this.productos.filter(producto =>
+        producto.nombre_producto.toLowerCase().includes(searchValue) ||
+        producto.categoria.toLowerCase().includes(searchValue) ||
+        (producto.ubicacion && producto.ubicacion.toLowerCase().includes(searchValue)) // aquí filtramos por ubicación completa
+      );
     } else {
-      this.bd.cargarProductos(); 
+      this.productosFiltrados = [...this.productos];
     }
   }
 
-  detalle(id: number){
+
+  detalle(id: number) {
     this.router.navigate(['/detalle', id]);
   }
 
-  perfil(){
+  perfil() {
     this.router.navigate(['tabs/perfil'])
   }
 

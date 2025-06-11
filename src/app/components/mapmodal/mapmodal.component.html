@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Seleccionar Ubicación</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="search-container">
+    <input #searchbar type="text" placeholder="Buscar ubicación" style="width: 100%; padding: 8px; margin-bottom: 10px;" />
+  </div>
+
+
+  <div #map id="map" class="map-container"></div>
+
+</ion-content>
+
+<ion-footer class="footer-fixed">
+  <ion-button expand="full" (click)="confirmarUbicacion()">Aceptar Ubicación</ion-button>
+</ion-footer>

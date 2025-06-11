@@ -5,17 +5,23 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title class="titulo">MarketHub</ion-title>
-    <ion-buttons slot="end" (click)="perfil()"> 
+    <ion-buttons slot="end" (click)="perfil()">
       <ion-avatar>
-        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil" (error)="profileImage = 'assets/img/nouser.png'" />
-      </ion-avatar>    
+        <img [src]="profileImage || 'assets/img/nouser.png'" alt="imagen de perfil"
+          (error)="profileImage = 'assets/img/nouser.png'" />
+      </ion-avatar>
     </ion-buttons>
   </ion-toolbar>
-  <ion-searchbar
-    [(ngModel)]="searchTerm"
-    (ionInput)="filtrarProductos($event)"
-    placeholder="Buscar productos..."
-  ></ion-searchbar>
+  <ion-item>
+    <ion-label>Buscar por:</ion-label>
+    <ion-select [(ngModel)]="filtroSeleccionado">
+      <ion-select-option value="nombre">Nombre</ion-select-option>
+      <ion-select-option value="categoria">Categoría</ion-select-option>
+      <ion-select-option value="ubicacion">Ciudad</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="filtrarProductos($event)"
+    placeholder="Escribe tu búsqueda..."></ion-searchbar>
 </ion-header>
 
 <div class="horizontal-scroll">
@@ -26,6 +32,7 @@
         <ion-card-title>{{ producto.nombre_producto }}</ion-card-title>
         <ion-card-subtitle>{{ producto.categoria }}</ion-card-subtitle>
         <strong>Precio: {{ producto.precio | currency }}</strong>
+        <strong>{{producto.ubicacion}}</strong>
       </ion-card-header>
     </ion-card>
   </ng-container>
